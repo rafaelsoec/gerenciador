@@ -1,0 +1,191 @@
+/* ─────────────────────────────────────────────
+   Variáveis de tema
+───────────────────────────────────────────── */
+:host {
+  --sidebar-bg: #111827;
+  --sidebar-text: #e5e7eb;
+  --sidebar-hover-bg: #1f2937;
+  --sidebar-active-bg: #374151;
+  --sidebar-active-accent: #3b82f6;
+  --sidebar-width-collapsed: 72px;
+  --sidebar-width-expanded: 240px;
+  --sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --label-transition: 0.25s ease;
+  --item-radius: 8px;
+}
+
+/* ─────────────────────────────────────────────
+   Sidebar principal
+───────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  width: var(--sidebar-width-collapsed);
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  overflow: hidden;
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+  padding: 16px 8px;
+  box-sizing: border-box;
+  gap: 4px;
+
+  /* Transição suave de largura */
+  transition: width var(--sidebar-transition);
+}
+
+/* Estado expandido (desktop: hover / mobile: toggle) */
+.sidebar.expanded {
+  width: var(--sidebar-width-expanded);
+}
+
+/* ─────────────────────────────────────────────
+   Botão hambúrguer — visível apenas em mobile
+───────────────────────────────────────────── */
+.hamburger {
+  display: none; /* oculto em desktop */
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  border-radius: var(--item-radius);
+  color: var(--sidebar-text);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.hamburger:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+.hamburger:focus-visible {
+  outline: 2px solid var(--sidebar-active-accent);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────
+   Lista de itens
+───────────────────────────────────────────── */
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.menu-item {
+  width: 100%;
+}
+
+/* ─────────────────────────────────────────────
+   Botão de item de menu
+───────────────────────────────────────────── */
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 48px;
+  padding: 0 13px;
+  background: transparent;
+  border: none;
+  border-radius: var(--item-radius);
+  color: var(--sidebar-text);
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap; /* impede quebra de linha durante animação */
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.menu-btn:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+/* Estado ativo / selecionado */
+.menu-btn.active {
+  background-color: var(--sidebar-active-bg);
+  border-left: 3px solid var(--sidebar-active-accent);
+  padding-left: 10px; /* compensa a borda de 3px */
+}
+
+/* Foco visível para navegação por teclado */
+.menu-btn:focus-visible {
+  outline: 2px solid var(--sidebar-active-accent);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────
+   Ícone
+───────────────────────────────────────────── */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+
+/* ─────────────────────────────────────────────
+   Rótulo de texto
+   — animação: fade-in + slide da esquerda para direita
+───────────────────────────────────────────── */
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+
+  /* Estado inicial: invisível e deslocado para a esquerda */
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity var(--label-transition),
+    transform var(--label-transition);
+
+  /* Impede que o label seja anunciado por leitores de tela quando oculto */
+  pointer-events: none;
+}
+
+/* Quando a sidebar está expandida: label aparece com fade + slide */
+.sidebar.expanded .label {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* ─────────────────────────────────────────────
+   Media query — mobile (< 768px)
+   A sidebar permanece recolhida; expande apenas via clique no hambúrguer.
+   O hover é ignorado (tratado no TypeScript via isMobile signal).
+───────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .sidebar {
+    /* Em mobile, a sidebar inicia recolhida e sem largura visível */
+    width: var(--sidebar-width-collapsed);
+    padding: 8px;
+  }
+
+  .sidebar.expanded {
+    width: var(--sidebar-width-expanded);
+  }
+
+  .hamburger {
+    /* Exibe o hambúrguer em mobile */
+    display: flex;
+    margin-bottom: 8px;
+  }
+}

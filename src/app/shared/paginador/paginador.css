@@ -1,0 +1,35 @@
+:host {
+    display: block;
+    width: 100%;
+    /*
+      Repassa as variáveis da tabela para os tokens oficiais do Material.
+      --tabela-header-bg e --tabela-header-color são injetados pelo @HostBinding
+      da TabelaComponent e cascateiam até aqui.
+    */
+    --mat-paginator-container-background-color: var(--tabela-header-bg, transparent);
+    --mat-paginator-container-text-color: var(--tabela-header-color, inherit);
+    --mat-select-enabled-trigger-text-color: var(--tabela-header-color, inherit);
+    --mat-select-enabled-arrow-color: var(--tabela-header-color, inherit);
+    --mat-paginator-select-trigger-text-color: var(--tabela-header-color, inherit);
+}
+
+:host ::ng-deep .mat-mdc-paginator {
+    width: 100%;
+    border-radius: 0 0 4px 4px;
+}
+
+/* Centraliza o conteúdo do paginador */
+:host ::ng-deep .mat-mdc-paginator-container {
+    justify-content: center;
+}
+
+/* Ícones dos botões de navegação — classe real gerada pelo Material */
+:host ::ng-deep svg.mat-mdc-paginator-icon {
+    fill: var(--tabela-header-color, currentColor);
+}
+
+/* Estado disabled: usa classe .mat-mdc-button-disabled (disabledInteractive não seta o atributo disabled) */
+:host ::ng-deep button.mat-mdc-button-disabled svg.mat-mdc-paginator-icon {
+    fill: var(--tabela-header-color, currentColor);
+    opacity: 0.38;
+}

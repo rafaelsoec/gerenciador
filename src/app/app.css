@@ -1,0 +1,8 @@
+/* O conteúdo principal recebe margin-left equivalente à largura da sidebar recolhida,
+   para que nunca fique oculto atrás dela. A sidebar usa position: fixed, por isso
+   não empurra o layout — apenas precisamos desta margem estática. */
+.main-content {
+  margin-left: 72px;
+  min-height: 100dvh;
+  box-sizing: border-box;
+}

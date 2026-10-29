@@ -1,0 +1,77 @@
+/* Contêiner principal da página */
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.page-title {
+  margin: 0 0 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 500;
+}
+
+/* ── Formulário ─────────────────────────────────────────────────────── */
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Cada mat-form-field ocupa no mínimo 240px e cresce para preencher o espaço */
+.form-row mat-form-field {
+  min-width: 240px;
+  flex: 1;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* ── Tabela ─────────────────────────────────────────────────────────── */
+.table-container {
+  overflow-x: auto;
+}
+
+.clientes-table {
+  width: 100%;
+}
+
+/* Botões de ação lado a lado na célula */
+.acoes-cell {
+  display: flex;
+  align-items: center;
+}
+
+/* Mensagem de lista vazia centralizada */
+.no-data-cell {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.tabela-container {
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+}
+
+table mat-header-row {
+  background-color: #2563eb;
+}
+
+table mat-header-cell {
+  color: #ffffff;
+  font-weight: 600;
+}

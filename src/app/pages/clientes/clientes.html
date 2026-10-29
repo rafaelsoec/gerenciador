@@ -1,0 +1,18 @@
+<section class="pagina">
+  <h1>Clientes</h1>
+
+  <!--
+    Tabela genérica: recebe a lista de objetos, as definições de colunas
+    e exibe tudo dinamicamente — sem precisar repetir ng-container por campo.
+  -->
+  <app-tabela
+    [dados]="clientes()"
+    [colunas]="colunas"
+    corHeader="#111827"
+    corTextoHeader="#ffffff"
+    [exibirEdicao]="true"
+    [exibirExclusao]="true"
+    (salvar)="onSalvar($event)"
+    (excluir)="onExcluir($event)"
+  />
+</section>

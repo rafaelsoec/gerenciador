@@ -1,0 +1,24 @@
+@use '@angular/material' as mat;
+
+// Inclui os estilos base do Material (reset de tipografia, elevação, etc.)
+@include mat.core();
+
+// Define o tema da aplicação usando a paleta padrão do Material 3
+$theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  typography: (
+    brand-family: 'Inter, system-ui, sans-serif',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+// Aplica o tema globalmente
+:root {
+  @include mat.all-component-themes($theme);
+}

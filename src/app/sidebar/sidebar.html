@@ -1,0 +1,36 @@
+<nav class="sidebar" [class.expanded]="isExpanded()" [attr.aria-expanded]="isExpanded()"
+  aria-label="Menu de navegação principal" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  <!-- Botão hambúrguer (visível apenas em mobile) -->
+  <button class="hamburger" type="button" (click)="toggleMobile()"
+    [attr.aria-label]="isExpanded() ? 'Fechar menu' : 'Abrir menu'" [attr.aria-expanded]="isExpanded()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"
+      aria-hidden="true" focusable="false">
+      @if (isExpanded()) {
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+      } @else {
+      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+      }
+    </svg>
+  </button>
+
+  <!-- Lista de itens do menu -->
+  <ul class="menu-list" role="list">
+    @for (item of menuItems; track item.id) {
+    <li class="menu-item" role="listitem">
+      <a class="menu-btn" style="text-decoration: none;" [routerLink]="item.route" routerLinkActive="active"
+        (click)="toggleMobile()" #rla="routerLinkActive" [attr.aria-label]="item.ariaLabel"
+        [attr.aria-current]="rla.isActive ? 'page' : null">
+        <!-- Ícone SVG (sempre visível) -->
+        <span class="icon" aria-hidden="true" focusable="false">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path [attr.d]="item.icon" />
+          </svg>
+        </span>
+
+        <!-- Rótulo (visível apenas quando expandido) -->
+        <span class="label" aria-hidden="true">{{ item.label }}</span>
+      </a>
+    </li>
+    }
+  </ul>
+</nav>

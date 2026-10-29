@@ -1,0 +1,62 @@
+.tabela-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tabela-mat {
+  width: 100%;
+}
+
+app-paginador {
+  display: block;
+  width: 100%;
+}
+
+/*
+  @HostBinding injeta --tabela-header-bg diretamente no elemento :host (app-tabela).
+  CSS variables cascateiam para todos os descendentes.
+*/
+:host {
+  --tabela-header-bg: transparent;
+  --tabela-header-color: inherit;
+}
+
+:host th.mat-mdc-header-cell {
+  background-color: var(--tabela-header-bg);
+  color: var(--tabela-header-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Linha sem dados */
+.sem-dados {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ── Coluna de ações ──────────────────────────────────────────────────────── */
+
+.acoes-header {
+  text-align: center;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.acoes-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .acoes-cell .btn-excluir {
+  --mdc-icon-button-icon-color: #ef4444;
+  --mat-icon-button-icon-color: #ef4444;
+}
+
+:host ::ng-deep .acoes-cell .btn-excluir mat-icon {
+  color: #ef4444;
+}
+
+:host ::ng-deep .acoes-cell .btn-salvar mat-icon {
+  color: #22c55e;
+}
