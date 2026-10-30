@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+
+.form-cadastro-wrapper {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.form-titulo {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2328;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* mat-form-field ocupa toda a largura da coluna */
+.campo-full {
+  width: 100%;
+}
+
+/* Checkbox */
+.campo-checkbox {
+  padding: 8px 0;
+}
+
+/* Radio */
+.campo-radio-group {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo-radio-label {
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 500;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Botões de ação */
+.form-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+:host ::ng-deep .btn-salvar {
+  --mdc-filled-button-container-color: #3b82f6;
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mat-filled-button-ripple-color: rgba(255, 255, 255, 0.2);
+}
+
+:host ::ng-deep .btn-cancelar {
+  --mdc-outlined-button-outline-color: #e5e7eb;
+  --mdc-outlined-button-label-text-color: #57606a;
+}

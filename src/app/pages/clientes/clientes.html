@@ -1,18 +1,12 @@
-<section class="pagina">
-  <h1>Clientes</h1>
+<section class="container-fluid pagina">
 
-  <!--
-    Tabela genérica: recebe a lista de objetos, as definições de colunas
-    e exibe tudo dinamicamente — sem precisar repetir ng-container por campo.
-  -->
-  <app-tabela
-    [dados]="clientes()"
-    [colunas]="colunas"
-    corHeader="#111827"
-    corTextoHeader="#ffffff"
-    [exibirEdicao]="true"
-    [exibirExclusao]="true"
-    (salvar)="onSalvar($event)"
-    (excluir)="onExcluir($event)"
-  />
+  <app-header-pagina titulo="Clientes" subtitulo="Gerencie os clientes da sua empresa"
+    nomeBotao="Cadastrar Novo Cliente" corBackground="#111827" corTexto="#ffffff" corBotao="#3b82f6"
+    (botaoClicado)="onNovo()" />
+
+  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+    <app-tabela [dados]="clientes()" [colunas]="colunas" corHeader="#111827" corTextoHeader="#ffffff"
+      [exibirEdicao]="true" [exibirExclusao]="true" (salvar)="onSalvar($event)" (excluir)="onExcluir($event)" />
+  </div>
+
 </section>

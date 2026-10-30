@@ -1,0 +1,83 @@
+<div class="form-cadastro-wrapper">
+  @if (_titulo) {
+  <h2 class="form-titulo">{{ _titulo }}</h2>
+  }
+
+  <form (ngSubmit)="onSalvar()" novalidate>
+    <div class="row g-3" style="overflow-y: scroll; overflow-x: hidden;">
+
+      @for (campo of _campos; track campo.nome) {
+      <div [class]="colClass(campo)">
+
+        <!-- TEXT / NUMBER -->
+        @if (campo.tipo === 'text' || campo.tipo === 'number') {
+        <mat-form-field appearance="outline" class="campo-full">
+          <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+          <input
+            matInput
+            [type]="campo.tipo"
+            [placeholder]="campo.placeholder ?? ''"
+            [name]="campo.nome"
+            [mask]="campo.mascara ?? ''"
+            [dropSpecialCharacters]="false"
+            [ngModel]="_form()[campo.nome]"
+            (ngModelChange)="onValorAlterado(campo.nome, $event, campo)"
+          />
+        </mat-form-field>
+        }
+
+        <!-- SELECT -->
+        @if (campo.tipo === 'select') {
+        <mat-form-field appearance="outline" class="campo-full">
+          <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+          <mat-select [name]="campo.nome" [ngModel]="_form()[campo.nome]"
+            (ngModelChange)="atualizar(campo.nome, $event)">
+            @for (opcao of campo.opcoes ?? []; track opcao.value) {
+            <mat-option [value]="opcao.value">{{ opcao.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        }
+
+        <!-- CHECKBOX -->
+        @if (campo.tipo === 'checkbox') {
+        <div class="campo-checkbox">
+          <mat-checkbox [name]="campo.nome" [ngModel]="_form()[campo.nome]"
+            (ngModelChange)="atualizar(campo.nome, $event)">
+            {{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}
+          </mat-checkbox>
+        </div>
+        }
+
+        <!-- RADIO -->
+        @if (campo.tipo === 'radio') {
+        <div class="campo-radio-group">
+          <label class="campo-radio-label">{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</label>
+          <mat-radio-group [name]="campo.nome" [ngModel]="_form()[campo.nome]"
+            (ngModelChange)="atualizar(campo.nome, $event)" class="radio-group">
+            @for (opcao of campo.opcoes ?? []; track opcao.value) {
+            <mat-radio-button [value]="opcao.value">{{ opcao.label }}</mat-radio-button>
+            }
+          </mat-radio-group>
+        </div>
+        }
+
+      </div>
+      }
+
+    </div><!-- /row -->
+
+    <!-- BOTÕES -->
+    <div class="form-acoes">
+      <button matButton="outlined" type="button" class="btn-cancelar" (click)="onCancelar()">
+        <mat-icon fontIcon="close"></mat-icon>
+        Cancelar
+      </button>
+
+      <button matButton="filled" type="submit" class="btn-salvar" [disabled]="_invalido()">
+        <mat-icon fontIcon="save"></mat-icon>
+        Salvar
+      </button>
+    </div>
+  </form>
+</div>

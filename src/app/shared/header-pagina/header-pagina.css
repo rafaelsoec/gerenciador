@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  --header-bg: transparent;
+  --header-color: inherit;
+  --header-btn-bg: transparent;
+}
+
+.header-pagina {
+  background-color: var(--header-bg);
+  color: var(--header-color);
+  padding: 20px 24px;
+  /* border-radius: 8px; */
+  margin-bottom: 16px;
+}
+
+.header-pagina h1 {
+  margin: 0;
+  color: var(--header-color);
+}
+
+.header-pagina p {
+  margin: 0;
+  opacity: 0.75;
+  color: var(--header-color);
+}
+
+/* Botão: tokens do Material para cor de fundo e texto */
+:host ::ng-deep .botao-acao {
+  --mdc-filled-button-container-color: var(--header-btn-bg, #3b82f6);
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mat-filled-button-ripple-color: rgba(255, 255, 255, 0.2);
+}
