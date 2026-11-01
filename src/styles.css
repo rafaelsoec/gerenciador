@@ -1,6 +1,121 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/dist/css/bootstrap.min.css";
 
+/* ═══════════════════════════════════════════════════════════════
+   Dark mode — aplicado via classe .dark no <body>
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Transição global suave ao trocar de tema */
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body.dark {
+  background-color: #0f172a;
+  color: #e2e8f0;
+
+  /* ── Superfícies (cards, painéis) ── */
+  --dark-surface: #1e293b;
+  --dark-border:  #334155;
+  --dark-muted:   #94a3b8;
+}
+
+/* ── Texto básico ── */
+body.dark h1, body.dark h2, body.dark h3,
+body.dark h4, body.dark h5, body.dark h6,
+body.dark p, body.dark span, body.dark label {
+  color: #e2e8f0;
+}
+
+body.dark p.muted,
+body.dark .text-muted {
+  color: #94a3b8 !important;
+}
+
+/* ── Angular Material: tabela ── */
+body.dark .mat-mdc-table {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+body.dark .mat-mdc-row,
+body.dark .mat-mdc-header-row,
+body.dark .mat-mdc-footer-row {
+  background-color: #1e293b;
+}
+
+body.dark .mat-mdc-cell,
+body.dark .mat-mdc-footer-cell {
+  color: #e2e8f0;
+  border-bottom-color: #334155;
+}
+
+body.dark .mat-mdc-row:hover .mat-mdc-cell {
+  background-color: #263245;
+}
+
+/* ── Angular Material: paginador ── */
+body.dark .mat-mdc-paginator {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+body.dark .mat-mdc-paginator .mat-mdc-select-value,
+body.dark .mat-mdc-paginator .mat-mdc-paginator-range-label,
+body.dark .mat-mdc-paginator .mat-mdc-icon-button {
+  color: #e2e8f0;
+}
+
+/* ── Angular Material: form fields ── */
+body.dark .mat-mdc-form-field {
+  color: #e2e8f0;
+}
+
+body.dark .mat-mdc-text-field-wrapper {
+  background-color: #263245 !important;
+}
+
+body.dark .mdc-notched-outline__leading,
+body.dark .mdc-notched-outline__notch,
+body.dark .mdc-notched-outline__trailing {
+  border-color: #475569 !important;
+}
+
+body.dark .mat-mdc-input-element {
+  color: #e2e8f0 !important;
+  caret-color: #3b82f6;
+}
+
+body.dark .mat-mdc-floating-label {
+  color: #94a3b8 !important;
+}
+
+/* ── Angular Material: dialog ── */
+body.dark .mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+/* ── Angular Material: select / dropdown ── */
+body.dark .mat-mdc-select-value {
+  color: #e2e8f0 !important;
+}
+
+body.dark .mat-mdc-option {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+body.dark .mat-mdc-option:hover {
+  background-color: #263245 !important;
+}
+
+/* ── Bootstrap override ── */
+body.dark .container,
+body.dark .container-fluid {
+  background-color: transparent;
+}
+
 .alerta-sucesso {
     background-color: #2e7d32 !important;
     color: white !important;

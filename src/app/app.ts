@@ -3,6 +3,7 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SidebarComponent } from './sidebar/sidebar';
+import { TemaService } from './services/tema.service';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,10 @@ import { SidebarComponent } from './sidebar/sidebar';
 })
 export class App {
   private readonly router = inject(Router);
+
+  constructor() {
+    inject(TemaService).inicializar();
+  }
 
   readonly mostrarSidebar = toSignal(
     this.router.events.pipe(

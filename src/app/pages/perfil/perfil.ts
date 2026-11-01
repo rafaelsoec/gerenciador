@@ -37,6 +37,7 @@ export class PerfilComponent implements OnInit {
   readonly erro = signal('');
   readonly mostrarSenhaAtual = signal(false);
   readonly mostrarNovaSenha = signal(false);
+  readonly alterarSenha = signal(false);
 
   form!: UntypedFormGroup;
 

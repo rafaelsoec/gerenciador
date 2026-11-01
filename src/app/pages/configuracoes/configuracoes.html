@@ -1,4 +1,24 @@
 <div class="page">
   <h1>Configurações</h1>
-  <p>Ajuste as preferências do sistema aqui.</p>
+  <p class="subtitulo">Ajuste as preferências do sistema aqui.</p>
+
+  <section class="secao">
+    <h2 class="secao-titulo">Aparência</h2>
+
+    <div class="opcao">
+      <div class="opcao-info">
+        <span class="opcao-label">Modo escuro</span>
+        <span class="opcao-desc">Alterna entre o tema claro e o tema escuro da interface.</span>
+      </div>
+
+      <button
+        class="toggle"
+        [class.ativo]="tema.darkMode()"
+        (click)="tema.alternar()"
+        [attr.aria-pressed]="tema.darkMode()"
+        aria-label="Alternar modo escuro">
+        <span class="toggle-thumb"></span>
+      </button>
+    </div>
+  </section>
 </div>
