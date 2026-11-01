@@ -74,7 +74,7 @@
 
   </table>
 
-  <app-paginador [length]="dados().length" [pageSize]="itensPorPagina()" [pageIndex]="_pageIndex()"
+  <app-paginador [length]="_lengthEfetivo()" [pageSize]="itensPorPagina()" [pageIndex]="_pageIndex()"
     [pageSizeOptions]="opcoesPagina()" (paginaAlterada)="onPaginaAlterada($event)">
   </app-paginador>
 </div>

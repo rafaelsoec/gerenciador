@@ -7,6 +7,7 @@ import { CampoFormulario, FormCadastroComponent, FormCadastroDialogData, Registr
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { AlertaService } from '../../services/alerta.service';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-clientes',
@@ -21,6 +22,9 @@ export class ClientesComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   readonly clientes = signal<ClienteDTO[]>([]);
+  readonly totalElementos = signal<number>(0);
+  readonly paginaAtual = signal<number>(0);
+  readonly tamanhoPagina = signal<number>(20);
 
   readonly colunas: ColunaTabela[] = [
     { campo: 'nome', header: 'Nome', editavel: true, width: '35%', pattern: /^[a-zA-Z ]+$/ },
@@ -43,9 +47,20 @@ export class ClientesComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.clienteService.listar().subscribe((lista) => {
-      this.clientes.set(lista);
+    this._buscar(0, this.tamanhoPagina());
+  }
+
+  private _buscar(page: number, size: number): void {
+    this.clienteService.listar({ page, size, sort: 'id,asc' }).subscribe((pagina) => {
+      this.clientes.set(pagina.conteudo);
+      this.totalElementos.set(pagina.totalElementos);
+      this.paginaAtual.set(pagina.paginaAtual);
+      this.tamanhoPagina.set(pagina.tamanhoPagina);
     });
+  }
+
+  onPaginaAlterada(event: PageEvent): void {
+    this._buscar(event.pageIndex, event.pageSize);
   }
 
   onNovo(): void {

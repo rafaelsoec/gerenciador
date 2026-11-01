@@ -57,6 +57,16 @@ export class TabelaComponent<T extends Record<string, any>> {
   /** Opções disponíveis no seletor de tamanho de página. */
   readonly opcoesPagina = input<number[]>([5, 10, 25]);
 
+  /**
+   * Quando true, desativa o fatiamento local e usa `dados()` integralmente.
+   * O paginador passa a exibir `totalElementos` como o total de registros.
+   * Use quando a paginação é feita pelo servidor.
+   */
+  readonly paginacaoExterna = input<boolean>(false);
+
+  /** Total real de registros no servidor. Obrigatório quando `paginacaoExterna=true`. */
+  readonly totalElementos = input<number>(0);
+
   /** Exibe o botão de edição na coluna de ações. Padrão: false. */
   readonly exibirEdicao = input<boolean>(false);
 
@@ -75,6 +85,9 @@ export class TabelaComponent<T extends Record<string, any>> {
   /** Emite a row ao clicar em excluir. */
   readonly excluir = output<T>();
 
+  /** Emite o PageEvent sempre que a página ou tamanho é alterado pelo usuário. */
+  readonly paginaAlterada = output<PageEvent>();
+
   // ── paginação ─────────────────────────────────────────────────────────────
 
   readonly _pageIndex = signal<number>(0);
@@ -85,9 +98,16 @@ export class TabelaComponent<T extends Record<string, any>> {
   );
 
   readonly dadosPagina = computed<T[]>(() => {
+    if (this.paginacaoExterna()) {
+      return this.dados();
+    }
     const inicio = this._pageIndex() * this._tamanhoPaginaEfetivo();
     return this.dados().slice(inicio, inicio + this._tamanhoPaginaEfetivo());
   });
+
+  readonly _lengthEfetivo = computed<number>(() =>
+    this.paginacaoExterna() ? this.totalElementos() : this.dados().length
+  );
 
   // ── edição inline ─────────────────────────────────────────────────────────
 
@@ -160,5 +180,6 @@ export class TabelaComponent<T extends Record<string, any>> {
     // Cancela edição pendente ao trocar de página
     this._idEditando.set(null);
     this._rascunho.set({});
+    this.paginaAlterada.emit(event);
   }
 }

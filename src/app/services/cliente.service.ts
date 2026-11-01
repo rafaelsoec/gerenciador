@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ClienteDTO } from '../dtos/cliente/ClienteDTO';
+import { RespostaPaginada } from '../dtos/RespostaPaginada';
+import { PaginacaoParams } from './produto.service';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -11,9 +13,14 @@ export class ClienteService {
 
   // ── Read ──────────────────────────────────────────────────────────────────
 
-  /** GET /clientes */
-  listar(): Observable<ClienteDTO[]> {
-    return this.http.get<ClienteDTO[]>(this.url);
+  /** GET /clientes  →  lista paginada */
+  listar(params: PaginacaoParams = {}): Observable<RespostaPaginada<ClienteDTO>> {
+    const { page = 0, size = 20, sort = 'id,asc' } = params;
+    const httpParams = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('sort', sort);
+    return this.http.get<RespostaPaginada<ClienteDTO>>(this.url, { params: httpParams });
   }
 
   /** GET /clientes/:id */
