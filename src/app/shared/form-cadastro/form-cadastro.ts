@@ -18,6 +18,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
+import { Observable } from 'rxjs';
+import { RegexDirective } from '../../diretivas/regex.directive';
 
 /** Tipos de campo suportados pelo formulário genérico. */
 export type TipoCampo = 'text' | 'number' | 'select' | 'checkbox' | 'radio';
@@ -56,6 +58,7 @@ export interface CampoFormulario {
   col?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
   /** Máscara de entrada (ex.: '(00) 00000-0000', '00/00/0000'). Opcional. */
   mascara?: string | null;
+  pattern?: RegExp | null | undefined;
   /** Placeholder exibido no campo. Opcional. */
   placeholder?: string;
   /** Torna o campo obrigatório. Padrão: false. */
@@ -77,7 +80,7 @@ export function converterRegistro<T extends object>(registro: Registro, construt
 export interface FormCadastroDialogData {
   campos: CampoFormulario[];
   titulo?: string;
-  onSalvar?: (dados: Registro) => void;
+  onSalvar?: (dados: Registro) => Observable<unknown>;
   onCancelar?: () => void;
 }
 
@@ -96,6 +99,7 @@ export interface FormCadastroDialogData {
     MatIconModule,
     MatDialogModule,
     NgxMaskDirective,
+    RegexDirective,
   ],
   templateUrl: './form-cadastro.html',
   styleUrl: './form-cadastro.css',
@@ -229,8 +233,14 @@ export class FormCadastroComponent implements OnInit {
     if (this._invalido()) return;
     const dados = { ...this._form() };
     if (this._dialogRef) {
-      // modo dialog: devolve os dados ao chamador via close()
-      this._dialogRef.close(dados);
+      this._dialogData?.onSalvar?.(dados).subscribe({
+        next: (resultado) => {
+          this._dialogRef?.close(resultado);
+        },
+        error: (erro) => {
+          console.error('Erro ao salvar:', erro);
+        }
+      });
     } else {
       // modo template: emite o output normalmente
       this.salvar.emit(dados);
@@ -239,10 +249,10 @@ export class FormCadastroComponent implements OnInit {
 
   onCancelar(): void {
     if (this._dialogRef) {
+      this._dialogData?.onCancelar?.();
       this._dialogRef.close(null);
     } else {
       this.cancelar.emit();
     }
   }
-
 }

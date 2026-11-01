@@ -5,8 +5,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
 import { Paginador } from '../paginador/paginador';
+import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
+import { RegexDirective } from '../../diretivas/regex.directive';
 
 /** Definição de uma coluna da tabela genérica. */
 export interface ColunaTabela {
@@ -15,12 +19,21 @@ export interface ColunaTabela {
   /** Texto exibido no cabeçalho da coluna. */
   header: string;
   editavel: boolean;
+  /** Largura da coluna (ex: '200px', '20%'). Opcional. */
+  width?: string;
+  mascara?: string | null;
+  pattern?: RegExp | null | undefined;
 }
 
 @Component({
   selector: 'app-tabela',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTableModule, MatIconButton, MatIconModule, MatTooltipModule, Paginador],
+  imports: [
+    CommonModule, FormsModule,
+    MatTableModule, MatIconButton, MatIconModule, MatTooltipModule,
+    MatFormFieldModule, MatInputModule,
+    Paginador, NgxMaskDirective, RegexDirective,
+  ],
   templateUrl: './tabela.html',
   styleUrl: './tabela.css',
 })
@@ -65,7 +78,7 @@ export class TabelaComponent<T extends Record<string, any>> {
   // ── paginação ─────────────────────────────────────────────────────────────
 
   readonly _pageIndex = signal<number>(0);
-  readonly _pageSize  = signal<number | null>(null);
+  readonly _pageSize = signal<number | null>(null);
 
   private readonly _tamanhoPaginaEfetivo = computed<number>(() =>
     this._pageSize() ?? this.itensPorPagina()

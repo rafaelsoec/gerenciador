@@ -1,12 +1,15 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthService } from '../services/auth.service';
+import { PerfilComponent } from '../pages/perfil/perfil';
 
 export interface MenuItem {
   id: string;
   label: string;
-  icon: string; // inline SVG path data
+  icon: string;
   ariaLabel: string;
-  route: string; // caminho de navegação do Angular Router
+  route: string;
 }
 
 @Component({
@@ -17,11 +20,12 @@ export interface MenuItem {
   styleUrl: './sidebar.css',
 })
 export class SidebarComponent {
-  /** Whether the sidebar is expanded (hover on desktop, toggle on mobile). */
-  readonly isExpanded = signal(false);
+  private readonly dialog = inject(MatDialog);
+  readonly auth = inject(AuthService);
 
-  /** Whether the device is in mobile mode (< 768px). */
+  readonly isExpanded = signal(false);
   readonly isMobile = signal(false);
+  readonly menuUsuarioAberto = signal(false);
 
   readonly menuItems: MenuItem[] = [
     {
@@ -78,10 +82,36 @@ export class SidebarComponent {
   onMouseLeave(): void {
     if (!this.isMobile()) {
       this.isExpanded.set(false);
+      this.menuUsuarioAberto.set(false);
     }
   }
 
   toggleMobile(): void {
     this.isExpanded.update((v) => !v);
+  }
+
+  toggleMenuUsuario(event: Event): void {
+    event.stopPropagation();
+    this.menuUsuarioAberto.update((v) => !v);
+  }
+
+  abrirPerfil(): void {
+    this.menuUsuarioAberto.set(false);
+    const usuario = this.auth.usuarioAtual();
+    if (!usuario) return;
+    this.dialog.open(PerfilComponent, {
+      width: '480px',
+      data: { usuario },
+    });
+  }
+
+  logout(): void {
+    this.menuUsuarioAberto.set(false);
+    this.auth.logout();
+  }
+
+  inicialNome(): string {
+    const nome = this.auth.usuarioAtual()?.nome ?? '';
+    return nome.charAt(0).toUpperCase();
   }
 }

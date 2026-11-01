@@ -1,6 +1,8 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './interceptors/auth.interceptor';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { provideNgxMask } from 'ngx-mask';
 
@@ -28,6 +30,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideAnimationsAsync(),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideNgxMask(),
     { provide: MatPaginatorIntl, useFactory: paginadorIntlPtBr },
   ],

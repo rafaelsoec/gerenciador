@@ -6,3 +6,8 @@
   min-height: 100dvh;
   box-sizing: border-box;
 }
+
+/* Na página de login a sidebar está oculta — remove a margem */
+.main-content.sem-sidebar {
+  margin-left: 0;
+}

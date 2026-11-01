@@ -1,5 +1,6 @@
 <nav class="sidebar" [class.expanded]="isExpanded()" [attr.aria-expanded]="isExpanded()"
   aria-label="Menu de navegação principal" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+
   <!-- Botão hambúrguer (visível apenas em mobile) -->
   <button class="hamburger" type="button" (click)="toggleMobile()"
     [attr.aria-label]="isExpanded() ? 'Fechar menu' : 'Abrir menu'" [attr.aria-expanded]="isExpanded()">
@@ -20,17 +21,66 @@
       <a class="menu-btn" style="text-decoration: none;" [routerLink]="item.route" routerLinkActive="active"
         (click)="toggleMobile()" #rla="routerLinkActive" [attr.aria-label]="item.ariaLabel"
         [attr.aria-current]="rla.isActive ? 'page' : null">
-        <!-- Ícone SVG (sempre visível) -->
         <span class="icon" aria-hidden="true" focusable="false">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
             <path [attr.d]="item.icon" />
           </svg>
         </span>
-
-        <!-- Rótulo (visível apenas quando expandido) -->
         <span class="label" aria-hidden="true">{{ item.label }}</span>
       </a>
     </li>
     }
   </ul>
+
+  <!-- Spacer -->
+  <div class="spacer"></div>
+
+  <!-- Área do usuário -->
+  @if (auth.usuarioAtual()) {
+  <div class="usuario-area" [class.menu-aberto]="menuUsuarioAberto()">
+
+    <!-- Popup de ações — posicionado acima do botão -->
+    @if (menuUsuarioAberto()) {
+    <div class="usuario-popup" role="menu">
+      <button class="usuario-popup-btn" role="menuitem" type="button" (click)="abrirPerfil()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path
+            d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+        </svg>
+        <span>Meu Perfil</span>
+      </button>
+      <div class="usuario-popup-divider"></div>
+      <button class="usuario-popup-btn usuario-popup-btn--danger" role="menuitem" type="button" (click)="logout()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path
+            d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+        </svg>
+        <span>Sair</span>
+      </button>
+    </div>
+    }
+
+    <!-- Botão do usuário -->
+    <button class="usuario-btn" type="button" (click)="toggleMenuUsuario($event)"
+      [attr.aria-expanded]="menuUsuarioAberto()" aria-haspopup="true" aria-label="Menu do usuário">
+
+      <!-- Avatar com inicial -->
+      <span class="usuario-avatar">{{ inicialNome() }}</span>
+
+      <!-- Nome + email (visíveis apenas expandido) -->
+      <div class="usuario-info label">
+        <span class="usuario-nome">{{ auth.usuarioAtual()?.nome }}</span>
+        <span class="usuario-email">{{ auth.usuarioAtual()?.login }}</span>
+      </div>
+
+      <!-- Chevron -->
+      <svg class="usuario-chevron label" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"
+        aria-hidden="true" [class.chevron-up]="menuUsuarioAberto()">
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
+      </svg>
+    </button>
+
+  </div>
+  }
+
 </nav>

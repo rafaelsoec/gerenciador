@@ -13,16 +13,9 @@
         @if (campo.tipo === 'text' || campo.tipo === 'number') {
         <mat-form-field appearance="outline" class="campo-full">
           <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
-          <input
-            matInput
-            [type]="campo.tipo"
-            [placeholder]="campo.placeholder ?? ''"
-            [name]="campo.nome"
-            [mask]="campo.mascara ?? ''"
-            [dropSpecialCharacters]="false"
-            [ngModel]="_form()[campo.nome]"
-            (ngModelChange)="onValorAlterado(campo.nome, $event, campo)"
-          />
+          <input matInput [type]="campo.tipo" [placeholder]="campo.placeholder ?? ''" [name]="campo.nome"
+            [appRegex]="campo.pattern" [mask]="campo.mascara ?? ''" [dropSpecialCharacters]="false"
+            [ngModel]="_form()[campo.nome]" (ngModelChange)="onValorAlterado(campo.nome, $event, campo)" />
         </mat-form-field>
         }
 

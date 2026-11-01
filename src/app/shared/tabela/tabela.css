@@ -60,3 +60,57 @@ app-paginador {
 :host ::ng-deep .acoes-cell .btn-salvar mat-icon {
   color: #22c55e;
 }
+
+/* ── mat-form-field inline (edição na tabela) ────────────────────────────── */
+
+:host ::ng-deep .tabela-field {
+  width: 100%;
+  /* Remove o espaço reservado para mensagens de erro abaixo do campo */
+  --mat-form-field-subscript-text-size: 0;
+}
+
+/* Remove padding/margin do wrapper */
+:host ::ng-deep .tabela-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+:host ::ng-deep .tabela-field .mat-mdc-text-field-wrapper {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+:host ::ng-deep .tabela-field .mat-mdc-form-field-flex {
+  padding: 0 !important;
+  align-items: flex-end;
+}
+
+/* Remove todas as bordas do outline e deixa só a inferior */
+:host ::ng-deep .tabela-field .mdc-notched-outline__leading,
+:host ::ng-deep .tabela-field .mdc-notched-outline__notch,
+:host ::ng-deep .tabela-field .mdc-notched-outline__trailing {
+  border: none !important;
+}
+
+:host ::ng-deep .tabela-field .mdc-notched-outline {
+  border: none !important;
+}
+
+:host ::ng-deep .tabela-field .mat-mdc-form-field-infix {
+  padding: 2px 0 !important;
+  min-height: unset !important;
+  border-bottom: 1px solid #9ca3af;
+  transition: border-color 0.2s ease;
+}
+
+:host ::ng-deep .tabela-field:focus-within .mat-mdc-form-field-infix {
+  border-bottom-color: #3b82f6;
+}
+
+/* Herda fonte e cor da célula da tabela */
+:host ::ng-deep .tabela-field input.mat-mdc-input-element {
+  font-size: inherit !important;
+  font-family: inherit !important;
+  line-height: inherit !important;
+  color: inherit !important;
+  caret-color: #3b82f6;
+}

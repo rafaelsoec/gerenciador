@@ -1,2 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/dist/css/bootstrap.min.css";
+
+.alerta-sucesso {
+    background-color: #2e7d32 !important;
+    color: white !important;
+}
+
+.alerta-erro {
+    background-color: #c62828 !important;
+    color: white !important;
+}
+
+.alerta-aviso {
+    background-color: #ed8c00 !important;
+    color: white !important;
+}
+
+/* Elementos internos do Angular Material */
+.alerta-sucesso .mdc-snackbar__surface,
+.alerta-erro .mdc-snackbar__surface,
+.alerta-aviso .mdc-snackbar__surface {
+    background-color: inherit !important;
+}
+
+.alerta-sucesso .mat-mdc-snack-bar-label,
+.alerta-erro .mat-mdc-snack-bar-label,
+.alerta-aviso .mat-mdc-snack-bar-label {
+    color: white !important;
+}
+
+.alerta-sucesso .mat-mdc-button,
+.alerta-erro .mat-mdc-button,
+.alerta-aviso .mat-mdc-button {
+    color: white !important;
+}

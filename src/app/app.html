@@ -1,5 +1,7 @@
-<app-sidebar />
+@if (mostrarSidebar()) {
+  <app-sidebar />
+}
 
-<main class="main-content">
+<main class="main-content" [class.sem-sidebar]="!mostrarSidebar()">
   <router-outlet />
 </main>
