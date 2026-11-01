@@ -4,10 +4,11 @@ import { filter, map } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SidebarComponent } from './sidebar/sidebar';
 import { TemaService } from './services/tema.service';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SidebarComponent],
+  imports: [RouterOutlet, SidebarComponent, LoadingComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
