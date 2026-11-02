@@ -65,6 +65,13 @@ export class SidebarComponent {
           route: '/produtos',
           svg: this.svg(`<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/>`),
         },
+        {
+          id: 'pedidos',
+          label: 'Pedidos',
+          ariaLabel: 'Pedidos',
+          route: '/pedidos',
+          svg: this.svg(`<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6"/><path d="M9 16h4"/>`),
+        },
       ],
     },
     {

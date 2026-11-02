@@ -11,14 +11,44 @@ body {
 }
 
 body.dark {
-  background-color: #0f172a;
-  color: #e2e8f0;
+  background-color: #0f1923;
+  color: #e8edf3;
 
-  /* ── Superfícies (cards, painéis) ── */
-  --dark-surface: #1e293b;
-  --dark-border:  #334155;
-  --dark-muted:   #94a3b8;
+  /* ── CSS custom properties usadas pela página de início ── */
+  --site-background: #0f1923;
+  --surface:   #1a2533;
+  --surface-2: #212f3f;
+  --text:      #e8edf3;
+  --muted:     #8a9ab0;
+  --border:    #2a3a4d;
+
+  /* legado */
+  --dark-surface: #1a2533;
+  --dark-border:  #2a3a4d;
+  --dark-muted:   #8a9ab0;
 }
+
+/* ── Dashboard: hardcoded-color overrides (global para escapar do
+      ViewEncapsulation do componente app-inicio) ── */
+body.dark .card {
+  box-shadow: 0 5px 18px #00000030;
+}
+
+body.dark .ic-blue   { background: #1a2e45; color: #7ab3e8; }
+body.dark .ic-green  { background: #15302a; color: #4dcba8; }
+body.dark .ic-amber  { background: #2e2310; color: #e8b46a; }
+body.dark .ic-purple { background: #251a38; color: #b899e8; }
+
+body.dark .status-badge.paid      { background: #12312a; color: #4cd6a6; }
+body.dark .status-badge.pending   { background: #2e2410; color: #e8b46a; }
+body.dark .status-badge.cancelled { background: #321616; color: #e88888; }
+
+body.dark .trend      { background: #12312a; color: #4cd6a6; }
+body.dark .trend.down { background: #321616; color: #e88888; }
+
+body.dark .mini-avatar { background: #1e3248; color: #7ab3e8; }
+
+body.dark .date-select { color-scheme: dark; }
 
 /* ── Texto básico ── */
 body.dark h1, body.dark h2, body.dark h3,

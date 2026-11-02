@@ -1,0 +1,15 @@
+<section class="container-fluid pagina">
+
+  <app-header-pagina titulo="Pedidos" subtitulo="Gerencie os pedidos da sua empresa"
+    nomeBotao="Cadastrar Novo Pedido" corBackground="#173B5E" corTexto="#ffffff" corBotao="#3b82f6"
+    (botaoClicado)="onNovo()" />
+
+  <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+    <app-tabela [dados]="pedidos()" [colunas]="colunas" corHeader="#173B5E" corTextoHeader="#ffffff"
+      [exibirEdicao]="true" [exibirExclusao]="true"
+      [paginacaoExterna]="true" [totalElementos]="totalElementos()" [itensPorPagina]="tamanhoPagina()"
+      (salvar)="onSalvar($event)" (excluir)="onExcluir($event)"
+      (paginaAlterada)="onPaginaAlterada($event)" />
+  </div>
+
+</section>

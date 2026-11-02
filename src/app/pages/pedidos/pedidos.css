@@ -1,0 +1,17 @@
+.tabela-container {
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+}
+
+table mat-header-row {
+  background-color: #173B5E;
+}
+
+table mat-header-cell {
+  color: #ffffff;
+  font-weight: 600;
+}
