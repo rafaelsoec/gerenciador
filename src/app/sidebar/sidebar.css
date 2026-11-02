@@ -1,17 +1,19 @@
 /* ─────────────────────────────────────────────
-   Variáveis de tema
+   Variáveis de tema — inspirado no GESTANDO Dashboard
 ───────────────────────────────────────────── */
 :host {
-  --sidebar-bg: #111827;
-  --sidebar-text: #e5e7eb;
-  --sidebar-hover-bg: #1f2937;
-  --sidebar-active-bg: #374151;
-  --sidebar-active-accent: #3b82f6;
+  --sidebar-bg: #173B5E;
+  --sidebar-text: #D5E2EC;
+  --sidebar-muted: #9FB8CC;
+  --sidebar-hover-bg: #ffffff1c;
+  --sidebar-active-bg: #ffffff1c;
+  --sidebar-active-accent: #A9E0D2;
+  --sidebar-border: #ffffff24;
   --sidebar-width-collapsed: 72px;
-  --sidebar-width-expanded: 240px;
+  --sidebar-width-expanded: 248px;
   --sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --label-transition: 0.25s ease;
-  --item-radius: 8px;
+  --item-radius: 11px;
 }
 
 /* ─────────────────────────────────────────────
@@ -30,24 +32,114 @@
 
   display: flex;
   flex-direction: column;
-  padding: 16px 8px;
+  padding: 20px 10px;
   box-sizing: border-box;
-  gap: 4px;
+  gap: 6px;
 
-  /* Transição suave de largura */
   transition: width var(--sidebar-transition);
 }
 
-/* Estado expandido (desktop: hover / mobile: toggle) */
+/* Estado expandido */
 .sidebar.expanded {
   width: var(--sidebar-width-expanded);
+}
+
+/* ─────────────────────────────────────────────
+   Brand / Logo
+───────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px 16px;
+  border-bottom: 1px solid var(--sidebar-border);
+  margin-bottom: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #ffffff55;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: #ffffff14;
+  flex-shrink: 0;
+}
+
+.brand-mark svg {
+  width: 22px;
+  height: 22px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--label-transition), transform var(--label-transition);
+  pointer-events: none;
+}
+
+.sidebar.expanded .brand-text {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.brand-name {
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  font-size: 15px;
+  color: #fff;
+  line-height: 1;
+}
+
+.brand-sub {
+  font-size: 8px;
+  letter-spacing: 1.6px;
+  color: var(--sidebar-muted);
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────────────────────────
+   Rótulo de seção (Principal / Gestão)
+───────────────────────────────────────────── */
+.nav-section {
+  margin-top: 8px;
+  margin-bottom: 2px;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--sidebar-muted);
+  padding: 0 13px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  display: block;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--label-transition), transform var(--label-transition);
+  pointer-events: none;
+}
+
+.sidebar.expanded .nav-section-label {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 /* ─────────────────────────────────────────────
    Botão hambúrguer — visível apenas em mobile
 ───────────────────────────────────────────── */
 .hamburger {
-  display: none; /* oculto em desktop */
+  display: none;
   align-items: center;
   justify-content: center;
   width: 48px;
@@ -95,7 +187,7 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  height: 48px;
+  height: 46px;
   padding: 0 13px;
   background: transparent;
   border: none;
@@ -103,24 +195,25 @@
   color: var(--sidebar-text);
   cursor: pointer;
   text-align: left;
-  white-space: nowrap; /* impede quebra de linha durante animação */
+  white-space: nowrap;
   overflow: hidden;
   box-sizing: border-box;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
 }
 
 .menu-btn:hover {
   background-color: var(--sidebar-hover-bg);
+  color: #fff;
 }
 
 /* Estado ativo / selecionado */
 .menu-btn.active {
   background-color: var(--sidebar-active-bg);
-  border-left: 3px solid var(--sidebar-active-accent);
-  padding-left: 10px; /* compensa a borda de 3px */
+  color: #fff;
 }
 
-/* Foco visível para navegação por teclado */
+/* Foco visível */
 .menu-btn:focus-visible {
   outline: 2px solid var(--sidebar-active-accent);
   outline-offset: 2px;
@@ -134,44 +227,43 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
+  opacity: 0.9;
+}
+
+/* SVG injetado via innerHTML */
+.icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* ─────────────────────────────────────────────
    Rótulo de texto
-   — animação: fade-in + slide da esquerda para direita
 ───────────────────────────────────────────── */
 .label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   line-height: 1;
   white-space: nowrap;
 
-  /* Estado inicial: invisível e deslocado para a esquerda */
   opacity: 0;
   transform: translateX(-6px);
   transition:
     opacity var(--label-transition),
     transform var(--label-transition);
 
-  /* Impede que o label seja anunciado por leitores de tela quando oculto */
   pointer-events: none;
 }
 
-/* Quando a sidebar está expandida: label aparece com fade + slide */
 .sidebar.expanded .label {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
 }
 
-/* ─────────────────────────────────────────────
-   Media query — mobile (< 768px)
-   A sidebar permanece recolhida; expande apenas via clique no hambúrguer.
-   O hover é ignorado (tratado no TypeScript via isMobile signal).
-───────────────────────────────────────────── */
 /* ─────────────────────────────────────────────
    Spacer
 ───────────────────────────────────────────── */
@@ -185,6 +277,8 @@
 .usuario-area {
   position: relative;
   width: 100%;
+  border-top: 1px solid var(--sidebar-border);
+  padding-top: 14px;
 }
 
 /* Botão principal do usuário */
@@ -193,7 +287,7 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  height: 52px;
+  height: 46px;
   padding: 0 10px;
   background: transparent;
   border: none;
@@ -205,7 +299,6 @@
   overflow: hidden;
   box-sizing: border-box;
   transition: background-color 0.2s ease;
-  border-top: 1px solid #1f2937;
 }
 
 .usuario-btn:hover {
@@ -221,14 +314,14 @@
 .usuario-avatar {
   width: 32px;
   height: 32px;
-  background: #2563eb;
+  background: #D8E9E5;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.85rem;
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: #174B45;
   flex-shrink: 0;
 }
 
@@ -243,8 +336,8 @@
 
 .usuario-nome {
   font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--sidebar-text);
+  font-weight: 700;
+  color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -252,7 +345,7 @@
 
 .usuario-email {
   font-size: 0.72rem;
-  color: #6b7280;
+  color: var(--sidebar-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -261,7 +354,7 @@
 /* Chevron */
 .usuario-chevron {
   flex-shrink: 0;
-  color: #6b7280;
+  color: var(--sidebar-muted);
   transition: transform 0.2s ease;
 }
 
@@ -275,8 +368,8 @@
   bottom: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: #1f2937;
-  border: 1px solid #374151;
+  background: #1a3654;
+  border: 1px solid var(--sidebar-border);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -284,7 +377,6 @@
   min-width: 180px;
 }
 
-/* Quando collapsed, alinhar ao canto esquerdo */
 .sidebar:not(.expanded) .usuario-popup {
   left: 0;
   right: auto;
@@ -299,7 +391,7 @@
   padding: 11px 14px;
   background: transparent;
   border: none;
-  color: #e5e7eb;
+  color: var(--sidebar-text);
   font-size: 0.85rem;
   cursor: pointer;
   text-align: left;
@@ -308,7 +400,7 @@
 }
 
 .usuario-popup-btn:hover {
-  background-color: #374151;
+  background-color: var(--sidebar-hover-bg);
 }
 
 .usuario-popup-btn--danger {
@@ -321,13 +413,15 @@
 
 .usuario-popup-divider {
   height: 1px;
-  background: #374151;
+  background: var(--sidebar-border);
   margin: 0;
 }
 
+/* ─────────────────────────────────────────────
+   Mobile
+───────────────────────────────────────────── */
 @media (max-width: 767px) {
   .sidebar {
-    /* Em mobile, a sidebar inicia recolhida e sem largura visível */
     width: var(--sidebar-width-collapsed);
     padding: 8px;
   }
@@ -337,7 +431,6 @@
   }
 
   .hamburger {
-    /* Exibe o hambúrguer em mobile */
     display: flex;
     margin-bottom: 8px;
   }

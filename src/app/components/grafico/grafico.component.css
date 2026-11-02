@@ -1,0 +1,32 @@
+.grafico-card {
+  padding: 20px;
+  border: none;
+  border-radius: 12px;
+  height: 100%;
+  background: #fff;
+}
+
+.grafico-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+
+  h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #252b36;
+  }
+
+  small {
+    display: block;
+    color: #8b95a5;
+    margin-top: 5px;
+  }
+}
+
+.grafico-content {
+  width: 100%;
+  min-width: 0;
+}

@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService, Usuario } from '../services/auth.service';
 import { PerfilComponent } from '../pages/perfil/perfil';
@@ -7,9 +8,14 @@ import { PerfilComponent } from '../pages/perfil/perfil';
 export interface MenuItem {
   id: string;
   label: string;
-  icon: string;
   ariaLabel: string;
   route: string;
+  svg: SafeHtml;
+}
+
+export interface MenuGroup {
+  label: string;
+  items: MenuItem[];
 }
 
 @Component({
@@ -21,47 +27,64 @@ export interface MenuItem {
 })
 export class SidebarComponent {
   private readonly dialog = inject(MatDialog);
+  private readonly sanitizer = inject(DomSanitizer);
   readonly auth = inject(AuthService);
 
   readonly isExpanded = signal(false);
   readonly isMobile = signal(false);
   readonly menuUsuarioAberto = signal(false);
 
-  readonly menuItems: MenuItem[] = [
+  private svg(inner: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`
+    );
+  }
+
+  readonly menuGroups: MenuGroup[] = [
     {
-      id: 'inicio',
-      label: 'Início',
-      ariaLabel: 'Início',
-      route: '/inicio',
-      icon: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z',
+      label: 'Principal',
+      items: [
+        {
+          id: 'inicio',
+          label: 'Início',
+          ariaLabel: 'Início',
+          route: '/inicio',
+          svg: this.svg(`<rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/>`),
+        },
+        {
+          id: 'clientes',
+          label: 'Clientes',
+          ariaLabel: 'Clientes',
+          route: '/clientes',
+          svg: this.svg(`<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.5a3.5 3.5 0 0 1 0 6.8"/><path d="M17 14a5.5 5.5 0 0 1 4.5 5.5"/>`),
+        },
+        {
+          id: 'produtos',
+          label: 'Produtos',
+          ariaLabel: 'Produtos',
+          route: '/produtos',
+          svg: this.svg(`<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/>`),
+        },
+      ],
     },
     {
-      id: 'clientes',
-      label: 'Clientes',
-      ariaLabel: 'Clientes',
-      route: '/clientes',
-      icon: 'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2 1.97 3.45V19h7v-2.5c0-2.33-4.67-3.5-8-3.5z'
-    },
-    {
-      id: 'produtos',
-      label: 'Produtos',
-      ariaLabel: 'Produtos',
-      route: '/produtos',
-      icon: 'M20 7h-4V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-10-2h4v2h-4V5zm10 15H4V9h16v11z',
-    },
-    {
-      id: 'relatorios',
-      label: 'Relatórios',
-      ariaLabel: 'Relatórios',
-      route: '/relatorios',
-      icon: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z',
-    },
-    {
-      id: 'configuracoes',
-      label: 'Configurações',
-      ariaLabel: 'Configurações',
-      route: '/configuracoes',
-      icon: 'M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z',
+      label: 'Gestão',
+      items: [
+        {
+          id: 'relatorios',
+          label: 'Relatórios',
+          ariaLabel: 'Relatórios',
+          route: '/relatorios',
+          svg: this.svg(`<path d="M5 3h10l4 4v14H5z"/><path d="M14 3v5h5"/><path d="M8 13h8"/><path d="M8 17h8"/>`),
+        },
+        {
+          id: 'configuracoes',
+          label: 'Configurações',
+          ariaLabel: 'Configurações',
+          route: '/configuracoes',
+          svg: this.svg(`<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>`),
+        },
+      ],
     },
   ];
 
@@ -101,7 +124,6 @@ export class SidebarComponent {
     event.stopPropagation();
     const abrindo = !this.menuUsuarioAberto();
     this.menuUsuarioAberto.set(abrindo);
-    // Garante que a sidebar expande ao abrir o menu do usuário
     if (abrindo) {
       this.isExpanded.set(true);
     }
@@ -123,7 +145,7 @@ export class SidebarComponent {
   }
 
   inicialNome(): string {
-    const authName = this.auth.usuarioAtual() ?? new Usuario(0, "", "");
+    const authName = this.auth.usuarioAtual() ?? new Usuario(0, '', '');
     const nome = authName?.nome ?? authName?.login;
     return nome.charAt(0).toUpperCase();
   }

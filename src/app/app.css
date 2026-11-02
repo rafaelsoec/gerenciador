@@ -1,6 +1,32 @@
-/* O conteúdo principal recebe margin-left equivalente à largura da sidebar recolhida,
-   para que nunca fique oculto atrás dela. A sidebar usa position: fixed, por isso
-   não empurra o layout — apenas precisamos desta margem estática. */
+/* Variáveis globais de tema — GESTANDO Dashboard */
+:root {
+  --site-primary: #173B5E;
+  --site-secondary: #DCEFEA;
+  --site-background: #F4F7FA;
+  --site-on-primary: #FFFFFF;
+  --site-on-secondary: #174B45;
+  --site-on-background: #172B3D;
+
+  --surface: #FFFFFF;
+  --surface-2: #F8FAFC;
+  --text: #172B3D;
+  --muted: #718296;
+  --border: #E7EDF2;
+
+  --green: #159B78;
+  --red: #D96B69;
+  --blue: #4B83C5;
+  --amber: #D79A3B;
+}
+
+body {
+  background: var(--site-background);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+/* O conteúdo principal recebe margin-left equivalente à largura da sidebar recolhida */
 .main-content {
   margin-left: 72px;
   min-height: 100dvh;

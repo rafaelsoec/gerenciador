@@ -1,0 +1,43 @@
+<article class="card grafico-card">
+
+  <div class="grafico-header">
+    <div>
+      <h5>{{ config.titulo }}</h5>
+
+      @if (config.subtitulo) {
+        <small>{{ config.subtitulo }}</small>
+      }
+    </div>
+  </div>
+
+  <div class="grafico-content">
+
+    @if (config.tipo === 'donut') {
+
+      <apx-chart
+        [series]="series"
+        [chart]="chart"
+        [labels]="config.categorias"
+        [dataLabels]="dataLabels"
+        [tooltip]="tooltip"
+        [legend]="legend">
+      </apx-chart>
+
+    } @else {
+
+      <apx-chart
+        [series]="series"
+        [chart]="chart"
+        [xaxis]="xaxis"
+        [stroke]="stroke"
+        [fill]="fill"
+        [dataLabels]="dataLabels"
+        [tooltip]="tooltip"
+        [yaxis]="yaxis">
+      </apx-chart>
+
+    }
+
+  </div>
+
+</article>

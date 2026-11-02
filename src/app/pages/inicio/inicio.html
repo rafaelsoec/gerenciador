@@ -1,4 +1,193 @@
-<div class="page">
-  <h1>Início</h1>
-  <p>Bem-vindo ao gerenciador.</p>
+<div class="dash-page">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">Visão geral / Dashboard</div>
+      <h1 class="page-title">Dashboard</h1>
+    </div>
+    <div class="top-actions">
+      <select
+        class="date-select"
+        aria-label="Período"
+        [(ngModel)]="periodo"
+        (ngModelChange)="alterarPeriodo($event)"
+      >
+        <option value="SEMANA" selected>Esta semana</option>
+        <option value="MES">Este mês</option>
+        <option value="ANO">Este ano</option>
+      </select>
+<!--      <button class="icon-btn notify" aria-label="Notificações">-->
+<!--        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">-->
+<!--          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />-->
+<!--        </svg>-->
+<!--      </button>-->
+    </div>
+  </header>
+
+  <!-- Welcome -->
+  <section class="welcome">
+    <div>
+      <h2>Olá! 👋</h2>
+      <p>Acompanhe o desempenho da sua empresa em um só lugar.</p>
+    </div>
+    <div class="period-note">{{ dados.data | date:'MMMM \'de\' yyyy' | titlecase }}</div>
+  </section>
+
+  <!-- Métricas -->
+  <section class=" row justify-content-center">
+    <div class=" col-sm-12 col-md-6 col-lg-6">
+      <article class="card ">
+        <div class="metric-top">
+          <span class="metric-label">Faturamento</span>
+          <span class="metric-icon ic-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </span>
+        </div>
+        <div class="metric-value">{{ dados.faturamento | moeda }}</div>
+      </article>
+    </div>
+    <div class=" col-sm-12 col-md-6 col-lg-6">
+      <article class="card">
+        <div class="metric-top">
+          <span class="metric-label">Vendas realizadas</span>
+          <span class="metric-icon ic-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7" />
+          </svg>
+        </span>
+        </div>
+        <div class="metric-value">{{ dados.vendas.length }}</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Gráfico + Meta -->
+  <section class=" row justify-content-center">
+    <div class=" col-sm-12 col-md-8 col-lg-8">
+      <article class="card">
+        <div class="panel-head">
+          <div class="col-12 col-lg-12">
+            <app-grafico
+              [config]="graficoFaturamento">
+            </app-grafico>
+          </div>
+        </div>
+      </article>
+    </div>
+    <div class=" col-sm-12 col-md-4 col-lg-4">
+      <article class="card">
+        <div class="panel-head">
+          <div>
+            <h3 class="panel-title">Meta de faturamento</h3>
+            <div class="panel-sub">Progresso da meta mensal</div>
+          </div>
+          <span class="status-badge paid">No ritmo</span>
+        </div>
+        <div class="goal">
+          <app-progresso-circular
+            titulo="Meta de faturamento"
+            [percentual]="dados.meta.percentualAtingido"
+            cor="#16a34a">
+          </app-progresso-circular>
+          <div>
+            <div class="goal-value">{{ dados.meta.pedidosConcluidos | moeda }}</div>
+            <div class="goal-label">de {{ dados.meta.total | moeda }}</div>
+            <div class="goal-label goal-label--green">Faltam {{ dados.meta.pedidosEmAberto | moeda }}</div>
+          </div>
+        </div>
+        <div class="goal-stats">
+          <div>
+            <div class="goal-row">
+              <span>Meta mensal</span><span>{{ dados.meta.percentualEmAberto | percent }}</span>
+            </div>
+            <div class="progress"><i style="width:82%"></i></div>
+          </div>
+          <div>
+            <div class="goal-row">
+              <span>Pedidos concluídos</span><span>{{ dados.meta.percentualAtingido | percent }}</span>
+            </div>
+            <div class="progress"><i style="width:87%;background:var(--blue)"></i></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Pedidos recentes + Produtos -->
+  <section class="row justify-content-center align-items-stretch">
+    <div class=" col-sm-12 col-md-6 col-lg-6">
+      <article class="card">
+        <div class="panel-head">
+          <div>
+            <h3 class="panel-title">Pedidos recentes</h3>
+            <div class="panel-sub">Últimas movimentações</div>
+          </div>
+          <a class="link-btn" routerLink="/pedidos">Ver todos →</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              @if (dados.pedidosRecentes.length > 0) {
+                <tr>
+                  <th>PEDIDO</th>
+                  <th>CLIENTE</th>
+                  <th>DATA</th>
+                  <th>VALOR</th>
+                  <th>STATUS</th>
+                </tr>
+              } @else {
+                <div class="text-center" [style.font-size]="'12px'"> Nenhum pedido feito!</div>
+              }
+            </thead>
+            <tbody>
+              @for (pedido of dados.pedidosRecentes; track pedido.id) {
+                <tr>
+                  <td>{{ pedido.id }}</td>
+                  <td>
+                    <div class="customer"><span class="mini-avatar">MC</span>{{ pedido.cliente }}</div>
+                  </td>
+                  <td>{{ pedido.data | date: 'dd/MM/yyyy' }}</td>
+                  <td>{{ pedido.valor | moeda }}</td>
+                  <td><span class="status-badge paid">{{ pedido.status }}</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <div class=" col-sm-12 col-md-6 col-lg-6">
+      <article class="card">
+        <div class="panel-head">
+          <div>
+            <h3 class="panel-title">Produtos mais vendidos</h3>
+            <div class="panel-sub">Destaques do período</div>
+          </div>
+          <a class="link-btn" routerLink="/relatorios">Relatório →</a>
+        </div>
+        <div class="products">
+          @if (dados.produtosMaisVendidos.length > 0) {
+            @for (produto of dados.produtosMaisVendidos; track produto.id) {
+              <div class="product">
+                <div class="product-art">{{ produto.id }}</div>
+                <div class="product-info">
+                  <div class="product-name">{{ produto.nome }}</div>
+                  <div class="product-meta">{{ produto.quantidadeVendida }} unidades vendidas</div>
+                </div>
+                <div class="product-total">{{ produto.valorTotal | moeda }}</div>
+              </div>
+            }
+          } @else {
+            <div class="text-center" [style.font-size]="'12px'"> Nenhum produto vendido!</div>
+          }
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="footer-note">Gestão empresarial</div>
 </div>

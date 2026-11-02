@@ -24,7 +24,7 @@ export class HeaderPaginaComponent {
 
   /**
    * Cor de fundo do header.
-   * Aceita qualquer valor CSS válido: '#111827', 'royalblue', 'var(--cor)', etc.
+   * Aceita qualquer valor CSS válido: '#173B5E', 'royalblue', 'var(--cor)', etc.
    * Padrão: transparente.
    */
   readonly corBackground = input<string | null>(null);
