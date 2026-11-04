@@ -1,12 +1,4 @@
-import {
-  Component,
-  inject,
-  input,
-  OnInit,
-  output,
-  signal,
-  computed,
-} from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, PipeTransform, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,13 +8,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
 import { Observable } from 'rxjs';
 import { RegexDirective } from '../../diretivas/regex.directive';
+import { SelectAutocompleteComponent } from '../auto-select/auto-select';
 
 /** Tipos de campo suportados pelo formulário genérico. */
-export type TipoCampo = 'text' | 'number' | 'select' | 'checkbox' | 'radio';
+export type TipoCampo = 'text' | 'number' | 'select' | 'checkbox' | 'radio' | 'autoselect';
 
 /** Opção para campos do tipo select ou radio. */
 export interface OpcaoCampo {
@@ -59,6 +52,7 @@ export interface CampoFormulario {
   /** Máscara de entrada (ex.: '(00) 00000-0000', '00/00/0000'). Opcional. */
   mascara?: string | null;
   pattern?: RegExp | null | undefined;
+  pipe?: PipeTransform | null | undefined;
   /** Placeholder exibido no campo. Opcional. */
   placeholder?: string;
   /** Torna o campo obrigatório. Padrão: false. */
@@ -100,6 +94,7 @@ export interface FormCadastroDialogData {
     MatDialogModule,
     NgxMaskDirective,
     RegexDirective,
+    SelectAutocompleteComponent,
   ],
   templateUrl: './form-cadastro.html',
   styleUrl: './form-cadastro.css',
@@ -107,7 +102,9 @@ export interface FormCadastroDialogData {
 export class FormCadastroComponent implements OnInit {
   // ── injeções opcionais para uso via MatDialog ──────────────────────────────
   private readonly _dialogRef = inject(MatDialogRef<FormCadastroComponent>, { optional: true });
-  private readonly _dialogData = inject<FormCadastroDialogData>(MAT_DIALOG_DATA, { optional: true });
+  private readonly _dialogData = inject<FormCadastroDialogData>(MAT_DIALOG_DATA, {
+    optional: true,
+  });
 
   // ── inputs (uso direto no template) ───────────────────────────────────────
 
@@ -239,7 +236,7 @@ export class FormCadastroComponent implements OnInit {
         },
         error: (erro) => {
           console.error('Erro ao salvar:', erro);
-        }
+        },
       });
     } else {
       // modo template: emite o output normalmente
@@ -254,5 +251,13 @@ export class FormCadastroComponent implements OnInit {
     } else {
       this.cancelar.emit();
     }
+  }
+
+  protected exibirPipe(label: string, pipe: PipeTransform | null | undefined) {
+    if (pipe) {
+      return pipe.transform(label);
+    }
+
+    return label;
   }
 }

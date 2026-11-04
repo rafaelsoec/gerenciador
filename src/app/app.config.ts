@@ -11,6 +11,7 @@ import localePt from '@angular/common/locales/pt';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { LOCALE_ID } from '@angular/core';
+import { converterInterceptor } from './interceptors/converter.interceptor';
 
 registerLocaleData(localePt);
 
@@ -35,7 +36,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, loadingInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor, loadingInterceptor, converterInterceptor]),
+    ),
     provideNgxMask(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: MatPaginatorIntl, useFactory: paginadorIntlPtBr },

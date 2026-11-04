@@ -1,32 +1,37 @@
-import { Directive, HostListener, Input } from '@angular/core';
+import { Directive, HostListener, Input, PipeTransform } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
 @Directive({
-    selector: '[appRegex]',
-    standalone: true
+  selector: '[appRegex]',
+  standalone: true,
 })
 export class RegexDirective {
+  @Input() appRegex?: RegExp | PipeTransform | null;
 
-    @Input() appRegex!: RegExp | null | undefined;
+  constructor(private ngControl: NgControl) {}
 
-    constructor(private ngControl: NgControl) { }
+  @HostListener('input', ['$event'])
+  onInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
 
-    @HostListener('keyup', ['$event'])
-    onInput(event: KeyboardEvent): void {
-        const input = event.target as HTMLInputElement;
-        if (!this.appRegex) return;
+    if (!this.appRegex) return;
 
-        const valorOriginal = input.value;
+    let valor = input.value;
+    if (this.appRegex instanceof RegExp) {
+      const regex = this.appRegex;
 
-        // Remove caracteres que não atendem ao regex
-        const valorFiltrado = Array.from(valorOriginal)
-            .filter(caractere => this.appRegex?.test(caractere))
-            .join('');
-
-        if (valorOriginal !== valorFiltrado) {
-            input.value = valorFiltrado;
-
-            this.ngControl.control?.setValue(valorFiltrado);
-        }
+      valor = Array.from(valor)
+        .filter((caractere) => regex.test(caractere))
+        .join('');
     }
+
+    // Se for Pipe
+    else if ('transform' in this.appRegex) {
+      valor = this.appRegex.transform(valor);
+    }
+
+    input.value = valor;
+
+    this.ngControl.control?.setValue(valor);
+  }
 }

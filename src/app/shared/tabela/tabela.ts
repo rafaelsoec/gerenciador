@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, HostBinding } from '@angular/core';
+import { Component, computed, HostBinding, input, output, PipeTransform, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
 import { Paginador } from '../paginador/paginador';
-import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
+import { NgxMaskDirective } from 'ngx-mask';
 import { RegexDirective } from '../../diretivas/regex.directive';
 
 /** Definição de uma coluna da tabela genérica. */
@@ -22,17 +22,24 @@ export interface ColunaTabela {
   /** Largura da coluna (ex: '200px', '20%'). Opcional. */
   width?: string;
   mascara?: string | null;
-  pattern?: RegExp | null | undefined;
+  pattern?: PipeTransform | RegExp | null | undefined;
 }
 
 @Component({
   selector: 'app-tabela',
   standalone: true,
   imports: [
-    CommonModule, FormsModule,
-    MatTableModule, MatIconButton, MatIconModule, MatTooltipModule,
-    MatFormFieldModule, MatInputModule,
-    Paginador, NgxMaskDirective, RegexDirective,
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatIconButton,
+    MatIconModule,
+    MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
+    Paginador,
+    NgxMaskDirective,
+    RegexDirective,
   ],
   templateUrl: './tabela.html',
   styleUrl: './tabela.css',
@@ -93,8 +100,8 @@ export class TabelaComponent<T extends Record<string, any>> {
   readonly _pageIndex = signal<number>(0);
   readonly _pageSize = signal<number | null>(null);
 
-  private readonly _tamanhoPaginaEfetivo = computed<number>(() =>
-    this._pageSize() ?? this.itensPorPagina()
+  private readonly _tamanhoPaginaEfetivo = computed<number>(
+    () => this._pageSize() ?? this.itensPorPagina(),
   );
 
   readonly dadosPagina = computed<T[]>(() => {
@@ -106,7 +113,7 @@ export class TabelaComponent<T extends Record<string, any>> {
   });
 
   readonly _lengthEfetivo = computed<number>(() =>
-    this.paginacaoExterna() ? this.totalElementos() : this.dados().length
+    this.paginacaoExterna() ? this.totalElementos() : this.dados().length,
   );
 
   // ── edição inline ─────────────────────────────────────────────────────────
@@ -127,17 +134,19 @@ export class TabelaComponent<T extends Record<string, any>> {
 
   // ── computed ──────────────────────────────────────────────────────────────
 
-  readonly exibirAcoes = computed<boolean>(
-    () => this.exibirEdicao() || this.exibirExclusao()
-  );
+  readonly exibirAcoes = computed<boolean>(() => this.exibirEdicao() || this.exibirExclusao());
 
   // ── CSS variables ─────────────────────────────────────────────────────────
 
   @HostBinding('style.--tabela-header-bg')
-  get _hostHeaderBg(): string | null { return this.corHeader(); }
+  get _hostHeaderBg(): string | null {
+    return this.corHeader();
+  }
 
   @HostBinding('style.--tabela-header-color')
-  get _hostHeaderColor(): string | null { return this.corTextoHeader(); }
+  get _hostHeaderColor(): string | null {
+    return this.corTextoHeader();
+  }
 
   // ── helpers ───────────────────────────────────────────────────────────────
 

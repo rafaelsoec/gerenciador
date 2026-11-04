@@ -1,15 +1,23 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { PedidoDTO } from '../../dtos/pedido/PedidoDTO';
 import { PedidoService } from '../../services/pedido.service';
-import { TabelaComponent, ColunaTabela } from '../../shared/tabela/tabela';
+import { ColunaTabela, TabelaComponent } from '../../shared/tabela/tabela';
 import { HeaderPaginaComponent } from '../../shared/header-pagina/header-pagina';
-import { CampoFormulario, FormCadastroComponent, FormCadastroDialogData, Registro, converterRegistro } from '../../shared/form-cadastro/form-cadastro';
+import {
+  CampoFormulario,
+  converterRegistro,
+  FormCadastroComponent,
+  FormCadastroDialogData,
+  OpcaoCampo,
+  Registro,
+} from '../../shared/form-cadastro/form-cadastro';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AlertaService } from '../../services/alerta.service';
 import { PageEvent } from '@angular/material/paginator';
 import { StatusPedidoEnum } from '../../enums/StatusPedidoEnum';
 import { FormaPagamentoEnum } from '../../enums/FormaPagamentoEnum';
+import { FormaPagamentoPipe } from '../../pipes/forma-pagamento-pipe';
 
 @Component({
   selector: 'app-pedidos',
@@ -41,18 +49,46 @@ export class PedidosComponent implements OnInit {
 
   readonly camposPedido: CampoFormulario[] = [
     {
-      nome: 'status', label: 'Status', tipo: 'select', obrigatorio: true, col: 6,
-      opcoes: Object.values(StatusPedidoEnum).map(v => ({ label: v, value: v })),
+      nome: 'status',
+      label: 'Status',
+      tipo: 'select',
+      obrigatorio: true,
+      col: 6,
+      opcoes: Object.values(StatusPedidoEnum).map((v) => ({ label: v, value: v })),
     },
     {
-      nome: 'formaPagamento', label: 'Forma de Pagamento', tipo: 'select', obrigatorio: true, col: 6,
-      opcoes: Object.values(FormaPagamentoEnum).map(v => ({ label: v, value: v })),
+      nome: 'formaPagamento',
+      label: 'Forma de Pagamento',
+      tipo: 'autoselect',
+      obrigatorio: true,
+      col: 6,
+      pipe: new FormaPagamentoPipe(),
+      opcoes: Object.values(FormaPagamentoEnum).map((v) => ({ label: v, value: v })),
     },
     { nome: 'desconto', label: 'Desconto (R$)', tipo: 'text', obrigatorio: false, col: 4 },
     { nome: 'frete', label: 'Frete (R$)', tipo: 'text', obrigatorio: false, col: 4 },
     { nome: 'dataEntrega', label: 'Data de Entrega', tipo: 'text', obrigatorio: false, col: 4 },
     { nome: 'observacao', label: 'Observação', tipo: 'text', obrigatorio: false, col: 12 },
   ];
+
+  produtos: OpcaoCampo[] = [
+    { value: 1, label: 'Notebook' },
+    { value: 2, label: 'Mouse' },
+    { value: 3, label: 'Teclado' },
+  ];
+
+  produtosSelecionados: OpcaoCampo[] = [];
+
+  buscarProdutos(termo: string): void {
+    console.log('Buscar:', termo);
+    // Chame seu service aqui, por exemplo:
+    // this.produtoService.buscar(termo).subscribe(...);
+  }
+
+  carregarMaisProdutos(): void {
+    console.log('Carregar próxima página');
+    // Chame seu service de paginação aqui
+  }
 
   ngOnInit(): void {
     this._buscar(0, this.tamanhoPagina());
@@ -72,16 +108,19 @@ export class PedidosComponent implements OnInit {
   }
 
   onNovo(): void {
-    this.dialog.open<FormCadastroComponent, FormCadastroDialogData, Registro>(FormCadastroComponent, {
-      width: '80vw',
-      maxWidth: '80vw',
-      data: {
-        titulo: 'Novo Pedido',
-        campos: this.camposPedido,
-        onSalvar: this.onCadastrar.bind(this),
-        onCancelar: this.onCancelar.bind(this),
+    this.dialog.open<FormCadastroComponent, FormCadastroDialogData, Registro>(
+      FormCadastroComponent,
+      {
+        width: '80vw',
+        maxWidth: '80vw',
+        data: {
+          titulo: 'Novo Pedido',
+          campos: this.camposPedido,
+          onSalvar: this.onCadastrar.bind(this),
+          onCancelar: this.onCancelar.bind(this),
+        },
       },
-    });
+    );
   }
 
   onCancelar(): void {
@@ -92,37 +131,37 @@ export class PedidosComponent implements OnInit {
     const pedidoConvertido: PedidoDTO = converterRegistro(pedido, PedidoDTO);
     return this.pedidoService.criar(pedidoConvertido).pipe(
       tap((novo) => {
-        this.pedidos.update(lista => [...lista, novo]);
+        this.pedidos.update((lista) => [...lista, novo]);
         this.alertaService.sucesso('Pedido cadastrado com sucesso.');
       }),
-      catchError(erro => {
+      catchError((erro) => {
         this.alertaService.erro(erro.error);
         return throwError(() => erro);
-      })
+      }),
     );
   }
 
   onSalvar(pedido: PedidoDTO): void {
-    this.pedidoService.atualizar(pedido.id, pedido)
-      .subscribe(() => {
-        this.pedidos.update(lista =>
-          lista.map(p => p.id === pedido.id ? pedido : p)
-        );
+    this.pedidoService.atualizar(pedido.id, pedido).subscribe(
+      () => {
+        this.pedidos.update((lista) => lista.map((p) => (p.id === pedido.id ? pedido : p)));
         this.alertaService.sucesso('Pedido atualizado com sucesso.');
-      }, (erro) => {
+      },
+      (erro) => {
         this.alertaService.erro(erro.error);
-      });
+      },
+    );
   }
 
   onExcluir(pedido: PedidoDTO): void {
-    this.pedidoService.remover(pedido.id)
-      .subscribe(() => {
+    this.pedidoService.remover(pedido.id).subscribe(
+      () => {
         this.alertaService.sucesso('Pedido excluído com sucesso.');
-        this.pedidos.update(lista =>
-          lista.filter(p => p.id !== pedido.id)
-        );
-      }, (erro) => {
+        this.pedidos.update((lista) => lista.filter((p) => p.id !== pedido.id));
+      },
+      (erro) => {
         this.alertaService.erro(erro.error);
-      });
+      },
+    );
   }
 }

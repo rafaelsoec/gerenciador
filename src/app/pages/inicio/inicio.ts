@@ -5,7 +5,7 @@ import { DashboardDTO } from '../../dtos/dashboard/DashboardDTO';
 import { DashboardService } from '../../services/dashboard.service';
 import { AlertaService } from '../../services/alerta.service';
 import { FormsModule } from '@angular/forms';
-import { MoedaPipe } from '../../shared/pipes/moeda-pipe';
+import { MoedaPipe } from '../../pipes/moeda-pipe';
 import { GraficoConfig } from '../../dtos/GraficoModel';
 import { GraficoComponent } from '../../components/grafico/grafico.component';
 import { ProgressoCircularComponent } from '../../components/progresso-circular/progresso-circular.component';
