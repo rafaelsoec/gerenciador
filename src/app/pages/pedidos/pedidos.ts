@@ -49,26 +49,58 @@ export class PedidosComponent implements OnInit {
 
   readonly camposPedido: CampoFormulario[] = [
     {
-      nome: 'status',
-      label: 'Status',
-      tipo: 'select',
+      nome: 'cliente',
+      label: 'Cliente',
+      tipo: 'autoselect',
       obrigatorio: true,
       col: 6,
-      opcoes: Object.values(StatusPedidoEnum).map((v) => ({ label: v, value: v })),
+    },
+    {
+      nome: 'produto',
+      label: 'Produto',
+      tipo: 'autoselect',
+      obrigatorio: true,
+      col: 6,
+    },
+    {
+      nome: 'valor',
+      label: 'Valor (R$)',
+      mascara:
+        '000.000.000,00||00.000.000,00||0.000.000,00||000.000,00||00.000,00||0.000,00||000,00||00,00||0,00',
+      tipo: 'text',
+      obrigatorio: true,
+      col: 6,
     },
     {
       nome: 'formaPagamento',
       label: 'Forma de Pagamento',
-      tipo: 'autoselect',
+      tipo: 'select',
+      multiplo: false,
       obrigatorio: true,
       col: 6,
       pipe: new FormaPagamentoPipe(),
       opcoes: Object.values(FormaPagamentoEnum).map((v) => ({ label: v, value: v })),
     },
-    { nome: 'desconto', label: 'Desconto (R$)', tipo: 'text', obrigatorio: false, col: 4 },
-    { nome: 'frete', label: 'Frete (R$)', tipo: 'text', obrigatorio: false, col: 4 },
-    { nome: 'dataEntrega', label: 'Data de Entrega', tipo: 'text', obrigatorio: false, col: 4 },
-    { nome: 'observacao', label: 'Observação', tipo: 'text', obrigatorio: false, col: 12 },
+    {
+      nome: 'desconto',
+      label: 'Desconto (R$)',
+      mascara:
+        '000.000.000,00||00.000.000,00||0.000.000,00||000.000,00||00.000,00||0.000,00||000,00||00,00||0,00',
+      tipo: 'text',
+      obrigatorio: false,
+      col: 4,
+    },
+    {
+      nome: 'frete',
+      label: 'Frete (R$)',
+      mascara:
+        '000.000.000,00||00.000.000,00||0.000.000,00||000.000,00||00.000,00||0.000,00||000,00||00,00||0,00',
+      tipo: 'text',
+      obrigatorio: false,
+      col: 4,
+    },
+    { nome: 'dataEntrega', label: 'Data de Entrega', tipo: 'data', obrigatorio: true, col: 4 },
+    { nome: 'observacao', label: 'Observação', tipo: 'textarea', obrigatorio: false, col: 12 },
   ];
 
   produtos: OpcaoCampo[] = [

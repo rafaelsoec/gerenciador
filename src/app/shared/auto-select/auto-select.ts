@@ -1,18 +1,5 @@
-import {
-  Component,
-  ElementRef,
-  forwardRef,
-  Input,
-  OnDestroy,
-  OnInit, PipeTransform,
-  ViewChild,
-} from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormControl,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { Component, ElementRef, forwardRef, Input, OnDestroy, OnInit, PipeTransform, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
@@ -53,7 +40,7 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
   @Input() mode: SelectMode = 'single';
   @Input() options: OpcaoCampo[] | undefined = [];
   @Input() disabled = false;
-  @Input() required = false;
+  @Input() obrigatorio : boolean | undefined= false;
   @Input() pipe: PipeTransform | null | undefined;
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
@@ -90,10 +77,13 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
   }
 
   private _filter(term: string): void {
-    const lower = term.toLowerCase();
-    this.filteredOptions = (this.options ?? []).filter((o) =>
-      o.label.toLowerCase().includes(lower),
-    );
+    if (typeof term === 'string') {
+      const lower = (term ?? '').toLowerCase()
+      this.filteredOptions = (this.options ?? []).filter((o) =>
+        o.label.toLowerCase().includes(lower),
+      );
+    }
+
   }
 
   // ── ControlValueAccessor ─────────────────────────────────────────────────
@@ -138,9 +128,15 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
       this._onChange(option);
     }
 
-    // limpa o campo de busca após seleção
-    this.searchControl.setValue('', { emitEvent: false });
-    this._filter('');
+    // limpa o campo de busca após seleção —
+    // setTimeout garante que o Material terminou de escrever no DOM antes de limpar
+    setTimeout(() => {
+      this.searchControl.setValue('', { emitEvent: false });
+      if (this.searchInput?.nativeElement) {
+        this.searchInput.nativeElement.value = '';
+      }
+      this._filter('');
+    });
     this._onTouched();
   }
 
@@ -155,6 +151,7 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
       const label = this.selectedSingle?.label ?? '';
       this.searchControl.setValue(label, { emitEvent: false });
     }
+
     this._onTouched();
   }
 

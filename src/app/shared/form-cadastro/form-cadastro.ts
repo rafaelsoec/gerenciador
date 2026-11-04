@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, output, PipeTransform, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  PipeTransform,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,9 +22,17 @@ import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
 import { Observable } from 'rxjs';
 import { RegexDirective } from '../../diretivas/regex.directive';
 import { SelectAutocompleteComponent } from '../auto-select/auto-select';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  NativeDateAdapter,
+} from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 /** Tipos de campo suportados pelo formulário genérico. */
-export type TipoCampo = 'text' | 'number' | 'select' | 'checkbox' | 'radio' | 'autoselect';
+export type TipoCampo =
+  'text' | 'number' | 'select' | 'checkbox' | 'radio' | 'autoselect' | 'data' | 'textarea';
 
 /** Opção para campos do tipo select ou radio. */
 export interface OpcaoCampo {
@@ -57,6 +74,7 @@ export interface CampoFormulario {
   placeholder?: string;
   /** Torna o campo obrigatório. Padrão: false. */
   obrigatorio?: boolean;
+  multiplo?: boolean;
   /** Lista de opções para campos select/radio. */
   opcoes?: OpcaoCampo[];
   /** Valor inicial do campo. Opcional. */
@@ -66,7 +84,10 @@ export interface CampoFormulario {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Registro = Record<string, any>;
 
-export function converterRegistro<T extends object>(registro: Registro, construtor: new () => T): T {
+export function converterRegistro<T extends object>(
+  registro: Registro,
+  construtor: new () => T,
+): T {
   return Object.assign(new construtor(), registro);
 }
 
@@ -78,10 +99,61 @@ export interface FormCadastroDialogData {
   onCancelar?: () => void;
 }
 
+export class BrDateAdapter extends NativeDateAdapter {
+  override parse(value: string | null): Date | null {
+    if (!value || typeof value !== 'string') {
+      return null;
+    }
+
+    const partes = value.split('/');
+
+    if (partes.length !== 3) {
+      return null;
+    }
+
+    const dia = Number(partes[0]);
+    const mes = Number(partes[1]);
+    const ano = Number(partes[2]);
+
+    if (!dia || !mes || !ano) {
+      return null;
+    }
+
+    return new Date(ano, mes - 1, dia);
+  }
+
+  override format(date: Date): string {
+    const dia = String(date.getDate()).padStart(2, '0');
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+
+    return `${dia}/${mes}/${date.getFullYear()}`;
+  }
+}
+
 @Component({
   selector: 'app-form-cadastro',
   standalone: true,
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: DateAdapter, useClass: BrDateAdapter },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: { dateInput: 'DD/MM/YYYY' },
+        display: {
+          dateInput: 'DD/MM/YYYY',
+          monthYearLabel: 'MMMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        },
+      },
+    },
+  ],
   imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatButtonModule,
     CommonModule,
     FormsModule,
     MatButtonModule,

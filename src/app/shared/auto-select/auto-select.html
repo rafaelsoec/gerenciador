@@ -34,14 +34,13 @@
       [formControl]="searchControl"
       [matAutocomplete]="auto"
       [disabled]="disabled"
-      [required]="required"
+      [required]="obrigatorio ?? false"
       (blur)="onBlur()" />
   }
 
   <!-- Painel de sugestões -->
   <mat-autocomplete
     #auto="matAutocomplete"
-    [displayWith]="displayOption"
     (optionSelected)="onOptionSelected($event)">
 
     @for (option of filteredOptions; track option.value) {

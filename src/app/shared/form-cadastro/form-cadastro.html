@@ -1,4 +1,4 @@
-<div class="form-cadastro-wrapper">
+<div class="form-cadastro-wrapper" xmlns="http://www.w3.org/1999/html">
   @if (_titulo) {
     <h2 class="form-titulo">{{ _titulo }}</h2>
   }
@@ -19,6 +19,18 @@
             </mat-form-field>
           }
 
+          @if (campo.tipo === 'textarea') {
+            <mat-form-field appearance="outline" class="campo-full">
+              <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+              <textarea matInput [type]="campo.tipo" [placeholder]="campo.placeholder ?? ''"
+                        [name]="campo.nome"
+                        [ngModel]="_form()[campo.nome]"
+                        (ngModelChange)="onValorAlterado(campo.nome, $event, campo)">
+
+              </textarea>
+            </mat-form-field>
+          }
+
           <!-- SELECT -->
           @if (campo.tipo === 'select') {
             <mat-form-field appearance="outline" class="campo-full">
@@ -34,16 +46,17 @@
 
           <!-- SELECT -->
           @if (campo.tipo === 'autoselect') {
-              <app-select-autocomplete
-                label="Forma de Pagamento"
-                placeholder="Digite para buscar..."
-                mode="multiple"
-                [pipe]="campo.pipe"
-                [options]="campo.opcoes"
-                [ngModel]="_form()[campo.nome]"
-                [ngModelOptions]="{ name: campo.nome }"
-                (ngModelChange)="atualizar(campo.nome, $event)">
-              </app-select-autocomplete>
+            <app-select-autocomplete
+              [label]="campo.label"
+              [obrigatorio]="campo.obrigatorio"
+              placeholder="Digite para buscar..."
+              [mode]="campo.multiplo ? 'multiple' : 'single'"
+              [pipe]="campo.pipe"
+              [options]="campo.opcoes"
+              [ngModel]="_form()[campo.nome]"
+              [ngModelOptions]="{ name: campo.nome }"
+              (ngModelChange)="atualizar(campo.nome, $event)">
+            </app-select-autocomplete>
           }
 
           <!-- CHECKBOX -->
@@ -55,6 +68,23 @@
               </mat-checkbox>
             </div>
           }
+
+          @if (campo.tipo === 'data') {
+            <mat-form-field class="campo-data-sem-cor">
+              <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+
+              <input
+                matInput
+                [matDatepicker]="picker"
+                [ngModel]="_form()[campo.nome]"
+                [ngModelOptions]="{ name: campo.nome }"
+                (ngModelChange)="atualizar(campo.nome, $event)">
+              <mat-hint>DD/MM/AAAA</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          }
+
 
           <!-- RADIO -->
           @if (campo.tipo === 'radio') {
