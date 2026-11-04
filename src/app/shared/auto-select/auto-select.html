@@ -1,37 +1,57 @@
 <mat-form-field appearance="outline" class="select-autocomplete">
   <mat-label>{{ label }}</mat-label>
 
-  <mat-select
-    [formControl]="control"
-    [multiple]="isMultiple"
-    [disabled]="disabled"
-    [required]="required"
-    (selectionChange)="onSelectionChange($event.value)"
-    (openedChange)="onBlur()"
-    (scroll)="onSelectScroll($event)">
+  <!-- Chips das opções já selecionadas (modo multiple) -->
+  @if (isMultiple) {
+    <mat-chip-grid #chipGrid aria-label="Opções selecionadas">
+      @for (opt of selectedOptions; track opt.value) {
+        <mat-chip-row (removed)="removeChip(opt)">
+          {{ exibirPipe(opt.label, pipe) }}
+          <button matChipRemove [attr.aria-label]="'Remover ' + opt.label">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      }
 
-    <div class="search-container">
       <input
-        type="text"
+        #searchInput
         matInput
-        [placeholder]="placeholder"
+        [placeholder]="placeholder || label"
+        [formControl]="searchControl"
         [matAutocomplete]="auto"
-        (input)="onSearch($event)" />
-    </div>
+        [matChipInputFor]="chipGrid"
+        [disabled]="disabled"
+        (blur)="onBlur()" />
+    </mat-chip-grid>
+  }
 
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayOption">
-      @for (option of options; track option.value) {
-        <mat-option [value]="option">
-          {{ option.label }}
-        </mat-option>
-      }
+  <!-- Campo de texto simples (modo single) -->
+  @if (!isMultiple) {
+    <input
+      #searchInput
+      matInput
+      [placeholder]="placeholder || label"
+      [formControl]="searchControl"
+      [matAutocomplete]="auto"
+      [disabled]="disabled"
+      [required]="required"
+      (blur)="onBlur()" />
+  }
 
-      @empty {
-        <mat-option disabled>
-          Nenhuma opção encontrada
-        </mat-option>
-      }
-    </mat-autocomplete>
+  <!-- Painel de sugestões -->
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [displayWith]="displayOption"
+    (optionSelected)="onOptionSelected($event)">
 
-  </mat-select>
+    @for (option of filteredOptions; track option.value) {
+      <mat-option [value]="option">
+        {{ exibirPipe(option.label, pipe) }}
+      </mat-option>
+    }
+
+    @empty {
+      <mat-option disabled>Nenhuma opção encontrada</mat-option>
+    }
+  </mat-autocomplete>
 </mat-form-field>

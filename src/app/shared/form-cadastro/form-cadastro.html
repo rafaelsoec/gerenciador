@@ -38,6 +38,7 @@
                 label="Forma de Pagamento"
                 placeholder="Digite para buscar..."
                 mode="multiple"
+                [pipe]="campo.pipe"
                 [options]="campo.opcoes"
                 [ngModel]="_form()[campo.nome]"
                 [ngModelOptions]="{ name: campo.nome }"
