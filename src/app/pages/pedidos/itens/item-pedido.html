@@ -1,0 +1,55 @@
+<form [formGroup]="form" (ngSubmit)="emitirValor()">
+
+  <div formArrayName="itens">
+
+    @for (item of itensArray.controls; track $index) {
+      <div class="item-pedido row justify-content-center" [formGroupName]="$index">
+
+        <div class="col-5">
+          <app-select-autocomplete *ngIf="produtos().length > 0"
+            label="Produto"
+            [obrigatorio]="true"
+            placeholder="Digite para buscar..."
+            mode="multiple"
+            [options]="produtos()"
+            formControlName="produtoId"
+            (blur)="emitirValor()">
+          </app-select-autocomplete>
+        </div>
+
+        <mat-form-field class="col-5 campo-quantidade" appearance="outline">
+          <mat-label>Quantidade</mat-label>
+
+          <input
+            matInput
+            type="number"
+            min="1"
+            formControlName="quantidade"
+            (blur)="emitirValor()">
+
+          <mat-error>{{ obterErroQuantidade($index) }}</mat-error>
+        </mat-form-field>
+
+        <button
+          class="col-2 botao-remover"
+          style="color: red"
+          mat-icon-button
+          type="button"
+          (click)="removerItem($index)">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+      </div>
+    }
+
+  </div>
+
+  <div class="row justify-content-center">
+    <button class="col-4"
+            mat-stroked-button
+            type="button"
+            (click)="adicionarItem()">
+      Adicionar item
+    </button>
+  </div>
+</form>

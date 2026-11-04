@@ -128,12 +128,21 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
       this._onChange(option);
     }
 
-    // limpa o campo de busca após seleção —
-    // setTimeout garante que o Material terminou de escrever no DOM antes de limpar
+    // setTimeout garante que o Material terminou de escrever no DOM antes de atualizar
     setTimeout(() => {
-      this.searchControl.setValue('', { emitEvent: false });
-      if (this.searchInput?.nativeElement) {
-        this.searchInput.nativeElement.value = '';
+      if (this.isMultiple) {
+        // multiple: limpa o campo para permitir nova busca
+        this.searchControl.setValue('', { emitEvent: false });
+        if (this.searchInput?.nativeElement) {
+          this.searchInput.nativeElement.value = '';
+        }
+      } else {
+        // single: exibe o label da opção selecionada no input
+        const label = this.selectedSingle?.label ?? '';
+        this.searchControl.setValue(label, { emitEvent: false });
+        if (this.searchInput?.nativeElement) {
+          this.searchInput.nativeElement.value = label;
+        }
       }
       this._filter('');
     });
@@ -143,6 +152,17 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
   removeChip(option: OpcaoCampo): void {
     this.selectedOptions = this.selectedOptions.filter((o) => o.value !== option.value);
     this._onChange(this.selectedOptions);
+  }
+
+  clearSingle(): void {
+    this.selectedSingle = null;
+    this.searchControl.setValue('', { emitEvent: false });
+    if (this.searchInput?.nativeElement) {
+      this.searchInput.nativeElement.value = '';
+    }
+    this._filter('');
+    this._onChange(null);
+    this._onTouched();
   }
 
   onBlur(): void {

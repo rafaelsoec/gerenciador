@@ -6,3 +6,9 @@
 .select-autocomplete mat-chip-grid {
   width: 100%;
 }
+
+/* chip do item selecionado no modo single */
+.selected-single-chips {
+  display: block;
+  margin-top: 6px;
+}

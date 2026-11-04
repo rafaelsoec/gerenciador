@@ -15,21 +15,23 @@ import { MatDialog } from '@angular/material/dialog';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AlertaService } from '../../services/alerta.service';
 import { PageEvent } from '@angular/material/paginator';
-import { StatusPedidoEnum } from '../../enums/StatusPedidoEnum';
 import { FormaPagamentoEnum } from '../../enums/FormaPagamentoEnum';
 import { FormaPagamentoPipe } from '../../pipes/forma-pagamento-pipe';
+import { ItemPedido, ItensPedidoComponent } from './itens/item-pedido';
 
 @Component({
   selector: 'app-pedidos',
   standalone: true,
   templateUrl: './pedidos.html',
   styleUrl: './pedidos.css',
-  imports: [TabelaComponent, HeaderPaginaComponent],
+  imports: [TabelaComponent, HeaderPaginaComponent, ItensPedidoComponent],
 })
 export class PedidosComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly alertaService = inject(AlertaService);
   private readonly dialog = inject(MatDialog);
+
+  readonly itensPedido = signal<ItemPedido[]>([{ produtoId: null, quantidade: null }]);
 
   readonly pedidos = signal<PedidoDTO[]>([]);
   readonly totalElementos = signal<number>(0);
