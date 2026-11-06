@@ -1,4 +1,4 @@
-import { Component, ElementRef, forwardRef, Input, OnDestroy, OnInit, PipeTransform, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, PipeTransform, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -43,6 +43,9 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
   @Input() obrigatorio : boolean | undefined= false;
   @Input() pipe: PipeTransform | null | undefined;
 
+  /** Emite a seleção atual sempre que ela muda (add ou remove). */
+  @Output() selectionChange = new EventEmitter<OpcaoCampo | OpcaoCampo[] | null>();
+
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   searchControl = new FormControl<string>('');
@@ -54,6 +57,9 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
 
   /** Valor único selecionado no modo single */
   selectedSingle: OpcaoCampo | null = null;
+
+  /** Controla se o input single está com foco (para ocultar o overlay de texto) */
+  isFocused = false;
 
   private _destroy$ = new Subject<void>();
   private _onChange: (value: unknown) => void = () => {};
@@ -93,8 +99,8 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
       this.selectedOptions = Array.isArray(value) ? (value as OpcaoCampo[]) : [];
     } else {
       this.selectedSingle = (value as OpcaoCampo) ?? null;
-      const label = this.selectedSingle?.label ?? '';
-      this.searchControl.setValue(label, { emitEvent: false });
+      // exibe o label no campo (comportamento mat-select)
+      this.searchControl.setValue(this.selectedSingle?.label ?? '', { emitEvent: false });
     }
   }
 
@@ -123,27 +129,21 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
         this.selectedOptions = [...this.selectedOptions, option];
       }
       this._onChange(this.selectedOptions);
+      this.selectionChange.emit(this.selectedOptions);
     } else {
       this.selectedSingle = option;
       this._onChange(option);
+      this.selectionChange.emit(option);
     }
 
     // setTimeout garante que o Material terminou de escrever no DOM antes de atualizar
     setTimeout(() => {
-      if (this.isMultiple) {
-        // multiple: limpa o campo para permitir nova busca
-        this.searchControl.setValue('', { emitEvent: false });
-        if (this.searchInput?.nativeElement) {
-          this.searchInput.nativeElement.value = '';
-        }
-      } else {
-        // single: exibe o label da opção selecionada no input
-        const label = this.selectedSingle?.label ?? '';
-        this.searchControl.setValue(label, { emitEvent: false });
-        if (this.searchInput?.nativeElement) {
-          this.searchInput.nativeElement.value = label;
-        }
+      const label = this.isMultiple ? '' : (this.selectedSingle?.label ?? '');
+      this.searchControl.setValue(label, { emitEvent: false });
+      if (this.searchInput?.nativeElement) {
+        this.searchInput.nativeElement.value = label;
       }
+      this.isFocused = false;
       this._filter('');
     });
     this._onTouched();
@@ -152,6 +152,7 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
   removeChip(option: OpcaoCampo): void {
     this.selectedOptions = this.selectedOptions.filter((o) => o.value !== option.value);
     this._onChange(this.selectedOptions);
+    this.selectionChange.emit(this.selectedOptions);
   }
 
   clearSingle(): void {
@@ -162,16 +163,30 @@ export class SelectAutocompleteComponent implements ControlValueAccessor, OnInit
     }
     this._filter('');
     this._onChange(null);
+    this.selectionChange.emit(null);
     this._onTouched();
   }
 
+  onFocus(): void {
+    this.isFocused = true;
+    // ao focar, limpa o input para digitar nova busca
+    this.searchControl.setValue('', { emitEvent: false });
+    if (this.searchInput?.nativeElement) {
+      this.searchInput.nativeElement.value = '';
+    }
+    this._filter('');
+  }
+
   onBlur(): void {
-    // no modo single, restaura o label do valor selecionado se o campo foi apagado
+    this.isFocused = false;
+    // restaura o label no input ao perder o foco sem selecionar nada
     if (!this.isMultiple) {
       const label = this.selectedSingle?.label ?? '';
       this.searchControl.setValue(label, { emitEvent: false });
+      if (this.searchInput?.nativeElement) {
+        this.searchInput.nativeElement.value = label;
+      }
     }
-
     this._onTouched();
   }
 

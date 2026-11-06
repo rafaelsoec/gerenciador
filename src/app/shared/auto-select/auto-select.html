@@ -35,18 +35,8 @@
       [matAutocomplete]="auto"
       [disabled]="disabled"
       [required]="obrigatorio ?? false"
+      (focus)="onFocus()"
       (blur)="onBlur()" />
-
-    @if (selectedSingle) {
-      <mat-chip-set class="selected-single-chips">
-        <mat-chip (removed)="clearSingle()">
-          {{ exibirPipe(selectedSingle.label, pipe) }}
-          <button matChipRemove aria-label="Remover seleção">
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip>
-      </mat-chip-set>
-    }
   }
 
   <!-- Painel de sugestões -->

@@ -16,16 +16,16 @@ body.dark {
 
   /* ── CSS custom properties usadas pela página de início ── */
   --site-background: #0f1923;
-  --surface:   #1a2533;
+  --surface: #1a2533;
   --surface-2: #212f3f;
-  --text:      #e8edf3;
-  --muted:     #8a9ab0;
-  --border:    #2a3a4d;
+  --text: #e8edf3;
+  --muted: #8a9ab0;
+  --border: #2a3a4d;
 
   /* legado */
   --dark-surface: #1a2533;
-  --dark-border:  #2a3a4d;
-  --dark-muted:   #8a9ab0;
+  --dark-border: #2a3a4d;
+  --dark-muted: #8a9ab0;
 }
 
 /* ── Dashboard: hardcoded-color overrides (global para escapar do
@@ -34,21 +34,59 @@ body.dark .card {
   box-shadow: 0 5px 18px #00000030;
 }
 
-body.dark .ic-blue   { background: #1a2e45; color: #7ab3e8; }
-body.dark .ic-green  { background: #15302a; color: #4dcba8; }
-body.dark .ic-amber  { background: #2e2310; color: #e8b46a; }
-body.dark .ic-purple { background: #251a38; color: #b899e8; }
+body.dark .ic-blue {
+  background: #1a2e45;
+  color: #7ab3e8;
+}
 
-body.dark .status-badge.paid      { background: #12312a; color: #4cd6a6; }
-body.dark .status-badge.pending   { background: #2e2410; color: #e8b46a; }
-body.dark .status-badge.cancelled { background: #321616; color: #e88888; }
+body.dark .ic-green {
+  background: #15302a;
+  color: #4dcba8;
+}
 
-body.dark .trend      { background: #12312a; color: #4cd6a6; }
-body.dark .trend.down { background: #321616; color: #e88888; }
+body.dark .ic-amber {
+  background: #2e2310;
+  color: #e8b46a;
+}
 
-body.dark .mini-avatar { background: #1e3248; color: #7ab3e8; }
+body.dark .ic-purple {
+  background: #251a38;
+  color: #b899e8;
+}
 
-body.dark .date-select { color-scheme: dark; }
+body.dark .status-badge.paid {
+  background: #12312a;
+  color: #4cd6a6;
+}
+
+body.dark .status-badge.pending {
+  background: #2e2410;
+  color: #e8b46a;
+}
+
+body.dark .status-badge.cancelled {
+  background: #321616;
+  color: #e88888;
+}
+
+body.dark .trend {
+  background: #12312a;
+  color: #4cd6a6;
+}
+
+body.dark .trend.down {
+  background: #321616;
+  color: #e88888;
+}
+
+body.dark .mini-avatar {
+  background: #1e3248;
+  color: #7ab3e8;
+}
+
+body.dark .date-select {
+  color-scheme: dark;
+}
 
 /* ── Texto básico ── */
 body.dark h1, body.dark h2, body.dark h3,
@@ -147,35 +185,72 @@ body.dark .container-fluid {
 }
 
 .alerta-sucesso {
-    background-color: #2e7d32 !important;
-    color: white !important;
+  background-color: #2e7d32 !important;
+  color: white !important;
 }
 
 .alerta-erro {
-    background-color: #c62828 !important;
-    color: white !important;
+  background-color: #c62828 !important;
+  color: white !important;
 }
 
 .alerta-aviso {
-    background-color: #ed8c00 !important;
-    color: white !important;
+  background-color: #ed8c00 !important;
+  color: white !important;
 }
 
 /* Elementos internos do Angular Material */
 .alerta-sucesso .mdc-snackbar__surface,
 .alerta-erro .mdc-snackbar__surface,
 .alerta-aviso .mdc-snackbar__surface {
-    background-color: inherit !important;
+  background-color: inherit !important;
 }
 
 .alerta-sucesso .mat-mdc-snack-bar-label,
 .alerta-erro .mat-mdc-snack-bar-label,
 .alerta-aviso .mat-mdc-snack-bar-label {
-    color: white !important;
+  color: white !important;
 }
 
 .alerta-sucesso .mat-mdc-button,
 .alerta-erro .mat-mdc-button,
 .alerta-aviso .mat-mdc-button {
-    color: white !important;
+  color: white !important;
+}
+
+
+/* ── Botões do footer ────────────────────────────────────────────────── */
+:host ::ng-deep .mat-mdc-outlined-button {
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .mat-mdc-outlined-button .mdc-button__label {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .mat-mdc-outlined-button .mat-icon {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .mdc-button--outlined {
+  --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.7);
+  --mdc-outlined-button-label-text-color: #ffffff;
+}
+
+:host ::ng-deep .mat-mdc-unelevated-button:not(:disabled),
+:host ::ng-deep .mat-mdc-raised-button:not(:disabled),
+:host ::ng-deep button[matbutton="filled"]:not(:disabled) {
+  background-color: #ffffff !important;
+  color: #173B5E !important;
+}
+
+:host ::ng-deep button[matbutton="filled"]:not(:disabled) .mdc-button__label,
+:host ::ng-deep button[matbutton="filled"]:not(:disabled) .mat-icon {
+  color: #173B5E !important;
+}
+
+:host ::ng-deep button[matbutton="filled"]:disabled {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
 }

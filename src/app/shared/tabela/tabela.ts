@@ -11,18 +11,23 @@ import { PageEvent } from '@angular/material/paginator';
 import { Paginador } from '../paginador/paginador';
 import { NgxMaskDirective } from 'ngx-mask';
 import { RegexDirective } from '../../diretivas/regex.directive';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { OpcaoCampo } from '../form-cadastro/form-cadastro';
 
 /** Definição de uma coluna da tabela genérica. */
 export interface ColunaTabela {
   /** Chave do campo no objeto de dados (também usada como matColumnDef). */
   campo: string;
+  opcoes?: string[] | null | undefined;
   /** Texto exibido no cabeçalho da coluna. */
   header: string;
   editavel: boolean;
   /** Largura da coluna (ex: '200px', '20%'). Opcional. */
   width?: string;
   mascara?: string | null;
-  pattern?: PipeTransform | RegExp | null | undefined;
+  pipe?: PipeTransform | null | undefined;
+  pattern?: RegExp | null | undefined;
 }
 
 @Component({
@@ -40,6 +45,8 @@ export interface ColunaTabela {
     Paginador,
     NgxMaskDirective,
     RegexDirective,
+    MatOption,
+    MatSelect,
   ],
   templateUrl: './tabela.html',
   styleUrl: './tabela.css',
@@ -190,5 +197,13 @@ export class TabelaComponent<T extends Record<string, any>> {
     this._idEditando.set(null);
     this._rascunho.set({});
     this.paginaAlterada.emit(event);
+  }
+
+  protected exibirPipe(label: string, pipe: PipeTransform | null | undefined) {
+    if (pipe) {
+      return pipe.transform(label);
+    }
+
+    return label;
   }
 }

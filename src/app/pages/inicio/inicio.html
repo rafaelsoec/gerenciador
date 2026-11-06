@@ -77,7 +77,7 @@
         </div>
         <div class="goal">
           <app-progresso-circular titulo="Meta de faturamento" [percentual]="dados.meta.percentualAtingido"
-            cor="#16a34a">
+                                  cor="#16a34a">
           </app-progresso-circular>
           <div>
             <div class="goal-value">{{ dados.meta.pedidosConcluidos | moeda }}</div>
@@ -118,28 +118,28 @@
           <table>
             <thead>
               @if (dados.pedidosRecentes.length > 0) {
-              <tr>
-                <th>PEDIDO</th>
-                <th>CLIENTE</th>
-                <th>DATA</th>
-                <th>VALOR</th>
-                <th>STATUS</th>
-              </tr>
+                <tr>
+                  <th>PEDIDO</th>
+                  <th>CLIENTE</th>
+                  <th>DATA</th>
+                  <th>VALOR</th>
+                  <th>STATUS</th>
+                </tr>
               } @else {
-              <div class="text-center" [style.font-size]="'12px'"> Nenhum pedido feito!</div>
+                <div class="text-center" [style.font-size]="'12px'"> Nenhum pedido feito!</div>
               }
             </thead>
             <tbody>
               @for (pedido of dados.pedidosRecentes; track pedido.id) {
-              <tr>
-                <td>{{ pedido.id }}</td>
-                <td>
-                  <div class="customer"><span class="mini-avatar">MC</span>{{ pedido.cliente }}</div>
-                </td>
-                <td>{{ pedido.data | date: 'dd/MM/yyyy' }}</td>
-                <td>{{ pedido.valor | moeda }}</td>
-                <td><span class="status-badge paid">{{ pedido.status }}</span></td>
-              </tr>
+                <tr>
+                  <td>{{ pedido.id }}</td>
+                  <td>
+                    <div class="customer"><span class="mini-avatar">MC</span>{{ pedido.cliente }}</div>
+                  </td>
+                  <td>{{ pedido.data | date: 'dd/MM/yyyy' }}</td>
+                  <td>{{ pedido.valor | moeda }}</td>
+                  <td><span class="status-badge paid">{{ pedido.status }}</span></td>
+                </tr>
               }
             </tbody>
           </table>
@@ -158,18 +158,18 @@
         </div>
         <div class="products">
           @if (dados.produtosMaisVendidos.length > 0) {
-          @for (produto of dados.produtosMaisVendidos; track produto.id) {
-          <div class="product">
-            <div class="product-art">{{ produto.id }}</div>
-            <div class="product-info">
-              <div class="product-name">{{ produto.nome }}</div>
-              <div class="product-meta">{{ produto.quantidadeVendida }} unidades vendidas</div>
-            </div>
-            <div class="product-total">{{ produto.valorTotal | moeda }}</div>
-          </div>
-          }
+            @for (produto of dados.produtosMaisVendidos; track produto.id) {
+              <div class="product">
+                <div class="product-art">{{ produto.id }}</div>
+                <div class="product-info">
+                  <div class="product-name">{{ produto.nome }}</div>
+                  <div class="product-meta">{{ produto.quantidadeVendida }} unidades vendidas</div>
+                </div>
+                <div class="product-total">{{ produto.valorTotal | moeda }}</div>
+              </div>
+            }
           } @else {
-          <div class="text-center" [style.font-size]="'12px'"> Nenhum produto vendido!</div>
+            <div class="text-center" [style.font-size]="'12px'"> Nenhum produto vendido!</div>
           }
         </div>
       </article>

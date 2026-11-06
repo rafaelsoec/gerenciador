@@ -6,7 +6,7 @@ import { NgControl } from '@angular/forms';
   standalone: true,
 })
 export class RegexDirective {
-  @Input() appRegex?: RegExp | PipeTransform | null;
+  @Input() appRegex?: RegExp | null;
 
   constructor(private ngControl: NgControl) {}
 
@@ -23,11 +23,6 @@ export class RegexDirective {
       valor = Array.from(valor)
         .filter((caractere) => regex.test(caractere))
         .join('');
-    }
-
-    // Se for Pipe
-    else if ('transform' in this.appRegex) {
-      valor = this.appRegex.transform(valor);
     }
 
     input.value = valor;

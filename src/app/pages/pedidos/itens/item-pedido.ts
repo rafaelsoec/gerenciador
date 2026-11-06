@@ -1,16 +1,15 @@
-import { Component, inject, model, OnInit, signal } from '@angular/core';
 import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+  Component,
+  computed,
+  inject,
+  model,
+  OnInit,
+  Output,
+  EventEmitter,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,46 +17,33 @@ import { MatButtonModule } from '@angular/material/button';
 import { SelectAutocompleteComponent } from '../../../shared/auto-select/auto-select';
 import { ProdutoService } from '../../../services/produto.service';
 import { OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
+import { NumberUtils } from '../../../utils/NumberUtils';
 
 export interface ItemPedido {
   produtoId: number | null;
   quantidade: number | null;
 }
 
-export function quantidadeMinima(minimo: number): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const valor = Number(control.value);
-
-    if (control.value === null || control.value === '' || isNaN(valor)) {
-      return null;
-    }
-
-    return valor < minimo ? { quantidadeMinima: { minimo, atual: valor } } : null;
-  };
-}
-
-export function criarItemPedido(item?: Partial<ItemPedido>) {
-  return {
-    produtoId: [item?.produtoId ?? null, Validators.required],
-    quantidade: [
-      item?.quantidade ?? null,
-      [Validators.required, Validators.min(1), quantidadeMinima(1)],
-    ],
-  };
+interface ItemTabela {
+  produtoId: number;
+  produtoNome: string;
+  quantidade: number;
+  editando: boolean;
+  quantidadeEdicao: number;
 }
 
 @Component({
   selector: 'app-itens-pedido',
   standalone: true,
+  styleUrl: './item-pedido.css',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     MatButtonModule,
     SelectAutocompleteComponent,
-    FormsModule,
   ],
   templateUrl: './item-pedido.html',
 })
@@ -66,102 +52,123 @@ export class ItensPedidoComponent implements OnInit {
 
   readonly itens = model<ItemPedido[]>([]);
   readonly produtos = signal<OpcaoCampo[]>([]);
-  readonly totalElementos = signal<number>(0);
-  readonly paginaAtual = signal<number>(0);
-  readonly tamanhoPagina = signal<number>(20);
 
-  form!: FormGroup;
+  /** Mapa de produtoId → preço unitário */
+  private precoPorProduto = new Map<number, number>();
+  /** Mapa de produtoId → nome */
+  private nomePorProduto = new Map<number, string>();
 
-  constructor(private readonly formBuilder: FormBuilder) {
-    this.form = this.formBuilder.group({
-      itens: this.formBuilder.array([]),
-    });
-  }
+  /** Estado da tabela */
+  readonly itensDaTabela = signal<ItemTabela[]>([]);
+
+  /** Campos do formulário de entrada */
+  entrada: { produtoId: any; quantidade: number | null } = {
+    produtoId: null,
+    quantidade: null,
+  };
+
+  @Output() selectionChange = new EventEmitter<ItemPedido[] | null>();
+  @Output() totalAlterado = new EventEmitter<number>();
+
+  /** Produtos ainda não adicionados à tabela */
+  readonly produtosDisponiveis = computed(() => {
+    const idsNaTabela = new Set(this.itensDaTabela().map((i) => i.produtoId));
+    return this.produtos().filter((p) => !idsNaTabela.has(Number(p.value)));
+  });
 
   ngOnInit(): void {
-    this._buscar(0, this.tamanhoPagina());
-
-    if (this.itens().length === 0) {
-      this.adicionarItem();
-    } else {
-      this.itens().forEach((item) => this.adicionarItem(item));
-    }
+    this.buscarProdutos();
   }
 
-  private _buscar(page: number, size: number): void {
-    this.produtoService.listar({ page, size, sort: 'id,asc' }).subscribe((pagina) => {
-      this.produtos.set(
-        pagina.conteudo.map((produto) => ({ value: produto.id, label: produto.nome })),
-      );
+  adicionarItem(): void {
+    const produtoRaw = this.entrada.produtoId;
+    const quantidade = this.entrada.quantidade;
 
-      this.totalElementos.set(pagina.totalElementos);
-      this.paginaAtual.set(pagina.paginaAtual);
-      this.tamanhoPagina.set(pagina.tamanhoPagina);
-    });
-  }
+    const produtoId =
+      produtoRaw && typeof produtoRaw === 'object'
+        ? Number(produtoRaw['value'])
+        : Number(produtoRaw);
 
-  get itensArray(): FormArray {
-    return this.form.get('itens') as FormArray;
-  }
-
-  adicionarItem(item?: Partial<ItemPedido>): void {
-    if (!item && !this.podeAdicionarNovoItem()) {
-      this.marcarUltimoItemComoTocado();
+    if (!produtoId || !quantidade || quantidade < 1) {
       return;
     }
 
-    this.itensArray.push(this.formBuilder.group(criarItemPedido(item)));
+    const nome = this.nomePorProduto.get(produtoId) ?? '';
 
-    this.emitirValor();
+    this.itensDaTabela.update((lista) => [
+      ...lista,
+      {
+        produtoId,
+        produtoNome: nome,
+        quantidade,
+        editando: false,
+        quantidadeEdicao: quantidade,
+      },
+    ]);
+
+    // Limpa o formulário de entrada
+    this.entrada = { produtoId: null, quantidade: null };
+
+    this.emitir();
   }
 
-  podeAdicionarNovoItem(): boolean {
-    const ultimoItem = this.itensArray.at(this.itensArray.length - 1);
-
-    if (!ultimoItem) {
-      return true;
-    }
-
-    return ultimoItem.valid;
+  removerItem(item: ItemTabela): void {
+    this.itensDaTabela.update((lista) =>
+      lista.filter((i) => i.produtoId !== item.produtoId)
+    );
+    this.emitir();
   }
 
-  private marcarUltimoItemComoTocado(): void {
-    const ultimoItem = this.itensArray.at(this.itensArray.length - 1);
-
-    ultimoItem?.markAllAsTouched();
+  iniciarEdicao(item: ItemTabela): void {
+    item.quantidadeEdicao = item.quantidade;
+    item.editando = true;
   }
 
-  removerItem(index: number): void {
-    this.itensArray.removeAt(index);
-
-    if (this.itensArray.length === 0) {
-      this.adicionarItem();
-      return;
-    }
-
-    this.emitirValor();
+  confirmarEdicao(item: ItemTabela): void {
+    if (!item.quantidadeEdicao || item.quantidadeEdicao < 1) return;
+    item.quantidade = item.quantidadeEdicao;
+    item.editando = false;
+    this.emitir();
   }
 
-  emitirValor(): void {
-    this.itens.set(this.form.getRawValue().itens as ItemPedido[]);
+  cancelarEdicao(item: ItemTabela): void {
+    item.quantidadeEdicao = item.quantidade;
+    item.editando = false;
   }
 
-  obterErroQuantidade(index: number): string {
-    const item = this.itensArray.at(index);
-    const quantidade = item?.get('quantidade');
+  private emitir(): void {
+    const itensValidos = this.itensDaTabela().map((i) => ({
+      produtoId: i.produtoId,
+      quantidade: i.quantidade,
+    }));
 
-    if (!quantidade || !quantidade.errors) {
-      return '';
-    }
+    this.itens.set(itensValidos);
+    this.selectionChange.emit(itensValidos);
 
-    if (quantidade.hasError('required')) {
-      return 'Informe a quantidade.';
-    }
+    const total = itensValidos.reduce((soma, item) => {
+      const preco = NumberUtils.toNumber(this.precoPorProduto.get(item.produtoId!) ?? 0);
+      return soma + preco * (item.quantidade ?? 0);
+    }, 0);
 
-    if (quantidade.hasError('min') || quantidade.hasError('quantidadeMinima')) {
-      return 'A quantidade deve ser no mínimo 1.';
-    }
+    this.totalAlterado.emit(total);
+  }
 
-    return '';
+  private buscarProdutos(): void {
+    this.produtoService
+      .listar({ page: 0, size: 200, sort: 'id,asc' })
+      .subscribe((pagina) => {
+        this.precoPorProduto.clear();
+        this.nomePorProduto.clear();
+        pagina.conteudo.forEach((produto) => {
+          this.precoPorProduto.set(produto.id, produto.preco);
+          this.nomePorProduto.set(produto.id, produto.nome);
+        });
+        this.produtos.set(
+          pagina.conteudo.map((produto) => ({
+            value: produto.id,
+            label: produto.nome,
+          }))
+        );
+      });
   }
 }

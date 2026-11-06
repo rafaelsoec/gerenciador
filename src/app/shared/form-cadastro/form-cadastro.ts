@@ -29,15 +29,17 @@ import {
   NativeDateAdapter,
 } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { ItensPedidoComponent } from '../../pages/pedidos/itens/item-pedido';
 
 /** Tipos de campo suportados pelo formulário genérico. */
 export type TipoCampo =
-  'text' | 'number' | 'select' | 'checkbox' | 'radio' | 'autoselect' | 'data' | 'textarea';
+  'text' | 'number' | 'select' | 'checkbox' | 'radio' | 'autoselect' | 'data' | 'textarea' | 'produto';
 
 /** Opção para campos do tipo select ou radio. */
 export interface OpcaoCampo {
   label: string;
-  value: unknown;
+  disabled?: boolean;
+  value: any;
 }
 
 /**
@@ -76,7 +78,7 @@ export interface CampoFormulario {
   obrigatorio?: boolean;
   multiplo?: boolean;
   /** Lista de opções para campos select/radio. */
-  opcoes?: OpcaoCampo[];
+  opcoes?: OpcaoCampo[] | undefined;
   /** Valor inicial do campo. Opcional. */
   valorInicial?: unknown;
 }
@@ -167,6 +169,7 @@ export class BrDateAdapter extends NativeDateAdapter {
     NgxMaskDirective,
     RegexDirective,
     SelectAutocompleteComponent,
+    ItensPedidoComponent,
   ],
   templateUrl: './form-cadastro.html',
   styleUrl: './form-cadastro.css',
@@ -196,6 +199,9 @@ export class FormCadastroComponent implements OnInit {
 
   /** Estado interno do formulário (two-way via ngModel). */
   readonly _form = signal<Registro>({});
+
+  /** Itens do pedido (campo tipo 'produto'). */
+  readonly _itensPedido = signal<{ produtoId: number | null; quantidade: number | null }[]>([]);
 
   /**
    * Rastreia se cada campo com máscara está completamente preenchido.
@@ -231,14 +237,14 @@ export class FormCadastroComponent implements OnInit {
       const val = form[c.nome];
       const vazio = val === null || val === undefined || val === '';
 
-      // campo obrigatório vazio
       if (c.obrigatorio) {
         if (c.tipo === 'checkbox') return !val;
+        if (c.tipo === 'produto') {
+          const itens = this._itensPedido();
+          return itens.length === 0 || !itens.some(i => i.produtoId && i.quantidade);
+        }
         if (vazio) return true;
       }
-
-      // campo com máscara não completamente preenchida (obrigatório ou não)
-      // if (c.mascara && !vazio && !completas[c.nome]) return true;
 
       return false;
     });
@@ -323,6 +329,22 @@ export class FormCadastroComponent implements OnInit {
     } else {
       this.cancelar.emit();
     }
+  }
+
+  onItensAlterados(nome: string, itens: { produtoId: number | null; quantidade: number | null }[] | null): void {
+    const validos = (itens ?? []).filter(i => i.produtoId && i.quantidade);
+    this._itensPedido.set(validos);
+    this.atualizar(nome, validos);
+  }
+
+  onTotalAlterado(total: number): void {
+    setTimeout(() => {
+      const formatado = total.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      this.atualizar('valor', formatado);
+    }, 0);
   }
 
   protected exibirPipe(label: string, pipe: PipeTransform | null | undefined) {

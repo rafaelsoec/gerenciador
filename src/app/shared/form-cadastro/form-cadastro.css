@@ -2,33 +2,104 @@
   display: block;
 }
 
+/* ── Wrapper: flex column com altura máxima ──────────────────────────── */
 .form-cadastro-wrapper {
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+/* ── Header fixo ─────────────────────────────────────────────────────── */
+.form-header {
+  background: #173B5E;
+  padding: 16px 24px;
+  flex-shrink: 0;
 }
 
 .form-titulo {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1f2328;
-  margin: 0 0 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  color: #ffffff;
+  margin: 0;
 }
 
-/* mat-form-field ocupa toda a largura da coluna */
+/* ── Corpo scrollável ────────────────────────────────────────────────── */
+.form-corpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.form-corpo .row {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 24px 8px;
+}
+
+/* ── Footer fixo ─────────────────────────────────────────────────────── */
+.form-footer {
+  background: #173B5E;
+  border-top: 1px solid #0f2840;
+  padding: 12px 24px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ── Botões do footer ────────────────────────────────────────────────── */
+:host ::ng-deep .form-footer .mat-mdc-outlined-button {
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .form-footer .mat-mdc-outlined-button .mdc-button__label {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .form-footer .mat-mdc-outlined-button .mat-icon {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .form-footer .mdc-button--outlined {
+  --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.7);
+  --mdc-outlined-button-label-text-color: #ffffff;
+}
+
+:host ::ng-deep .form-footer .mat-mdc-unelevated-button:not(:disabled),
+:host ::ng-deep .form-footer .mat-mdc-raised-button:not(:disabled),
+:host ::ng-deep .form-footer button[matbutton="filled"]:not(:disabled) {
+  background-color: #ffffff !important;
+  color: #173B5E !important;
+}
+
+:host ::ng-deep .form-footer button[matbutton="filled"]:not(:disabled) .mdc-button__label,
+:host ::ng-deep .form-footer button[matbutton="filled"]:not(:disabled) .mat-icon {
+  color: #173B5E !important;
+}
+
+:host ::ng-deep .form-footer button[matbutton="filled"]:disabled {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* ── mat-form-field ocupa toda a largura da coluna ───────────────────── */
 .campo-full {
   width: 100%;
 }
 
-/* Checkbox */
+/* ── Checkbox ────────────────────────────────────────────────────────── */
 .campo-checkbox {
   padding: 8px 0;
 }
 
-/* Radio */
+/* ── Radio ───────────────────────────────────────────────────────────── */
 .campo-radio-group {
   padding: 8px 0;
   display: flex;
@@ -49,27 +120,15 @@
   gap: 12px;
 }
 
-/* Botões de ação */
-.form-acoes {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #e5e7eb;
+/* ── Label de seção (campo produto) ─────────────────────────────────── */
+.secao-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 8px;
 }
 
-:host ::ng-deep .btn-salvar {
-  --mdc-filled-button-container-color: #3b82f6;
-  --mdc-filled-button-label-text-color: #ffffff;
-  --mat-filled-button-ripple-color: rgba(255, 255, 255, 0.2);
-}
-
-:host ::ng-deep .btn-cancelar {
-  --mdc-outlined-button-outline-color: #e5e7eb;
-  --mdc-outlined-button-label-text-color: #57606a;
-}
-
+/* ── Datepicker sem cor de fundo ─────────────────────────────────────── */
 .campo-data-sem-cor {
   ::ng-deep .mdc-text-field--filled {
     background-color: transparent !important;
@@ -94,5 +153,4 @@
   ::ng-deep .mat-mdc-form-field-focus-overlay {
     background-color: transparent !important;
   }
-
 }

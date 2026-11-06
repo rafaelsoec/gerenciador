@@ -1,0 +1,127 @@
+<section class="container-fluid pagina cadastro-pedido-pagina">
+
+  <!-- Header fixo -->
+  <div class="cp-header">
+    <h2 class="cp-titulo">Novo Pedido</h2>
+    <p class="cp-subtitulo">Preencha os dados do pedido</p>
+  </div>
+
+  <!-- Corpo com scroll -->
+  <div class="cp-corpo">
+    <form id="form-cadastro-pedido" (ngSubmit)="onSalvar()" novalidate>
+      <div class="row g-3">
+
+        <!-- Cliente -->
+        <div class="col-12">
+          <app-select-autocomplete
+            label="Cliente"
+            [obrigatorio]="true"
+            placeholder="Digite para buscar..."
+            mode="single"
+            [options]="clientes()"
+            [ngModel]="clienteIdSignal()"
+            (ngModelChange)="clienteIdSignal.set($event)"
+            [ngModelOptions]="{ name: 'clienteId' }">
+          </app-select-autocomplete>
+        </div>
+
+        <!-- Valor -->
+        <div class="col-12 col-sm-6">
+          <mat-form-field appearance="outline" class="campo-full">
+            <mat-label>Valor (R$) *</mat-label>
+            <input
+              matInput
+              disabled
+              [value]="valorCalculado()"
+              tabindex="-1"
+              style="pointer-events: none; caret-color: transparent;" />
+          </mat-form-field>
+        </div>
+
+        <!-- Forma de Pagamento -->
+        <div class="col-12 col-sm-6">
+          <mat-form-field appearance="outline" class="campo-full">
+            <mat-label>Forma de Pagamento *</mat-label>
+            <mat-select name="formaPagamento" [ngModel]="formaPagamentoSignal()" (ngModelChange)="formaPagamentoSignal.set($event)">
+              @for (opcao of formasPagamento; track opcao.value) {
+                <mat-option [value]="opcao.value">{{ opcao.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Desconto -->
+        <div class="col-12 col-sm-4">
+          <mat-form-field appearance="outline" class="campo-full">
+            <mat-label>Desconto (R$)</mat-label>
+            <input
+              matInput
+              type="text"
+              name="desconto"
+              [mask]="mascara"
+              [dropSpecialCharacters]="false"
+              [(ngModel)]="form.desconto" />
+          </mat-form-field>
+        </div>
+
+        <!-- Frete -->
+        <div class="col-12 col-sm-4">
+          <mat-form-field appearance="outline" class="campo-full">
+            <mat-label>Frete (R$)</mat-label>
+            <input
+              matInput
+              type="text"
+              name="frete"
+              [mask]="mascara"
+              [dropSpecialCharacters]="false"
+              [(ngModel)]="form.frete" />
+          </mat-form-field>
+        </div>
+
+        <!-- Data de Entrega -->
+        <div class="col-12 col-sm-4">
+          <mat-form-field class="campo-data-sem-cor campo-full">
+            <mat-label>Data de Entrega *</mat-label>
+            <input matInput [matDatepicker]="picker" name="dataEntrega" [ngModel]="dataEntregaSignal()" (ngModelChange)="dataEntregaSignal.set($event)" />
+            <mat-hint>DD/MM/AAAA</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- Observação -->
+        <div class="col-12">
+          <mat-form-field appearance="outline" class="campo-full">
+            <mat-label>Observação</mat-label>
+            <textarea matInput name="observacao" [(ngModel)]="form.observacao"></textarea>
+          </mat-form-field>
+        </div>
+
+        <!-- Itens do Pedido -->
+        <div class="col-12">
+          <p class="secao-label">Itens do Pedido *</p>
+          <app-itens-pedido
+            [(itens)]="itensPedido"
+            (selectionChange)="onItensAlterados($event)"
+            (totalAlterado)="onTotalAlterado($event)">
+          </app-itens-pedido>
+        </div>
+
+      </div><!-- /row -->
+    </form>
+  </div>
+
+  <!-- Footer fixo -->
+  <div class="cp-footer">
+    <button mat-button type="button" class="btn-cancelar" (click)="onCancelar()">
+      <mat-icon fontIcon="close"></mat-icon>
+      Cancelar
+    </button>
+    <button mat-button="filled" type="submit" form="form-cadastro-pedido" class="btn-salvar" [disabled]="invalido()">
+      <mat-icon fontIcon="save"></mat-icon>
+      Salvar
+    </button>
+
+  </div>
+
+</section>

@@ -1,0 +1,97 @@
+.itens-tabela {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+    overflow-wrap: break-word;
+  }
+
+  thead tr {
+    background-color: #173B5E;
+    color: #ffffff;
+  }
+
+  thead th {
+    font-weight: 600;
+    border: none;
+    padding: 14px 12px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  tbody tr:hover {
+    background-color: #f8fafc;
+  }
+
+  .col-qtd {
+    text-align: center;
+  }
+
+  .col-acoes {
+    text-align: center;
+    white-space: nowrap;
+    padding: 4px 0;
+
+    button {
+      display: inline-flex;
+      vertical-align: middle;
+    }
+  }
+
+  .campo-qtd-edicao {
+    width: 100%;
+    max-width: 120px;
+  }
+}
+
+/* ── Input de edição: apenas borda inferior ── */
+::ng-deep .campo-qtd-edicao {
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  /* Remove fundo e padding do fill */
+  .mat-mdc-text-field-wrapper,
+  .mdc-text-field--filled {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Remove a faixa colorida de fundo do fill */
+  .mat-mdc-form-field-focus-overlay {
+    display: none !important;
+  }
+
+  /* Remove o outline */
+  .mdc-notched-outline {
+    display: none !important;
+  }
+
+  /* Borda inferior via line-ripple */
+  .mdc-line-ripple::before {
+    border-bottom-color: #9ca3af !important;
+  }
+
+  .mdc-line-ripple::after {
+    border-bottom-color: #173B5E !important;
+  }
+
+  input.mat-mdc-input-element {
+    text-align: center;
+    padding: 4px 0;
+  }
+
+  .mat-mdc-form-field-infix {
+    padding: 4px 0 !important;
+    min-height: auto;
+  }
+}
