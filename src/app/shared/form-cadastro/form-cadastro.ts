@@ -39,6 +39,7 @@ export type TipoCampo =
 export interface OpcaoCampo {
   label: string;
   disabled?: boolean;
+  selected?: boolean;
   value: any;
 }
 
@@ -135,22 +136,6 @@ export class BrDateAdapter extends NativeDateAdapter {
 @Component({
   selector: 'app-form-cadastro',
   standalone: true,
-  providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
-    { provide: DateAdapter, useClass: BrDateAdapter },
-    {
-      provide: MAT_DATE_FORMATS,
-      useValue: {
-        parse: { dateInput: 'DD/MM/YYYY' },
-        display: {
-          dateInput: 'DD/MM/YYYY',
-          monthYearLabel: 'MMMM YYYY',
-          dateA11yLabel: 'LL',
-          monthYearA11yLabel: 'MMMM YYYY',
-        },
-      },
-    },
-  ],
   imports: [
     MatFormFieldModule,
     MatInputModule,

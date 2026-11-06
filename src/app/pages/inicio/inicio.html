@@ -60,8 +60,10 @@
       <article class="card">
         <div class="panel-head">
           <div class="col-12 col-lg-12">
-            <app-grafico [config]="graficoFaturamento">
-            </app-grafico>
+            @if (graficoFaturamento) {
+              <app-grafico [config]="graficoFaturamento">
+              </app-grafico>
+            }
           </div>
         </div>
       </article>
@@ -88,13 +90,13 @@
         <div class="goal-stats">
           <div>
             <div class="goal-row">
-              <span>Meta mensal</span><span>{{ dados.meta.percentualEmAberto | percentual }}</span>
+              <span>Meta mensal</span><span>{{ dados.meta.percentualEmAberto }} %</span>
             </div>
             <div class="progress"><i style="width:82%"></i></div>
           </div>
           <div>
             <div class="goal-row">
-              <span>Pedidos concluídos</span><span>{{ dados.meta.percentualAtingido |  percentual }}</span>
+              <span>Pedidos concluídos</span><span>{{ dados.meta.percentualAtingido }}%</span>
             </div>
             <div class="progress"><i style="width:87%;background:var(--blue)"></i></div>
           </div>
@@ -136,7 +138,7 @@
                   <td>
                     <div class="customer"><span class="mini-avatar">MC</span>{{ pedido.cliente }}</div>
                   </td>
-                  <td>{{ pedido.data | date: 'dd/MM/yyyy' }}</td>
+                  <td>{{ pedido.data | data: 'dd/MM/yyyy' }}</td>
                   <td>{{ pedido.valor | moeda }}</td>
                   <td><span class="status-badge paid">{{ pedido.status }}</span></td>
                 </tr>

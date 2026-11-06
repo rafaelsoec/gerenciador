@@ -1,7 +1,7 @@
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DashboardDTO } from '../../dtos/dashboard/DashboardDTO';
+import { DashboardDTO, VendaDTO } from '../../dtos/dashboard/DashboardDTO';
 import { DashboardService } from '../../services/dashboard.service';
 import { AlertaService } from '../../services/alerta.service';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +9,9 @@ import { MoedaPipe } from '../../pipes/moeda-pipe';
 import { GraficoConfig } from '../../dtos/GraficoModel';
 import { GraficoComponent } from '../../components/grafico/grafico.component';
 import { ProgressoCircularComponent } from '../../components/progresso-circular/progresso-circular.component';
-import { PercentualPipe } from '../../pipes/percentual-pipe';
+import { DateUtils } from '../../utils/DateUtils';
+import { NumberUtils } from '../../utils/NumberUtils';
+import { DataPipe } from '../../pipes/data-pipe';
 
 @Component({
   selector: 'app-inicio',
@@ -22,7 +24,7 @@ import { PercentualPipe } from '../../pipes/percentual-pipe';
     MoedaPipe,
     GraficoComponent,
     ProgressoCircularComponent,
-    PercentualPipe,
+    DataPipe,
   ],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
@@ -38,32 +40,17 @@ export class InicioComponent implements OnInit {
 
   ngOnInit() {
     this.alterarPeriodo(this.periodo);
-    this.atualizarGraficos();
   }
 
-  atualizarGraficos(): void {
+  atualizarGraficos(vendas: VendaDTO[]): void {
     this.graficoFaturamento = {
       titulo: 'Desempenho de vendas',
       subtitulo: 'Acompanhe faturamento e pedidos ao longo do período',
       tipo: 'area',
-      categorias: [
-        '01/11',
-        '03/11',
-        '05/11',
-        '07/11',
-        '09/11',
-        '11/11',
-        '13/11',
-        '15/11',
-        '17/11',
-        '19/11',
-        '21/11',
-        '23/11',
-      ],
-      dados: [
-        1250.5, 2100.0, 1850.75, 3200.0, 2750.9, 4100.0, 3600.5, 5200.0, 4850.0, 6100.75, 5700.0,
-        7500.0,
-      ],
+      categorias: vendas
+        .sort((a, b) => DateUtils.comparar(a.data, b.data) ?? 0)
+        .map((v) => DateUtils.formatar(v.data)),
+      dados: vendas.map((v) => NumberUtils.toNumber(v.valor)),
       nomeSerie: 'Faturamento',
       moeda: true,
       altura: 320,
@@ -71,9 +58,9 @@ export class InicioComponent implements OnInit {
   }
 
   alterarPeriodo(periodo: string): void {
-   // if (this.periodo !== periodo) {
-      this.periodo = periodo;
-      this.buscarDashboard();
+    // if (this.periodo !== periodo) {
+    this.periodo = periodo;
+    this.buscarDashboard();
     //}
   }
 
@@ -81,6 +68,7 @@ export class InicioComponent implements OnInit {
     this.dashboardService.listar(this.periodo).subscribe({
       next: (response: DashboardDTO) => {
         this.dados = response;
+        this.atualizarGraficos(response.vendas);
       },
       error: (error: any) => {
         this.alertaService.erro(error.error);

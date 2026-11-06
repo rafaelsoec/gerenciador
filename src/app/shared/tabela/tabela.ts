@@ -96,13 +96,17 @@ export class TabelaComponent<T extends Record<string, any>> {
    * Padrão: 'id'.
    */
   readonly campoId = input<string>('id');
-  readonly rota = input<string>('');
+  readonly rotaVisualizacao = input<string>('');
+  readonly rotaEdicao = input<string>('');
 
   /** Emite o objeto com os dados alterados ao confirmar a edição. */
   readonly salvar = output<T>();
 
   /** Emite a row ao clicar em excluir. */
   readonly excluir = output<T>();
+
+  /** Emite a row ao clicar em excluir. */
+  readonly editar = output<T>();
 
   /** Emite o PageEvent sempre que a página ou tamanho é alterado pelo usuário. */
   readonly paginaAlterada = output<PageEvent>();
@@ -177,8 +181,14 @@ export class TabelaComponent<T extends Record<string, any>> {
   // ── handlers ──────────────────────────────────────────────────────────────
 
   iniciarEdicao(row: T): void {
-    this._idEditando.set(row[this.campoId()]);
-    this._rascunho.set({ ...row });
+    if (this.rotaEdicao()) {
+      this.router.navigate([row[this.campoId()], this.rotaEdicao()], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this._idEditando.set(row[this.campoId()]);
+      this._rascunho.set({ ...row });
+    }
   }
 
   /** Atualiza um campo do rascunho chamando set() para notificar o signal. */
@@ -215,7 +225,7 @@ export class TabelaComponent<T extends Record<string, any>> {
   }
 
   iniciarVisualizacao(row: T): void {
-    this.router.navigate([row[this.campoId()], this.rota()], {
+    this.router.navigate([row[this.campoId()], this.rotaVisualizacao()], {
       relativeTo: this.activatedRoute,
     });
   }

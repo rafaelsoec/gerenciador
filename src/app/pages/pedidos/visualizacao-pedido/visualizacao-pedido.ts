@@ -16,6 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ItemPedidoDTO } from '../../../dtos/pedido/ItemPedidoDTO';
 import { HttpResponse } from '@angular/common/http';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-visualizacao-pedido',
@@ -32,6 +33,7 @@ import { HttpResponse } from '@angular/common/http';
     MatIconModule,
     MatDatepickerModule,
     MatDialogModule,
+    NgxMaskDirective,
   ],
 })
 export class VisualizacaoPedidoComponent implements OnInit {
@@ -56,7 +58,7 @@ export class VisualizacaoPedidoComponent implements OnInit {
 
   readonly formaPagamentoSignal = signal<string | null>(null);
 
-  readonly dataEntregaSignal = signal<Date | null>(null);
+  readonly dataEntregaSignal = signal<string | null>(null);
 
   readonly itensPedido = signal<ItemPedidoDTO[]>([]);
 
@@ -99,7 +101,7 @@ export class VisualizacaoPedidoComponent implements OnInit {
   // ── Consulta ──────────────────────────────────────────────────
 
   private buscarPedido(): void {
-    if (!Number.isInteger(this.id)) {
+    if (!Number.isInteger(this.id) || this.id == 0) {
       this.alerta.erro('Identificador do pedido inválido.');
       this.voltar();
       return;
@@ -129,7 +131,7 @@ export class VisualizacaoPedidoComponent implements OnInit {
     this.clienteNome.set(pedido.clienteNome);
 
     this.formaPagamentoSignal.set(pedido.formaPagamento ?? null);
-    this.dataEntregaSignal.set(pedido.dataEntrega ? new Date(pedido.dataEntrega) : null);
+    this.dataEntregaSignal.set(pedido.dataEntrega);
 
     this.form = {
       desconto: String(pedido.desconto ?? '0,00'),

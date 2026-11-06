@@ -9,7 +9,7 @@ export class StatusPedidoPipe implements PipeTransform {
   private readonly labels: Record<StatusPedidoEnum, string> = {
     [StatusPedidoEnum.CANCELADO]: 'Cancelado',
     [StatusPedidoEnum.CONFIRMADO]: 'Confirmado',
-    [StatusPedidoEnum.EM_PREPARO]: 'Em Preparo',
+    [StatusPedidoEnum.EM_SEPARACAO]: 'Em Separação',
     [StatusPedidoEnum.ENVIADO]: 'Enviado',
     [StatusPedidoEnum.ENTREGUE]: 'Entregue',
     [StatusPedidoEnum.PENDENTE]: 'Pendente',

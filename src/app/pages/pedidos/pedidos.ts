@@ -105,9 +105,6 @@ export class PedidosComponent implements OnInit {
         maxWidth: '80vw',
         height: '90vh',
         maxHeight: '90vh',
-        data: {
-          disabled: false,
-        },
       })
       .afterClosed()
       .subscribe((novo) => {

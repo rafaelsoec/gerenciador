@@ -1,13 +1,13 @@
 import {
   Component,
   computed,
+  EventEmitter,
   inject,
+  input,
   model,
   OnInit,
   Output,
-  EventEmitter,
   signal,
-  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -157,9 +157,18 @@ export class ItensPedidoComponent implements OnInit {
     this.produtoService.listar({ page: 0, size: 200, sort: 'id,asc' }).subscribe((pagina) => {
       this.precoPorProduto.clear();
       this.nomePorProduto.clear();
+      const items = this.itens();
       pagina.conteudo.forEach((produto) => {
         this.precoPorProduto.set(produto.id, produto.preco);
         this.nomePorProduto.set(produto.id, produto.nome);
+
+        items.forEach((item) => {
+          if (produto.id == item.produtoId) {
+            this.entrada.produtoId = item.produtoId;
+            this.entrada.quantidade = item.quantidade;
+            this.adicionarItem();
+          }
+        });
       });
       this.produtos.set(
         pagina.conteudo.map((produto) => ({

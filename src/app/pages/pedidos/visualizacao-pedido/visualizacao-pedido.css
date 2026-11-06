@@ -46,8 +46,15 @@
 /* Corpo com scroll */
 .cp-corpo {
   flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  padding-top: 24px;
+
   overflow-y: auto;
-  padding: 24px;
+  overflow-x: hidden;
 }
 
 /* Footer fixo */

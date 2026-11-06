@@ -17,7 +17,11 @@ export const routes: Routes = [
   { path: 'clientes', component: ClientesComponent, canActivate: [authGuard] },
   { path: 'produtos', component: ProdutosComponent, canActivate: [authGuard] },
   { path: 'pedidos', component: PedidosComponent, canActivate: [authGuard] },
-  { path: 'pedidos/novo', component: CadastroPedidoComponent, canActivate: [authGuard] },
+  {
+    path: 'pedidos/:id/editar',
+    component: CadastroPedidoComponent,
+    canActivate: [authGuard],
+  },
   {
     path: 'pedidos/:id/visualizar',
     component: VisualizacaoPedidoComponent,

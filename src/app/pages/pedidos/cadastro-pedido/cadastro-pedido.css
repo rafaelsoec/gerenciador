@@ -20,7 +20,12 @@
   flex: 0 0 auto;
   background-color: #173B5E;
   color: #ffffff;
-  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 24px;
+  gap: 16px;
 }
 
 .cp-titulo {
@@ -40,8 +45,15 @@
 /* Corpo com scroll */
 .cp-corpo {
   flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  padding-top: 24px;
+
   overflow-y: auto;
-  padding: 24px;
+  overflow-x: hidden;
 }
 
 /* Footer fixo */

@@ -1,14 +1,14 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, tap, throwError } from 'rxjs';
 import { SelectAutocompleteComponent } from '../../../shared/auto-select/auto-select';
@@ -19,7 +19,7 @@ import { FormaPagamentoPipe } from '../../../pipes/forma-pagamento-pipe';
 import { ClienteService } from '../../../services/cliente.service';
 import { PedidoService } from '../../../services/pedido.service';
 import { AlertaService } from '../../../services/alerta.service';
-import { DataUtil } from '../../../utils/DataUtils';
+import { DateUtils } from '../../../utils/DateUtils';
 import { Constantes } from '../../../constantes/Constantes';
 
 interface CadastroPedidoForm {
@@ -56,11 +56,11 @@ export class CadastroPedidoComponent implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly pedidoService = inject(PedidoService);
   private readonly alertaService = inject(AlertaService);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialogRef = inject(MatDialogRef<CadastroPedidoComponent>, { optional: true });
-  private readonly dialogData = inject(MAT_DIALOG_DATA, { optional: true });
-
-  public disabled = input<boolean>(this.dialogData?.disabled ?? true);
+  public id: number | undefined;
+  public disabled = input<boolean>(false);
   readonly clientes = signal<OpcaoCampo[]>([]);
 
   readonly mascara = Constantes.MASCARA_MOEDA;
@@ -72,15 +72,7 @@ export class CadastroPedidoComponent implements OnInit {
     }));
   })();
 
-  form: CadastroPedidoForm = {
-    clienteId: null,
-    valor: '',
-    formaPagamento: '',
-    desconto: '',
-    frete: '',
-    dataEntrega: null,
-    observacao: '',
-  };
+  form!: CadastroPedidoForm;
 
   readonly valorCalculado = signal<string>('');
   readonly itensSelecionados = signal<ItemPedido[]>([]);
@@ -103,8 +95,55 @@ export class CadastroPedidoComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.id = Number(this.route.snapshot.paramMap.get('id')) ?? 0;
+
+    this.buscarPedido();
     this.clienteService.listar({ size: 200 }).subscribe((pagina) => {
-      this.clientes.set(pagina.conteudo.map((c) => ({ value: c.id, label: c.nome })));
+      this.clientes.set(
+        pagina.conteudo.map((c) => ({ value: c.id, label: c.nome, selected: this.id === c.id })),
+      );
+    });
+  }
+
+  private buscarPedido(): void {
+    if (!Number.isInteger(this.id) || this.id == 0) {
+      this.form = {
+        clienteId: null,
+        valor: '',
+        formaPagamento: '',
+        desconto: '',
+        frete: '',
+        dataEntrega: null,
+        observacao: '',
+      };
+      return;
+    }
+
+    this.pedidoService.buscarPorId(this.id ?? 0).subscribe({
+      next: (pedido) => {
+        const dataConvertida = DateUtils.converterParaDate(pedido.dataEntrega);
+        this.valorCalculado.set(pedido.valorTotal.toString());
+        this.clienteIdSignal.set(pedido.clienteId.toString());
+        this.formaPagamentoSignal.set(pedido.formaPagamento.toString());
+        this.dataEntregaSignal.set(dataConvertida);
+        this.itensPedido = pedido.itens.map((p) => ({
+          produtoId: p.produtoId,
+          quantidade: p.quantidade,
+        }));
+
+        this.form = {
+          clienteId: pedido.clienteId,
+          valor: pedido.valorTotal.toString(),
+          formaPagamento: pedido.formaPagamento,
+          desconto: pedido.desconto.toString(),
+          frete: pedido.frete.toString(),
+          dataEntrega: dataConvertida,
+          observacao: pedido.observacao,
+        };
+      },
+      error: (erro) => {
+        this.alertaService.erro(erro);
+      },
     });
   }
 
@@ -131,12 +170,13 @@ export class CadastroPedidoComponent implements OnInit {
       typeof clienteRaw === 'object' && clienteRaw !== null ? clienteRaw['value'] : clienteRaw;
 
     const payload: any = {
+      id: this.id,
       clienteId,
       valorTotal: this.form.valor,
       formaPagamento: this.formaPagamentoSignal(),
       desconto: this.form.desconto || '0',
       frete: this.form.frete || '0',
-      dataEntrega: DataUtil.formatar(this.dataEntregaSignal()),
+      dataEntrega: DateUtils.formatar(this.dataEntregaSignal()),
       observacao: this.form.observacao,
       itens: this.itensSelecionados().map((item) => ({
         produtoId:
@@ -147,23 +187,43 @@ export class CadastroPedidoComponent implements OnInit {
       })),
     };
 
-    this.pedidoService
-      .criar(payload)
-      .pipe(
-        tap((novo) => {
-          this.alertaService.sucesso('Pedido cadastrado com sucesso.');
-          if (this.dialogRef) {
-            this.dialogRef.close(novo);
-          } else {
-            this.router.navigate(['/pedidos']);
-          }
-        }),
-        catchError((erro) => {
-          this.alertaService.erro(erro.error);
-          return throwError(() => erro);
-        }),
-      )
-      .subscribe();
+    if (this.id) {
+      this.pedidoService
+        .atualizar(this.id, payload)
+        .pipe(
+          tap((novo) => {
+            this.alertaService.sucesso('Pedido cadastrado com sucesso.');
+            if (this.dialogRef) {
+              this.dialogRef.close(novo);
+            } else {
+              this.router.navigate(['/pedidos']);
+            }
+          }),
+          catchError((erro) => {
+            this.alertaService.erro(erro.error);
+            return throwError(() => erro);
+          }),
+        )
+        .subscribe();
+    } else {
+      this.pedidoService
+        .criar(payload)
+        .pipe(
+          tap((novo) => {
+            this.alertaService.sucesso('Pedido cadastrado com sucesso.');
+            if (this.dialogRef) {
+              this.dialogRef.close(novo);
+            } else {
+              this.router.navigate(['/pedidos']);
+            }
+          }),
+          catchError((erro) => {
+            this.alertaService.erro(erro.error);
+            return throwError(() => erro);
+          }),
+        )
+        .subscribe();
+    }
   }
 
   onCancelar(): void {
