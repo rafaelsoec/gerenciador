@@ -1,28 +1,34 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, distinctUntilChanged, observeOn } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoadingService {
+  private requisicoesAtivas = 0;
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
 
-  loading$ = this.loadingSubject.asObservable();
-
-  private requests = 0;
+  readonly loading$ = this.loadingSubject.pipe(observeOn(asyncScheduler), distinctUntilChanged());
 
   show(): void {
-    this.requests++;
-    this.loadingSubject.next(true);
+    this.requisicoesAtivas++;
+
+    if (this.requisicoesAtivas === 1) {
+      this.loadingSubject.next(true);
+    }
   }
 
   hide(): void {
-    this.requests--;
+    this.requisicoesAtivas = Math.max(0, this.requisicoesAtivas - 1);
 
-    if (this.requests <= 0) {
-      this.requests = 0;
+    if (this.requisicoesAtivas === 0) {
       this.loadingSubject.next(false);
     }
+  }
+
+  reset(): void {
+    this.requisicoesAtivas = 0;
+    this.loadingSubject.next(false);
   }
 }

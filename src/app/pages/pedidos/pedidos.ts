@@ -99,11 +99,15 @@ export class PedidosComponent implements OnInit {
 
   onNovo(): void {
     this.dialog
-      .open<CadastroPedidoComponent, void, PedidoDTO>(CadastroPedidoComponent, {
+      .open<CadastroPedidoComponent, { disabled: boolean }, PedidoDTO>(CadastroPedidoComponent, {
+        autoFocus: false,
         width: '80vw',
         maxWidth: '80vw',
         height: '90vh',
         maxHeight: '90vh',
+        data: {
+          disabled: false,
+        },
       })
       .afterClosed()
       .subscribe((novo) => {

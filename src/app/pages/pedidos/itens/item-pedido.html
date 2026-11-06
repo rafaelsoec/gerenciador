@@ -1,5 +1,5 @@
 <!-- Linha de entrada -->
-<div class="itens-entrada row g-2 align-items-start">
+<div *ngIf="!disabled()" class="itens-entrada row g-2 align-items-start">
 
   <div class="col-12 col-sm-7">
     <app-select-autocomplete
@@ -112,6 +112,7 @@
                 mat-icon-button
                 type="button"
                 class="btn-remover"
+                *ngIf="!disabled()"
                 (click)="removerItem(item)">
                 <mat-icon>delete</mat-icon>
               </button>

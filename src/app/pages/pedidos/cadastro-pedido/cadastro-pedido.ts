@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,27 +8,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import {
-  DateAdapter,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-  NativeDateAdapter,
-} from '@angular/material/core';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, tap, throwError } from 'rxjs';
-
-import { HeaderPaginaComponent } from '../../../shared/header-pagina/header-pagina';
 import { SelectAutocompleteComponent } from '../../../shared/auto-select/auto-select';
 import { ItemPedido, ItensPedidoComponent } from '../itens/item-pedido';
-import { OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
+import { BrDateAdapter, OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
 import { FormaPagamentoEnum } from '../../../enums/FormaPagamentoEnum';
 import { FormaPagamentoPipe } from '../../../pipes/forma-pagamento-pipe';
 import { ClienteService } from '../../../services/cliente.service';
 import { PedidoService } from '../../../services/pedido.service';
 import { AlertaService } from '../../../services/alerta.service';
-import { BrDateAdapter } from '../../../shared/form-cadastro/form-cadastro';
 import { DataUtil } from '../../../utils/DataUtils';
+import { Constantes } from '../../../constantes/Constantes';
 
 const BR_DATE_FORMATS = {
   parse: { dateInput: 'DD/MM/YYYY' },
@@ -81,12 +74,12 @@ export class CadastroPedidoComponent implements OnInit {
   private readonly alertaService = inject(AlertaService);
   private readonly router = inject(Router);
   private readonly dialogRef = inject(MatDialogRef<CadastroPedidoComponent>, { optional: true });
+  private readonly dialogData = inject(MAT_DIALOG_DATA, { optional: true });
 
+  public disabled = input<boolean>(this.dialogData?.disabled ?? true);
   readonly clientes = signal<OpcaoCampo[]>([]);
 
-  readonly mascara =
-    '000.000.000,00||00.000.000,00||0.000.000,00||000.000,00||00.000,00||0.000,00||000,00||00,00||0,00';
-
+  readonly mascara = Constantes.MASCARA_MOEDA;
   readonly formasPagamento: OpcaoCampo[] = (() => {
     const pipe = new FormaPagamentoPipe();
     return Object.values(FormaPagamentoEnum).map((v) => ({
@@ -127,9 +120,7 @@ export class CadastroPedidoComponent implements OnInit {
 
   ngOnInit(): void {
     this.clienteService.listar({ size: 200 }).subscribe((pagina) => {
-      this.clientes.set(
-        pagina.conteudo.map((c) => ({ value: c.id, label: c.nome }))
-      );
+      this.clientes.set(pagina.conteudo.map((c) => ({ value: c.id, label: c.nome })));
     });
   }
 
@@ -153,9 +144,7 @@ export class CadastroPedidoComponent implements OnInit {
 
     const clienteRaw = this.clienteIdSignal();
     const clienteId =
-      typeof clienteRaw === 'object' && clienteRaw !== null
-        ? clienteRaw['value']
-        : clienteRaw;
+      typeof clienteRaw === 'object' && clienteRaw !== null ? clienteRaw['value'] : clienteRaw;
 
     const payload: any = {
       clienteId,
@@ -188,7 +177,7 @@ export class CadastroPedidoComponent implements OnInit {
         catchError((erro) => {
           this.alertaService.erro(erro.error);
           return throwError(() => erro);
-        })
+        }),
       )
       .subscribe();
   }

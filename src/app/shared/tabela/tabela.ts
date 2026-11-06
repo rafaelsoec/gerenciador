@@ -1,4 +1,4 @@
-import { Component, computed, HostBinding, input, output, PipeTransform, signal } from '@angular/core';
+import { Component, computed, HostBinding, inject, input, output, PipeTransform, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -13,7 +13,7 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { RegexDirective } from '../../diretivas/regex.directive';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
-import { OpcaoCampo } from '../form-cadastro/form-cadastro';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /** Definição de uma coluna da tabela genérica. */
 export interface ColunaTabela {
@@ -53,6 +53,8 @@ export interface ColunaTabela {
 })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class TabelaComponent<T extends Record<string, any>> {
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   /** Lista de objetos a exibir na tabela. */
   readonly dados = input.required<T[]>();
 
@@ -81,6 +83,8 @@ export class TabelaComponent<T extends Record<string, any>> {
   /** Total real de registros no servidor. Obrigatório quando `paginacaoExterna=true`. */
   readonly totalElementos = input<number>(0);
 
+  readonly exibirVisualizacao = input<boolean>(false);
+
   /** Exibe o botão de edição na coluna de ações. Padrão: false. */
   readonly exibirEdicao = input<boolean>(false);
 
@@ -92,6 +96,7 @@ export class TabelaComponent<T extends Record<string, any>> {
    * Padrão: 'id'.
    */
   readonly campoId = input<string>('id');
+  readonly rota = input<string>('');
 
   /** Emite o objeto com os dados alterados ao confirmar a edição. */
   readonly salvar = output<T>();
@@ -141,7 +146,9 @@ export class TabelaComponent<T extends Record<string, any>> {
 
   // ── computed ──────────────────────────────────────────────────────────────
 
-  readonly exibirAcoes = computed<boolean>(() => this.exibirEdicao() || this.exibirExclusao());
+  readonly exibirAcoes = computed<boolean>(
+    () => this.exibirEdicao() || this.exibirExclusao() || this.exibirVisualizacao(),
+  );
 
   // ── CSS variables ─────────────────────────────────────────────────────────
 
@@ -205,5 +212,11 @@ export class TabelaComponent<T extends Record<string, any>> {
     }
 
     return label;
+  }
+
+  iniciarVisualizacao(row: T): void {
+    this.router.navigate([row[this.campoId()], this.rota()], {
+      relativeTo: this.activatedRoute,
+    });
   }
 }

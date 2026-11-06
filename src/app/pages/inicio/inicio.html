@@ -88,13 +88,13 @@
         <div class="goal-stats">
           <div>
             <div class="goal-row">
-              <span>Meta mensal</span><span>{{ dados.meta.percentualEmAberto | percent }}</span>
+              <span>Meta mensal</span><span>{{ dados.meta.percentualEmAberto | percentual }}</span>
             </div>
             <div class="progress"><i style="width:82%"></i></div>
           </div>
           <div>
             <div class="goal-row">
-              <span>Pedidos concluídos</span><span>{{ dados.meta.percentualAtingido | percent }}</span>
+              <span>Pedidos concluídos</span><span>{{ dados.meta.percentualAtingido |  percentual }}</span>
             </div>
             <div class="progress"><i style="width:87%;background:var(--blue)"></i></div>
           </div>

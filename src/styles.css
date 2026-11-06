@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+﻿/* You can add global styles to this file, and also import other style files */
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 /* ═══════════════════════════════════════════════════════════════
@@ -253,4 +253,96 @@ body.dark .container-fluid {
 :host ::ng-deep button[matbutton="filled"]:disabled {
   background-color: rgba(255, 255, 255, 0.25) !important;
   color: rgba(255, 255, 255, 0.45) !important;
+}
+
+
+/* ── Angular Material: datepicker calendar popup ──────────────────────────── */
+body.dark .mat-datepicker-content {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark .mat-calendar-body-cell-content,
+body.dark .mat-calendar-body-label,
+body.dark .mat-calendar-period-button,
+body.dark .mat-calendar-arrow,
+body.dark .mat-calendar-table-header th,
+body.dark .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  color: #e2e8f0 !important;
+}
+
+body.dark .mat-calendar-next-button,
+body.dark .mat-calendar-previous-button {
+  color: #e2e8f0 !important;
+}
+
+body.dark .mat-calendar-body-selected {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+body.dark .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
+  > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  background-color: #263245 !important;
+}
+
+body.dark .mat-calendar-header {
+  background-color: #1e293b !important;
+}
+
+body.dark .mat-datepicker-content .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border-color: #3b82f6 !important;
+}
+
+
+/* ── Labels de seção e radio (hardcoded rgba(0,0,0,0.6) → dark override) ── */
+body.dark .secao-label,
+body.dark .campo-radio-label {
+  color: #94a3b8 !important;
+}
+
+/* ── Tabela de itens do pedido: dark mode ── */
+body.dark .itens-tabela tbody tr {
+  border-bottom-color: #334155 !important;
+}
+
+body.dark .itens-tabela tbody tr:hover {
+  background-color: #263245 !important;
+}
+
+body.dark .itens-tabela tbody td {
+  color: #e2e8f0;
+}
+
+/* ── Botão adicionar item (ícone) no dark ── */
+body.dark .btn-adicionar-icon {
+  color: #7ab3e8;
+}
+
+body.dark .btn-editar {
+  color: #94a3b8;
+}
+
+body.dark .btn-remover {
+  color: #e88888;
+}
+
+body.dark .btn-confirmar {
+  color: #4dcba8;
+}
+
+body.dark .btn-cancelar-edicao {
+  color: #e88888;
+}
+
+.mat-mdc-option.mdc-list-item--selected,
+.mat-mdc-option.mat-mdc-option-active,
+.mat-mdc-option.mdc-list-item--selected:hover,
+.mat-mdc-option.mat-mdc-option-active:hover {
+  background-color: #173B5E !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text,
+.mat-mdc-option.mat-mdc-option-active .mdc-list-item__primary-text {
+  color: #ffffff !important;
 }

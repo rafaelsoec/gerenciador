@@ -1,4 +1,4 @@
-/* ── Host: necessário para o flex funcionar dentro do dialog ── */
+﻿/* ── Host: necessário para o flex funcionar dentro do dialog ── */
 :host {
   display: flex;
   flex-direction: column;
@@ -52,7 +52,44 @@
   gap: 12px;
   padding: 16px 24px;
   background-color: #173B5E;
+  border-top: 1px solid #0f2840;
   color: #ffffff;
+}
+
+/* ── Botões do footer — mesmo padrão do form-cadastro ── */
+:host ::ng-deep .cp-footer .mat-mdc-outlined-button {
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .cp-footer .mat-mdc-outlined-button .mdc-button__label {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .cp-footer .mat-mdc-outlined-button .mat-icon {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .cp-footer .mdc-button--outlined {
+  --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.7);
+  --mdc-outlined-button-label-text-color: #ffffff;
+}
+
+:host ::ng-deep .cp-footer .mat-mdc-unelevated-button:not(:disabled),
+:host ::ng-deep .cp-footer .mat-mdc-raised-button:not(:disabled),
+:host ::ng-deep .cp-footer button[matbutton="filled"]:not(:disabled) {
+  background-color: #ffffff !important;
+  color: #173B5E !important;
+}
+
+:host ::ng-deep .cp-footer button[matbutton="filled"]:not(:disabled) .mdc-button__label,
+:host ::ng-deep .cp-footer button[matbutton="filled"]:not(:disabled) .mat-icon {
+  color: #173B5E !important;
+}
+
+:host ::ng-deep .cp-footer button[matbutton="filled"]:disabled {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
 }
 
 /* ── Campos ── */
@@ -67,23 +104,7 @@
   margin-bottom: 8px;
 }
 
-/* ── Botão Salvar: azul padrão do site ── */
-:host ::ng-deep .btn-salvar {
-  --mdc-filled-button-container-color: #3b82f6;
-  --mdc-filled-button-label-text-color: #ffffff;
-  --mat-filled-button-ripple-color: rgba(255, 255, 255, 0.2);
-}
-
-/* ── Botão Cancelar: outlined com a cor padrão ── */
-:host ::ng-deep .btn-cancelar {
-  --mdc-text-button-label-text-color: #173B5E;
-  --mat-text-button-ripple-color: rgba(23, 59, 94, 0.12);
-  background-color: #173B5E;
-  border: 1px solid #173B5E;
-  border-radius: 4px;
-}
-
-/* ── Campo de data sem fundo colorido ── */
+/* ── Campo de data — outline, sem fundo colorido ── */
 .campo-data-sem-cor {
   ::ng-deep .mdc-text-field--filled {
     background-color: transparent !important;

@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { NumberUtils } from '../utils/NumberUtils';
 
 @Pipe({
   name: 'moeda',
@@ -9,6 +10,6 @@ export class MoedaPipe implements PipeTransform {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-    }).format(valor ?? 0);
+    }).format(NumberUtils.toNumber(valor ?? 0));
   }
 }

@@ -7,6 +7,7 @@ import {
   Output,
   EventEmitter,
   signal,
+  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -60,6 +61,7 @@ export class ItensPedidoComponent implements OnInit {
 
   /** Estado da tabela */
   readonly itensDaTabela = signal<ItemTabela[]>([]);
+  public disabled = input<boolean>(false);
 
   /** Campos do formulário de entrada */
   entrada: { produtoId: any; quantidade: number | null } = {
@@ -113,9 +115,7 @@ export class ItensPedidoComponent implements OnInit {
   }
 
   removerItem(item: ItemTabela): void {
-    this.itensDaTabela.update((lista) =>
-      lista.filter((i) => i.produtoId !== item.produtoId)
-    );
+    this.itensDaTabela.update((lista) => lista.filter((i) => i.produtoId !== item.produtoId));
     this.emitir();
   }
 
@@ -154,21 +154,19 @@ export class ItensPedidoComponent implements OnInit {
   }
 
   private buscarProdutos(): void {
-    this.produtoService
-      .listar({ page: 0, size: 200, sort: 'id,asc' })
-      .subscribe((pagina) => {
-        this.precoPorProduto.clear();
-        this.nomePorProduto.clear();
-        pagina.conteudo.forEach((produto) => {
-          this.precoPorProduto.set(produto.id, produto.preco);
-          this.nomePorProduto.set(produto.id, produto.nome);
-        });
-        this.produtos.set(
-          pagina.conteudo.map((produto) => ({
-            value: produto.id,
-            label: produto.nome,
-          }))
-        );
+    this.produtoService.listar({ page: 0, size: 200, sort: 'id,asc' }).subscribe((pagina) => {
+      this.precoPorProduto.clear();
+      this.nomePorProduto.clear();
+      pagina.conteudo.forEach((produto) => {
+        this.precoPorProduto.set(produto.id, produto.preco);
+        this.nomePorProduto.set(produto.id, produto.nome);
       });
+      this.produtos.set(
+        pagina.conteudo.map((produto) => ({
+          value: produto.id,
+          label: produto.nome,
+        })),
+      );
+    });
   }
 }

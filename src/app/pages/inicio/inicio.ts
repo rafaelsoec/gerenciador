@@ -1,4 +1,4 @@
-import { DatePipe, PercentPipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DashboardDTO } from '../../dtos/dashboard/DashboardDTO';
@@ -9,6 +9,7 @@ import { MoedaPipe } from '../../pipes/moeda-pipe';
 import { GraficoConfig } from '../../dtos/GraficoModel';
 import { GraficoComponent } from '../../components/grafico/grafico.component';
 import { ProgressoCircularComponent } from '../../components/progresso-circular/progresso-circular.component';
+import { PercentualPipe } from '../../pipes/percentual-pipe';
 
 @Component({
   selector: 'app-inicio',
@@ -21,7 +22,7 @@ import { ProgressoCircularComponent } from '../../components/progresso-circular/
     MoedaPipe,
     GraficoComponent,
     ProgressoCircularComponent,
-    PercentPipe
+    PercentualPipe,
   ],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
@@ -41,16 +42,6 @@ export class InicioComponent implements OnInit {
   }
 
   atualizarGraficos(): void {
-    // this.graficoFaturamento = {
-    //   titulo: 'Desempenho de vendas',
-    //   subtitulo: 'Acompanhe faturamento e pedidos ao longo do período',
-    //   tipo: 'area',
-    //   categorias: this.dados.vendas.map((v) => DataUtils.formatar(v.data)),
-    //   dados: this.dados.vendas.map((v) => v.valor),
-    //   nomeSerie: 'Faturamento',
-    //   moeda: true,
-    //   altura: 320,
-    // };
     this.graficoFaturamento = {
       titulo: 'Desempenho de vendas',
       subtitulo: 'Acompanhe faturamento e pedidos ao longo do período',
@@ -80,8 +71,10 @@ export class InicioComponent implements OnInit {
   }
 
   alterarPeriodo(periodo: string): void {
-    this.periodo = periodo;
-    this.buscarDashboard();
+   // if (this.periodo !== periodo) {
+      this.periodo = periodo;
+      this.buscarDashboard();
+    //}
   }
 
   buscarDashboard(): void {

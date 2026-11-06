@@ -4,7 +4,7 @@
 
 /* ── Wrapper: flex column com altura máxima ──────────────────────────── */
 .form-cadastro-wrapper {
-  background: #ffffff;
+  /*background: #ffffff;*/
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   display: flex;

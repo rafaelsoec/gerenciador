@@ -12,12 +12,12 @@
           @if (estaEditando(row)) {
             @if (col.editavel) {
               @if (col.opcoes && col.opcoes.length > 0) {
-                  <mat-select [name]="col.campo" [ngModel]="_rascunho()[col.campo]"
-                              (ngModelChange)="atualizarRascunho(col.campo, $event)">
-                    @for (opcao of col.opcoes ?? []; track opcao) {
-                      <mat-option [value]="opcao">{{ exibirPipe(opcao, col.pipe) }}</mat-option>
-                    }
-                  </mat-select>
+                <mat-select [name]="col.campo" [ngModel]="_rascunho()[col.campo]"
+                            (ngModelChange)="atualizarRascunho(col.campo, $event)">
+                  @for (opcao of col.opcoes; track opcao) {
+                    <mat-option [value]="opcao">{{ exibirPipe(opcao, col.pipe) }}</mat-option>
+                  }
+                </mat-select>
               } @else {
                 <mat-form-field appearance="outline" class="tabela-field" (click)="$event.stopPropagation()">
                   <input matInput
@@ -55,11 +55,18 @@
             </button>
           } @else {
             <!-- Modo normal: editar e/ou excluir -->
+            @if (exibirVisualizacao()) {
+              <button mat-icon-button matTooltip="Visualizar" (click)="iniciarVisualizacao(row)">
+                <mat-icon fontIcon="visibility"></mat-icon>
+              </button>
+            }
+
             @if (exibirEdicao()) {
               <button mat-icon-button matTooltip="Editar" (click)="iniciarEdicao(row)">
                 <mat-icon>edit</mat-icon>
               </button>
             }
+
             @if (exibirExclusao()) {
               <button mat-icon-button matTooltip="Excluir" class="btn-excluir" (click)="excluir.emit(row)">
                 <mat-icon>delete</mat-icon>
