@@ -8,13 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, tap, throwError } from 'rxjs';
 import { SelectAutocompleteComponent } from '../../../shared/auto-select/auto-select';
 import { ItemPedido, ItensPedidoComponent } from '../itens/item-pedido';
-import { BrDateAdapter, OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
+import { OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
 import { FormaPagamentoEnum } from '../../../enums/FormaPagamentoEnum';
 import { FormaPagamentoPipe } from '../../../pipes/forma-pagamento-pipe';
 import { ClienteService } from '../../../services/cliente.service';
@@ -22,16 +21,6 @@ import { PedidoService } from '../../../services/pedido.service';
 import { AlertaService } from '../../../services/alerta.service';
 import { DataUtil } from '../../../utils/DataUtils';
 import { Constantes } from '../../../constantes/Constantes';
-
-const BR_DATE_FORMATS = {
-  parse: { dateInput: 'DD/MM/YYYY' },
-  display: {
-    dateInput: 'DD/MM/YYYY',
-    monthYearLabel: 'MMMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
 
 interface CadastroPedidoForm {
   clienteId: any;
@@ -46,11 +35,6 @@ interface CadastroPedidoForm {
 @Component({
   selector: 'app-cadastro-pedido',
   standalone: true,
-  providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
-    { provide: DateAdapter, useClass: BrDateAdapter },
-    { provide: MAT_DATE_FORMATS, useValue: BR_DATE_FORMATS },
-  ],
   imports: [
     CommonModule,
     FormsModule,

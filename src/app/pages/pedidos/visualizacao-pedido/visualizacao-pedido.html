@@ -1,24 +1,47 @@
-﻿```html
-<section class="container-fluid pagina cadastro-pedido-pagina">
+﻿<section class="container-fluid pagina cadastro-pedido-pagina">
+
+  <div class="cp-header">
+    <h2 class="cp-titulo">Meu Pedido</h2>
+    <div>
+
+
+      <button
+        matButton="outlined"
+        type="button"
+        (click)="onCancelar()">
+
+        <mat-icon fontIcon="arrow_back"></mat-icon>
+        Voltar
+      </button>
+
+
+      <button
+        style="margin-left: 15px; "
+        matButton="filled"
+        type="button"
+        (click)="imprimir()">
+
+        <mat-icon fontIcon="picture_as_pdf"></mat-icon>
+        Imprimir
+      </button>
+    </div>
+  </div>
 
   <!-- Corpo com scroll -->
   <div class="cp-corpo">
 
     <div id="visualizacao-pedido">
-      <div class="row g-3">
+      <div class="row g-3 justify-content-center">
 
         <!-- Cliente -->
-        <div class="col-12">
-          <app-select-autocomplete
-            label="Cliente"
-            [obrigatorio]="true"
-            placeholder="Cliente do pedido"
-            mode="single"
-            [disabled]="true"
-            [options]="clientes()"
-            [ngModel]="clienteIdSignal()"
-            [ngModelOptions]="{ name: 'clienteId' }">
-          </app-select-autocomplete>
+        <div class="col-12  col-lg-12  col-md-12 col-sm-12">
+          <mat-form-field appearance="outline" class="campo-full">
+            <mat-label>Cliente</mat-label>
+            <input
+              matInput
+              disabled
+              [value]="clienteNome()" />
+          </mat-form-field>
         </div>
 
         <!-- Valor -->
@@ -111,28 +134,38 @@
         <div class="col-12">
           <p class="secao-label">Itens do Pedido</p>
 
-          <app-itens-pedido
-            [itens]="itensPedido()"
-            [disabled]="true">
-          </app-itens-pedido>
+          <table class="itens-tabela">
+            <colgroup>
+              <col style="width: 60%">
+              <col style="width: 40%">
+            </colgroup>
+
+            <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Quantidade</th>
+              <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+              @for (item of itensPedido(); track item.produtoNome) {
+                <tr>
+                  <td class="col-produto">
+                    {{ item.produtoNome }}
+                  </td>
+
+                  <td class="col-qtd">
+                    {{ item.quantidade }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
 
       </div>
     </div>
-
-  </div>
-
-  <!-- Footer fixo -->
-  <div class="cp-footer">
-
-    <button
-      matButton="outlined"
-      type="button"
-      (click)="onCancelar()">
-
-      <mat-icon fontIcon="arrow_back"></mat-icon>
-      Voltar
-    </button>
 
   </div>
 

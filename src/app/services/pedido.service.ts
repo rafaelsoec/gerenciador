@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PedidoDTO } from '../dtos/pedido/PedidoDTO';
 import { RespostaPaginada } from '../dtos/RespostaPaginada';
@@ -11,15 +11,18 @@ export class PedidoService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/pedidos`;
 
+  gerarPdf(id: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.url}/${id}/pdf`, {
+      responseType: 'blob',
+      observe: 'response',
+    });
+  }
   // ── Read ──────────────────────────────────────────────────────────────────
 
   /** GET /pedidos  →  lista paginada */
   listar(params: PaginacaoParams = {}): Observable<RespostaPaginada<PedidoDTO>> {
     const { page = 0, size = 20, sort = 'id,asc' } = params;
-    const httpParams = new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('sort', sort);
+    const httpParams = new HttpParams().set('page', page).set('size', size).set('sort', sort);
     return this.http.get<RespostaPaginada<PedidoDTO>>(this.url, { params: httpParams });
   }
 

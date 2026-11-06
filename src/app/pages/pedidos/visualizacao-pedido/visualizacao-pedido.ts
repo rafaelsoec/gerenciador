@@ -5,18 +5,17 @@ import { finalize } from 'rxjs';
 import { AlertaService } from '../../../services/alerta.service';
 import { PedidoService } from '../../../services/pedido.service';
 import { PedidoDTO } from '../../../dtos/pedido/PedidoDTO';
-import { SelectAutocompleteComponent } from '../../../shared/auto-select/auto-select';
 import { FormsModule } from '@angular/forms';
-import { MatFormField, MatLabel } from '@angular/material/input';
-import { MatOption, MatSelect } from '@angular/material/select';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerToggle,
-} from '@angular/material/datepicker';
-import { ItensPedidoComponent } from '../itens/item-pedido';
-import { MatIcon } from '@angular/material/icon';
-import { OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ItemPedidoDTO } from '../../../dtos/pedido/ItemPedidoDTO';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-visualizacao-pedido',
@@ -24,17 +23,15 @@ import { OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
   templateUrl: './visualizacao-pedido.html',
   styleUrl: './visualizacao-pedido.css',
   imports: [
-    SelectAutocompleteComponent,
+    CommonModule,
     FormsModule,
-    MatLabel,
-    MatFormField,
-    MatSelect,
-    MatOption,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    ItensPedidoComponent,
-    MatIcon,
-    MatDatepicker,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatDialogModule,
   ],
 })
 export class VisualizacaoPedidoComponent implements OnInit {
@@ -53,17 +50,15 @@ export class VisualizacaoPedidoComponent implements OnInit {
 
   readonly pedidoSignal = signal<PedidoDTO | null>(null);
 
-  readonly id = Number(this.route.snapshot.paramMap.get('id'));
-
   // ── Dados do pedido ───────────────────────────────────────────
   readonly clienteIdSignal = signal<number | null>(null);
-  readonly clientes = signal<OpcaoCampo[]>([]);
+  readonly clienteNome = signal<string>('');
 
   readonly formaPagamentoSignal = signal<string | null>(null);
 
   readonly dataEntregaSignal = signal<Date | null>(null);
 
-  readonly itensPedido = signal<any[]>([]);
+  readonly itensPedido = signal<ItemPedidoDTO[]>([]);
 
   readonly valorCalculado = computed(() => {
     const pedido = this.pedidoSignal();
@@ -93,16 +88,18 @@ export class VisualizacaoPedidoComponent implements OnInit {
     { value: 'BOLETO', label: 'Boleto' },
   ];
 
+  public id: number | undefined;
   // ── Inicialização ─────────────────────────────────────────────
 
   ngOnInit(): void {
+    this.id = Number(this.route.snapshot.paramMap.get('id')) ?? 0;
     this.buscarPedido();
   }
 
   // ── Consulta ──────────────────────────────────────────────────
 
   private buscarPedido(): void {
-    if (!Number.isInteger(this.id) || this.id <= 0) {
+    if (!Number.isInteger(this.id)) {
       this.alerta.erro('Identificador do pedido inválido.');
       this.voltar();
       return;
@@ -111,7 +108,7 @@ export class VisualizacaoPedidoComponent implements OnInit {
     this.loading.set(true);
 
     this.pedidoService
-      .buscarPorId(this.id)
+      .buscarPorId(this.id ?? 0)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (pedido) => {
@@ -129,10 +126,9 @@ export class VisualizacaoPedidoComponent implements OnInit {
 
   private preencherFormulario(pedido: PedidoDTO): void {
     this.clienteIdSignal.set(pedido.clienteId ?? null);
-    this.clientes.set([{ value: pedido.clienteId, label: pedido.clienteNome }]);
+    this.clienteNome.set(pedido.clienteNome);
 
     this.formaPagamentoSignal.set(pedido.formaPagamento ?? null);
-
     this.dataEntregaSignal.set(pedido.dataEntrega ? new Date(pedido.dataEntrega) : null);
 
     this.form = {
@@ -144,23 +140,34 @@ export class VisualizacaoPedidoComponent implements OnInit {
     this.itensPedido.set(pedido.itens ?? []);
   }
 
-  // ── Eventos dos itens ─────────────────────────────────────────
-
-  onItensAlterados(itens: any[]): void {
-    this.itensPedido.set(itens);
-  }
-
-  onTotalAlterado(total: number): void {
-    // Página de visualização: não altera os dados do pedido.
-  }
-
-  // ── Navegação ─────────────────────────────────────────────────
-
   onCancelar(): void {
     this.voltar();
   }
 
   private voltar(): void {
     this.router.navigate(['/pedidos']);
+  }
+
+  imprimir(): void {
+    this.pedidoService.gerarPdf(this.id ?? 0).subscribe({
+      next: (response: HttpResponse<Blob>) => {
+        const pdf = response.body!;
+        const contentDisposition = response.headers.get('Content-Disposition');
+
+        const nomeArquivo =
+          contentDisposition?.match(/filename="?([^"]+)"?/i)?.[1] ?? `pedido-${this.id}.pdf`;
+        const url = window.URL.createObjectURL(pdf);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nomeArquivo;
+
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (erro) => {
+        this.alerta.erro(erro);
+      },
+    });
   }
 }

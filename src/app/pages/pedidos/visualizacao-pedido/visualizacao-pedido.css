@@ -20,8 +20,14 @@
   flex: 0 0 auto;
   background-color: #173B5E;
   color: #ffffff;
-  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 24px;
+  gap: 16px;
 }
+
 
 .cp-titulo {
   margin: 0;

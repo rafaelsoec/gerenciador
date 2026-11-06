@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
@@ -10,8 +10,14 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { LOCALE_ID } from '@angular/core';
 import { converterInterceptor } from './interceptors/converter.interceptor';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  provideNativeDateAdapter,
+} from '@angular/material/core';
+import { BrDateAdapter } from './shared/form-cadastro/form-cadastro';
 
 registerLocaleData(localePt);
 
@@ -30,18 +36,36 @@ function paginadorIntlPtBr(): MatPaginatorIntl {
   return intl;
 }
 
+const BR_DATE_FORMATS = {
+  parse: { dateInput: 'DD/MM/YYYY' },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideAnimationsAsync(),
+    provideNativeDateAdapter(),
     provideHttpClient(
       withFetch(),
       withInterceptors([authInterceptor, loadingInterceptor, converterInterceptor]),
     ),
     provideNgxMask(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: DateAdapter, useClass: BrDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: BR_DATE_FORMATS },
     { provide: MatPaginatorIntl, useFactory: paginadorIntlPtBr },
+    {
+      provide: DateAdapter,
+      useClass: BrDateAdapter,
+    },
   ],
 };

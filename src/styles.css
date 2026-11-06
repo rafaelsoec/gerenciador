@@ -346,3 +346,36 @@ body.dark .btn-cancelar-edicao {
 .mat-mdc-option.mat-mdc-option-active .mdc-list-item__primary-text {
   color: #ffffff !important;
 }
+
+.itens-tabela {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+    overflow-wrap: break-word;
+  }
+
+  thead tr {
+    background-color: #173B5E;
+    color: #ffffff;
+  }
+
+  thead th {
+    font-weight: 600;
+    border: none;
+    padding: 14px 12px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  tbody tr:hover {
+    background-color: #f8fafc;
+  }
+}
