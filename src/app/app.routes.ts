@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { InicioComponent } from './pages/inicio/inicio';
 import { ClientesComponent } from './pages/clientes/clientes';
 import { ProdutosComponent } from './pages/produtos/produtos';
@@ -7,8 +7,11 @@ import { CadastroPedidoComponent } from './pages/pedidos/cadastro-pedido/cadastr
 import { RelatoriosComponent } from './pages/relatorios/relatorios';
 import { ConfiguracoesComponent } from './pages/configuracoes/configuracoes';
 import { LoginComponent } from './pages/login/login';
+import { PerfilComponent } from './pages/perfil/perfil';
 import { authGuard } from './guards/auth.guard';
 import { VisualizacaoPedidoComponent } from './pages/pedidos/visualizacao-pedido/visualizacao-pedido';
+import { EmpresasComponent } from './pages/empresas/empresas';
+import { CadastroEmpresaComponent } from './pages/empresas/cadastro-empresa/cadastro-empresa';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -31,4 +34,8 @@ export const routes: Routes = [
   { path: 'relatorios/NFS', component: RelatoriosComponent, canActivate: [authGuard] },
   { path: 'relatorios/NFSe', component: RelatoriosComponent, canActivate: [authGuard] },
   { path: 'configuracoes', component: ConfiguracoesComponent, canActivate: [authGuard] },
+  { path: 'empresas', component: EmpresasComponent, canActivate: [authGuard] },
+  { path: 'empresas/nova', component: CadastroEmpresaComponent, canActivate: [authGuard] },
+  { path: 'empresas/:id/editar', component: CadastroEmpresaComponent, canActivate: [authGuard] },
+  { path: 'perfil', component: PerfilComponent, canActivate: [authGuard] },
 ];

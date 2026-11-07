@@ -1,9 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+﻿import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { MatDialog } from '@angular/material/dialog';
 import { AuthService, Usuario } from '../services/auth.service';
-import { PerfilComponent } from '../pages/perfil/perfil';
 
 export interface MenuItem {
   id: string;
@@ -26,7 +24,7 @@ export interface MenuGroup {
   styleUrl: './sidebar.css',
 })
 export class SidebarComponent {
-  private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
   private readonly sanitizer = inject(DomSanitizer);
   readonly auth = inject(AuthService);
 
@@ -138,12 +136,14 @@ export class SidebarComponent {
 
   abrirPerfil(): void {
     this.menuUsuarioAberto.set(false);
-    const usuario = this.auth.usuarioAtual();
-    if (!usuario) return;
-    this.dialog.open(PerfilComponent, {
-      width: '480px',
-      data: { usuario },
-    });
+    if (!this.isMobile()) { this.isExpanded.set(false); }
+    this.router.navigate(['/perfil']);
+  }
+
+  navegarEmpresas(): void {
+    this.menuUsuarioAberto.set(false);
+    if (!this.isMobile()) { this.isExpanded.set(false); }
+    this.router.navigate(['/empresas']);
   }
 
   logout(): void {
