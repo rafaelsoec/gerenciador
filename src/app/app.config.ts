@@ -17,7 +17,7 @@ import {
   MAT_DATE_LOCALE,
   provideNativeDateAdapter,
 } from '@angular/material/core';
-import { BrDateAdapter } from './shared/form-cadastro/form-cadastro';
+import { BR_DATE_FORMATS, BrDateAdapter } from './components/data/data.component';
 
 registerLocaleData(localePt);
 
@@ -36,16 +36,6 @@ function paginadorIntlPtBr(): MatPaginatorIntl {
   return intl;
 }
 
-const BR_DATE_FORMATS = {
-  parse: { dateInput: 'DD/MM/YYYY' },
-  display: {
-    dateInput: 'DD/MM/YYYY',
-    monthYearLabel: 'MMMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -60,12 +50,8 @@ export const appConfig: ApplicationConfig = {
     provideNgxMask(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
-    { provide: DateAdapter, useClass: BrDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: BR_DATE_FORMATS },
+    { provide: DateAdapter, useClass: BrDateAdapter },
     { provide: MatPaginatorIntl, useFactory: paginadorIntlPtBr },
-    {
-      provide: DateAdapter,
-      useClass: BrDateAdapter,
-    },
   ],
 };

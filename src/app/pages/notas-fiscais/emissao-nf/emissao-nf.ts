@@ -24,6 +24,13 @@ import { NaturezaOperacaoEnum, NaturezaOperacaoLabel } from '../../../enums/Natu
 import { FormaPagamentoEnum } from '../../../enums/FormaPagamentoEnum';
 import { MoedaPipe } from '../../../pipes/moeda-pipe';
 import { FormaPagamentoPipe } from '../../../pipes/forma-pagamento-pipe';
+import { ClienteService } from '../../../services/cliente.service';
+import { ClienteDTO } from '../../../dtos/cliente/ClienteDTO';
+import { NumberUtils } from '../../../utils/NumberUtils';
+import { CampoDataComponent } from '../../../components/data/data.component';
+import { DateUtils } from '../../../utils/DateUtils';
+import { Constantes } from '../../../constantes/Constantes';
+import { CampoMoedaComponent } from '../../../components/moeda/moeda.component';
 
 interface ItemNFForm extends ItemNotaFiscalDTO {}
 
@@ -71,6 +78,8 @@ interface EmissaoNFForm {
     NgxMaskDirective,
     MoedaPipe,
     FormaPagamentoPipe,
+    CampoDataComponent,
+    CampoMoedaComponent,
   ],
   templateUrl: './emissao-nf.html',
   styleUrl: './emissao-nf.css',
@@ -81,11 +90,14 @@ export class EmissaoNFComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly nfService = inject(NotaFiscalService);
   private readonly empresaService = inject(EmpresaService);
+  private readonly clienteService = inject(ClienteService);
   private readonly alertaService = inject(AlertaService);
 
   pedidoId!: number;
   pedido: PedidoDTO | null = null;
+  empresas: EmpresaDTO[] = [];
   empresa: EmpresaDTO | null = null;
+  cliente: ClienteDTO = new ClienteDTO();
 
   readonly salvando = signal(false);
   readonly carregando = signal(true);
@@ -107,30 +119,62 @@ export class EmissaoNFComponent implements OnInit {
 
   // totais calculados
   get valorProdutos(): number {
-    return this.itens.reduce((s, i) => s + i.subtotal, 0);
+    return this.itens.reduce(
+      (s, i) => NumberUtils.toNumber(s) + NumberUtils.toNumber(i.subtotal),
+      0,
+    );
   }
+
   get valorDesconto(): number {
-    return this.itens.reduce((s, i) => s + i.desconto, 0);
+    return this.itens.reduce(
+      (s, i) => NumberUtils.toNumber(s) + NumberUtils.toNumber(i.desconto),
+      0,
+    );
   }
+
   get valorIcms(): number {
-    return this.itens.reduce((s, i) => s + (i.subtotal * i.aliquotaIcms) / 100, 0);
+    return this.itens.reduce(
+      (s, i) =>
+        NumberUtils.toNumber(s) +
+        (NumberUtils.toNumber(i.subtotal) * NumberUtils.toNumber(i.aliquotaIcms)) / 100,
+      0,
+    );
   }
+
   get valorIpi(): number {
-    return this.itens.reduce((s, i) => s + (i.subtotal * i.aliquotaIpi) / 100, 0);
+    return this.itens.reduce(
+      (s, i) =>
+        NumberUtils.toNumber(s) +
+        (NumberUtils.toNumber(i.subtotal) * NumberUtils.toNumber(i.aliquotaIpi)) / 100,
+      0,
+    );
   }
+
   get valorPis(): number {
-    return this.itens.reduce((s, i) => s + (i.subtotal * i.aliquotaPis) / 100, 0);
+    return this.itens.reduce(
+      (s, i) =>
+        NumberUtils.toNumber(s) +
+        (NumberUtils.toNumber(i.subtotal) * NumberUtils.toNumber(i.aliquotaPis)) / 100,
+      0,
+    );
   }
+
   get valorCofins(): number {
-    return this.itens.reduce((s, i) => s + (i.subtotal * i.aliquotaCofins) / 100, 0);
+    return this.itens.reduce(
+      (s, i) =>
+        NumberUtils.toNumber(s) +
+        (NumberUtils.toNumber(i.subtotal) * NumberUtils.toNumber(i.aliquotaCofins)) / 100,
+      0,
+    );
   }
+
   get valorTotal(): number {
     return (
-      this.valorProdutos -
-      this.valorDesconto +
-      (this.form.valorFrete || 0) +
-      (this.form.valorSeguro || 0) +
-      (this.form.valorOutros || 0)
+      NumberUtils.toNumber(this.valorProdutos) -
+      NumberUtils.toNumber(this.valorDesconto) +
+      NumberUtils.toNumber(this.form.valorFrete || 0) +
+      NumberUtils.toNumber(this.form.valorSeguro || 0) +
+      NumberUtils.toNumber(this.form.valorOutros || 0)
     );
   }
 
@@ -152,11 +196,15 @@ export class EmissaoNFComponent implements OnInit {
     // Busca pedido + primeira empresa em paralelo
     forkJoin({
       pedido: this.pedidoService.buscarPorId(this.pedidoId),
-      empresas: this.empresaService.listar({ page: 0, size: 1 }),
+      empresas: this.empresaService.listar({ page: 0, size: 1000 }),
     }).subscribe({
       next: ({ pedido, empresas }) => {
+        var empresaDTOS = empresas.conteudo;
+        this.recuperarDadosCliente(pedido.clienteId);
+
         this.pedido = pedido;
-        this.empresa = empresas.conteudo[0] ?? null;
+        this.empresas = empresaDTOS;
+        this.empresa = empresaDTOS[0] ?? null;
         this._preencherForm(pedido);
         this.carregando.set(false);
       },
@@ -169,7 +217,7 @@ export class EmissaoNFComponent implements OnInit {
   }
 
   private _preencherForm(pedido: PedidoDTO): void {
-    const hoje = new Date().toISOString().slice(0, 10);
+    const hoje = DateUtils.formatar(new Date(), 'DD/MM/YYYY');
 
     this.form = {
       tipo: TipoNotaFiscalEnum.NFE,
@@ -197,20 +245,22 @@ export class EmissaoNFComponent implements OnInit {
       produtoId: item.produtoId,
       produtoNome: item.produtoNome,
       quantidade: item.quantidade,
-      valorUnitario: item.precoUnitario,
-      desconto: item.desconto,
-      aliquotaIcms: 12,
-      aliquotaIpi: 0,
-      aliquotaPis: 0.65,
-      aliquotaCofins: 3,
-      ncm: '',
-      cfop: '5102',
-      subtotal: item.subtotal,
+      precoUnitario: NumberUtils.toNumber(item.precoUnitario),
+      desconto: NumberUtils.toNumber(item.desconto),
+      aliquotaIcms: NumberUtils.toNumber(item.aliquotaIcms),
+      aliquotaIpi: NumberUtils.toNumber(item.aliquotaIpi),
+      aliquotaPis: NumberUtils.toNumber(item.aliquotaPis),
+      aliquotaCofins: NumberUtils.toNumber(item.aliquotaCofins),
+      ncm: item.ncm,
+      cfop: item.cfop,
+      subtotal: NumberUtils.toNumber(item.subtotal),
     }));
   }
 
   recalcularSubtotal(item: ItemNFForm): void {
-    item.subtotal = item.quantidade * item.valorUnitario - item.desconto;
+    item.subtotal =
+      NumberUtils.toNumber(item.quantidade) * NumberUtils.toNumber(item.precoUnitario) -
+      NumberUtils.toNumber(item.desconto);
   }
 
   onSalvar(): void {
@@ -294,5 +344,19 @@ export class EmissaoNFComponent implements OnInit {
       formaPagamento: '',
       informacoesAdicionais: '',
     };
+  }
+
+  private recuperarDadosCliente(clienteId: number) {
+    this.clienteService.buscarPorId(clienteId).subscribe((cliente) => {
+      this.form.destinatarioNome = cliente.nome;
+      this.form.destinatarioIdentificador = cliente.identificador;
+      this.form.destinatarioEmail = cliente.email;
+      this.form.destinatarioLogradouro = cliente.logradouro;
+      this.form.destinatarioNumero = cliente.numero;
+      this.form.destinatarioBairro = cliente.bairro;
+      this.form.destinatarioMunicipio = cliente.municipio;
+      this.form.destinatarioUf = cliente.uf;
+      this.form.destinatarioCep = cliente.cep;
+    });
   }
 }

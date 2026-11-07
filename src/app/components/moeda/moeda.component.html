@@ -1,0 +1,24 @@
+<mat-form-field appearance="outline" class="campo-full">
+
+  <mat-label>
+    {{ label() }}
+
+    @if (required()) {
+      *
+    }
+  </mat-label>
+
+  <input
+    matInput
+    type="text"
+    [disabled]="isDisabled"
+    [placeholder]="placeholder()"
+    [ngModel]="valorExibido()"
+    (ngModelChange)="alterarValor($event)"
+    [ngModelOptions]="{ standalone: true }"
+    [mask]="mascara"
+    [dropSpecialCharacters]="false"
+    (blur)="onTouched()"
+  />
+
+</mat-form-field>

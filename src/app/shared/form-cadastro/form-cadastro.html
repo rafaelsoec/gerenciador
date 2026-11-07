@@ -2,9 +2,9 @@
 
   <!-- HEADER FIXO -->
   @if (_titulo) {
-  <div class="form-header">
-    <h2 class="form-titulo">{{ _titulo }}</h2>
-  </div>
+    <div class="form-header">
+      <h2 class="form-titulo">{{ _titulo }}</h2>
+    </div>
   }
 
   <!-- CORPO COM SCROLL -->
@@ -12,96 +12,108 @@
     <div class="row g-3">
 
       @for (campo of _campos; track campo.nome) {
-      <div [class]="colClass(campo)">
+        <div [class]="colClass(campo)">
 
-        <!-- TEXT / NUMBER -->
-        @if (campo.tipo === 'text' || campo.tipo === 'number') {
-        <mat-form-field appearance="outline" class="campo-full">
-          <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
-          <input matInput [type]="campo.tipo" [placeholder]="campo.placeholder ?? ''" [name]="campo.nome"
-            [appRegex]="campo.pattern" [mask]="campo.mascara ?? ''" [dropSpecialCharacters]="false"
-            [ngModel]="_form()[campo.nome]" (ngModelChange)="onValorAlterado(campo.nome, $event, campo)" />
-        </mat-form-field>
-        }
+          <!-- TEXT / NUMBER -->
+          @if (campo.tipo === 'text' || campo.tipo === 'number') {
+            <mat-form-field appearance="outline" class="campo-full">
+              <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+              <input matInput [type]="campo.tipo" [placeholder]="campo.placeholder ?? ''" [name]="campo.nome"
+                     [appRegex]="campo.pattern" [mask]="campo.mascara ?? ''" [dropSpecialCharacters]="false"
+                     [ngModel]="_form()[campo.nome]" (ngModelChange)="onValorAlterado(campo.nome, $event, campo)" />
+            </mat-form-field>
+          }
 
-        <!-- TEXTAREA -->
-        @if (campo.tipo === 'textarea') {
-        <mat-form-field appearance="outline" class="campo-full">
-          <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
-          <textarea matInput [type]="campo.tipo" [placeholder]="campo.placeholder ?? ''" [name]="campo.nome"
-            [ngModel]="_form()[campo.nome]" (ngModelChange)="onValorAlterado(campo.nome, $event, campo)">
+          <!-- TEXTAREA -->
+          @if (campo.tipo === 'textarea') {
+            <mat-form-field appearance="outline" class="campo-full">
+              <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+              <textarea matInput [type]="campo.tipo" [placeholder]="campo.placeholder ?? ''" [name]="campo.nome"
+                        [ngModel]="_form()[campo.nome]" (ngModelChange)="onValorAlterado(campo.nome, $event, campo)">
               </textarea>
-        </mat-form-field>
-        }
+            </mat-form-field>
+          }
 
-        <!-- SELECT -->
-        @if (campo.tipo === 'select') {
-        <mat-form-field appearance="outline" class="campo-full">
-          <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
-          <mat-select [name]="campo.nome" [ngModel]="_form()[campo.nome]"
-            (ngModelChange)="atualizar(campo.nome, $event)">
-            @for (opcao of campo.opcoes ?? []; track opcao.value) {
-            <mat-option [value]="opcao.value">{{ exibirPipe(opcao.label, campo.pipe) }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        }
+          <!-- SELECT -->
+          @if (campo.tipo === 'select') {
+            <mat-form-field appearance="outline" class="campo-full">
+              <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+              <mat-select [name]="campo.nome" [ngModel]="_form()[campo.nome]"
+                          (ngModelChange)="atualizar(campo.nome, $event)">
+                @for (opcao of campo.opcoes ?? []; track opcao.value) {
+                  <mat-option [value]="opcao.value">{{ exibirPipe(opcao.label, campo.pipe) }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
 
-        <!-- AUTOSELECT -->
-        @if (campo.tipo === 'autoselect') {
-        <app-select-autocomplete [label]="campo.label" [obrigatorio]="campo.obrigatorio"
-          placeholder="Digite para buscar..." [mode]="campo.multiplo ? 'multiple' : 'single'" [pipe]="campo.pipe"
-          [options]="campo.opcoes" [ngModel]="_form()[campo.nome]" [ngModelOptions]="{ name: campo.nome }"
-          (ngModelChange)="atualizar(campo.nome, $event)">
-        </app-select-autocomplete>
-        }
+          <!-- AUTOSELECT -->
+          @if (campo.tipo === 'autoselect') {
+            <app-select-autocomplete [label]="campo.label" [obrigatorio]="campo.obrigatorio"
+                                     placeholder="Digite para buscar..." [mode]="campo.multiplo ? 'multiple' : 'single'"
+                                     [pipe]="campo.pipe"
+                                     [options]="campo.opcoes" [ngModel]="_form()[campo.nome]"
+                                     [ngModelOptions]="{ name: campo.nome }"
+                                     (ngModelChange)="atualizar(campo.nome, $event)">
+            </app-select-autocomplete>
+          }
 
-        <!-- CHECKBOX -->
-        @if (campo.tipo === 'checkbox') {
-        <div class="campo-checkbox">
-          <mat-checkbox [name]="campo.nome" [ngModel]="_form()[campo.nome]"
-            (ngModelChange)="atualizar(campo.nome, $event)">
-            {{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}
-          </mat-checkbox>
+          <!-- CHECKBOX -->
+          @if (campo.tipo === 'checkbox') {
+            <div class="campo-checkbox">
+              <mat-checkbox [name]="campo.nome" [ngModel]="_form()[campo.nome]"
+                            (ngModelChange)="atualizar(campo.nome, $event)">
+                {{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}
+              </mat-checkbox>
+            </div>
+          }
+
+          @if (campo.tipo === 'moeda') {
+            <div class="campo-checkbox">
+              <app-moeda
+                [label]=" campo.obrigatorio ? 'Desconto *' : 'Desconto'"
+                name="desconto"
+                [(ngModel)]="_form()[campo.nome]"
+              />
+            </div>
+          }
+
+          <!-- PRODUTO -->
+          @if (campo.tipo === 'produto') {
+            <p class="secao-label">{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</p>
+            <app-itens-pedido
+              [itens]="_itensPedido()"
+              (selectionChange)="onItensAlterados(campo.nome, $event)"
+              (totalAlterado)="onTotalAlterado($event)">
+            </app-itens-pedido>
+          }
+
+          <!-- DATA -->
+          @if (campo.tipo === 'data') {
+            <mat-form-field class="campo-data-sem-cor campo-full">
+              <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
+              <input matInput [matDatepicker]="picker" [ngModel]="_form()[campo.nome]"
+                     [ngModelOptions]="{ name: campo.nome }" (ngModelChange)="atualizar(campo.nome, $event)">
+              <mat-hint>DD/MM/AAAA</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          }
+
+          <!-- RADIO -->
+          @if (campo.tipo === 'radio') {
+            <div class="campo-radio-group">
+              <label class="campo-radio-label">{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</label>
+              <mat-radio-group [name]="campo.nome" [ngModel]="_form()[campo.nome]"
+                               (ngModelChange)="atualizar(campo.nome, $event)" class="radio-group">
+                @for (opcao of campo.opcoes ?? []; track opcao.value) {
+                  <mat-radio-button [value]="opcao.value">{{ opcao.label }}</mat-radio-button>
+                }
+              </mat-radio-group>
+            </div>
+          }
+
         </div>
-        }
-
-        <!-- PRODUTO -->
-        @if (campo.tipo === 'produto') {
-          <p class="secao-label">{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</p>
-          <app-itens-pedido
-            [itens]="_itensPedido()"
-            (selectionChange)="onItensAlterados(campo.nome, $event)"
-            (totalAlterado)="onTotalAlterado($event)">
-          </app-itens-pedido>
-        }
-
-        <!-- DATA -->
-        @if (campo.tipo === 'data') {
-        <mat-form-field class="campo-data-sem-cor campo-full">
-          <mat-label>{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</mat-label>
-          <input matInput [matDatepicker]="picker" [ngModel]="_form()[campo.nome]"
-            [ngModelOptions]="{ name: campo.nome }" (ngModelChange)="atualizar(campo.nome, $event)">
-          <mat-hint>DD/MM/AAAA</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        }
-
-        <!-- RADIO -->
-        @if (campo.tipo === 'radio') {
-        <div class="campo-radio-group">
-          <label class="campo-radio-label">{{ campo.label }}{{ campo.obrigatorio ? ' *' : '' }}</label>
-          <mat-radio-group [name]="campo.nome" [ngModel]="_form()[campo.nome]"
-            (ngModelChange)="atualizar(campo.nome, $event)" class="radio-group">
-            @for (opcao of campo.opcoes ?? []; track opcao.value) {
-            <mat-radio-button [value]="opcao.value">{{ opcao.label }}</mat-radio-button>
-            }
-          </mat-radio-group>
-        </div>
-        }
-
-      </div>
       }
 
     </div><!-- /row -->

@@ -85,59 +85,32 @@
 
           <!-- Desconto -->
           <div class="col-12 col-sm-4">
-            <mat-form-field appearance="outline" class="campo-full">
-              <mat-label>Desconto (R$)</mat-label>
-              <input
-                matInput
-                type="text"
-                name="desconto"
-                [disabled]="disabled()"
-                [mask]="mascara"
-                [dropSpecialCharacters]="false"
-                [(ngModel)]="form.desconto" />
-            </mat-form-field>
+            <app-moeda
+              label="Desconto"
+              name="desconto"
+              [(ngModel)]="form.desconto"
+              [disabled]="disabled()"
+            />
           </div>
 
           <!-- Frete -->
           <div class="col-12 col-sm-4">
-            <mat-form-field appearance="outline" class="campo-full">
-              <mat-label>Frete (R$)</mat-label>
-              <input
-                matInput
-                type="text"
-                name="frete"
-                [disabled]="disabled()"
-                [mask]="mascara"
-                [dropSpecialCharacters]="false"
-                [(ngModel)]="form.frete" />
-            </mat-form-field>
+            <app-moeda
+              label="Frete"
+              name="frete"
+              [(ngModel)]="form.frete"
+              [disabled]="disabled()"
+            />
           </div>
 
           <!-- Data de Entrega -->
           <div class="col-12 col-sm-4">
-            <mat-form-field class="campo-data-sem-cor campo-full">
-              <mat-label>Data de Entrega *</mat-label>
-              <input
-                matInput
-                [disabled]="disabled()"
-                [matDatepicker]="picker"
-                name="dataEntrega"
-                [ngModel]="dataEntregaSignal()"
-                (ngModelChange)="dataEntregaSignal.set($event)" />
-
-              <mat-hint>DD/MM/AAAA</mat-hint>
-
-              <mat-datepicker-toggle
-                matIconSuffix
-                [for]="picker"
-                [disabled]="disabled()">
-              </mat-datepicker-toggle>
-
-              <mat-datepicker
-                #picker
-                [disabled]="disabled()">
-              </mat-datepicker>
-            </mat-form-field>
+            <app-data
+              label="Data de Entrega *"
+              name="dataEntrega"
+              [(ngModel)]="dataEntregaSignal"
+              [disabled]="disabled()"
+            ></app-data>
           </div>
 
           <!-- Observação -->

@@ -11,8 +11,7 @@ import { FormaPagamentoPipe } from '../../pipes/forma-pagamento-pipe';
 import { FormaPagamentoEnum } from '../../enums/FormaPagamentoEnum';
 import { StatusPedidoEnum } from '../../enums/StatusPedidoEnum';
 import { StatusPedidoPipe } from '../../pipes/status-pedido-pipe';
-import { Constantes } from '../../constantes/Constantes';
-import { MoedaPipe } from '../../pipes/moeda-pipe';
+import { CampoMoedaComponent } from '../../components/moeda/moeda.component';
 
 @Component({
   selector: 'app-pedidos',
@@ -53,21 +52,21 @@ export class PedidosComponent implements OnInit {
       campo: 'valorTotal',
       header: 'Valor Total',
       editavel: true,
-      mascara: Constantes.MASCARA_MOEDA,
+      mascara: CampoMoedaComponent.MASCARA_MOEDA,
       width: '10%',
     },
     {
       campo: 'desconto',
       header: 'Desconto',
       editavel: true,
-      mascara: Constantes.MASCARA_MOEDA,
+      mascara: CampoMoedaComponent.MASCARA_MOEDA,
       width: '8%',
     },
     {
       campo: 'frete',
       header: 'Frete',
       editavel: true,
-      mascara: Constantes.MASCARA_MOEDA,
+      mascara: CampoMoedaComponent.MASCARA_MOEDA,
       width: '8%',
     },
     {

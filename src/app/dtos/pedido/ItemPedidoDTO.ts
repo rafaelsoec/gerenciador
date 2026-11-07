@@ -6,4 +6,10 @@ export interface ItemPedidoDTO {
   precoUnitario: number;
   desconto: number;
   subtotal: number;
+  aliquotaIcms: number;
+  aliquotaIpi: number;
+  aliquotaPis: number;
+  aliquotaCofins: number;
+  ncm: string;
+  cfop: string;
 }

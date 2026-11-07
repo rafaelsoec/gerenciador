@@ -1,0 +1,43 @@
+<mat-form-field class="campo-data-sem-cor campo-full">
+
+  <mat-label>
+    {{ label() }}
+    @if (required()) {
+      *
+    }
+  </mat-label>
+
+  <!--  <input-->
+  <!--    matInput-->
+  <!--    [disabled]="isDisabled"-->
+  <!--    [matDatepicker]="picker"-->
+  <!--    [ngModel]="data()"-->
+  <!--    (ngModelChange)="alterarData($event)"-->
+  <!--    [ngModelOptions]="{ standalone: true }"-->
+  <!--    (blur)="onTouched()"-->
+  <!--  />-->
+  <input
+    matInput
+    [ngModel]="data()"
+    (ngModelChange)="alterarData($event)"
+    [ngModelOptions]="{ standalone: true }"
+    [matDatepicker]="picker"
+    placeholder="DD/MM/AAAA"
+    [disabled]="isDisabled"
+    (blur)="onTouched()"
+  />
+
+  <mat-hint>{{ hint() }}</mat-hint>
+
+  <mat-datepicker-toggle
+    matIconSuffix
+    [for]="picker"
+    [disabled]="isDisabled">
+  </mat-datepicker-toggle>
+
+  <mat-datepicker
+    #picker
+    [disabled]="isDisabled">
+  </mat-datepicker>
+
+</mat-form-field>

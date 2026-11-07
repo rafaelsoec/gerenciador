@@ -14,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AlertaService } from '../../services/alerta.service';
 import { PageEvent } from '@angular/material/paginator';
-import { Constantes } from '../../constantes/Constantes';
+import { CampoMoedaComponent } from '../../components/moeda/moeda.component';
 
 @Component({
   selector: 'app-produtos',
@@ -41,7 +41,7 @@ export class ProdutosComponent implements OnInit {
       header: 'Preço (R$)',
       editavel: true,
       width: '10%',
-      mascara: Constantes.MASCARA_MOEDA,
+      mascara: CampoMoedaComponent.MASCARA_MOEDA,
     },
     { campo: 'estoque', header: 'Estoque', editavel: true, width: '10%' },
   ];
@@ -52,8 +52,7 @@ export class ProdutosComponent implements OnInit {
     {
       nome: 'preco',
       label: 'Preço (R$)',
-      tipo: 'text',
-      mascara: Constantes.MASCARA_MOEDA,
+      tipo: 'moeda',
       obrigatorio: true,
       col: 6,
     },

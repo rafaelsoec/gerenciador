@@ -9,6 +9,12 @@
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.25);
 }
 
+.emitente-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 /* ── Layout fixo: header + corpo scrollável + footer ── */
 .emissao-nf-pagina {
   display: flex;

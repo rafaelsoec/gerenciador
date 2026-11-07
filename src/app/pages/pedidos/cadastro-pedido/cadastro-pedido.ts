@@ -9,7 +9,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, tap, throwError } from 'rxjs';
 import { SelectAutocompleteComponent } from '../../../shared/auto-select/auto-select';
 import { ItemPedido, ItensPedidoComponent } from '../itens/item-pedido';
@@ -20,7 +19,8 @@ import { ClienteService } from '../../../services/cliente.service';
 import { PedidoService } from '../../../services/pedido.service';
 import { AlertaService } from '../../../services/alerta.service';
 import { DateUtils } from '../../../utils/DateUtils';
-import { Constantes } from '../../../constantes/Constantes';
+import { CampoMoedaComponent } from '../../../components/moeda/moeda.component';
+import { CampoDataComponent } from '../../../components/data/data.component';
 
 interface CadastroPedidoForm {
   clienteId: any;
@@ -44,10 +44,11 @@ interface CadastroPedidoForm {
     MatSelectModule,
     MatIconModule,
     MatDatepickerModule,
-    NgxMaskDirective,
     MatDialogModule,
     SelectAutocompleteComponent,
     ItensPedidoComponent,
+    CampoMoedaComponent,
+    CampoDataComponent,
   ],
   templateUrl: './cadastro-pedido.html',
   styleUrl: './cadastro-pedido.css',
@@ -63,7 +64,6 @@ export class CadastroPedidoComponent implements OnInit {
   public disabled = input<boolean>(false);
   readonly clientes = signal<OpcaoCampo[]>([]);
 
-  readonly mascara = Constantes.MASCARA_MOEDA;
   readonly formasPagamento: OpcaoCampo[] = (() => {
     const pipe = new FormaPagamentoPipe();
     return Object.values(FormaPagamentoEnum).map((v) => ({
@@ -80,7 +80,7 @@ export class CadastroPedidoComponent implements OnInit {
   // Signals reativos para os campos obrigatórios do form
   readonly clienteIdSignal = signal<any>(null);
   readonly formaPagamentoSignal = signal<string>('');
-  readonly dataEntregaSignal = signal<Date | null>(null);
+  public dataEntregaSignal: Date | null = null;
 
   itensPedido: ItemPedido[] = [];
 
@@ -89,7 +89,7 @@ export class CadastroPedidoComponent implements OnInit {
       !this.clienteIdSignal() ||
       !this.valorCalculado() ||
       !this.formaPagamentoSignal() ||
-      !this.dataEntregaSignal() ||
+      !this.dataEntregaSignal ||
       this.itensSelecionados().length === 0
     );
   });
@@ -125,7 +125,7 @@ export class CadastroPedidoComponent implements OnInit {
         this.valorCalculado.set(pedido.valorTotal.toString());
         this.clienteIdSignal.set(pedido.clienteId.toString());
         this.formaPagamentoSignal.set(pedido.formaPagamento.toString());
-        this.dataEntregaSignal.set(dataConvertida);
+        this.dataEntregaSignal = dataConvertida;
         this.itensPedido = pedido.itens.map((p) => ({
           produtoId: p.produtoId,
           quantidade: p.quantidade,
@@ -176,7 +176,7 @@ export class CadastroPedidoComponent implements OnInit {
       formaPagamento: this.formaPagamentoSignal(),
       desconto: this.form.desconto || '0',
       frete: this.form.frete || '0',
-      dataEntrega: DateUtils.formatar(this.dataEntregaSignal()),
+      dataEntrega: DateUtils.formatar(this.dataEntregaSignal),
       observacao: this.form.observacao,
       itens: this.itensSelecionados().map((item) => ({
         produtoId:

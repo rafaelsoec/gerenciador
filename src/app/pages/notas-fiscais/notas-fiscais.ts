@@ -6,10 +6,12 @@ import { PageEvent } from '@angular/material/paginator';
 import { NotaFiscalDTO } from '../../dtos/nota-fiscal/NotaFiscalDTO';
 import { NotaFiscalService } from '../../services/nota-fiscal.service';
 import { AlertaService } from '../../services/alerta.service';
-import { TabelaComponent, ColunaTabela } from '../../shared/tabela/tabela';
+import { ColunaTabela, TabelaComponent } from '../../shared/tabela/tabela';
 import { HeaderPaginaComponent } from '../../shared/header-pagina/header-pagina';
 import { StatusNotaFiscalEnum, StatusNotaFiscalLabel } from '../../enums/StatusNotaFiscalEnum';
 import { TipoNotaFiscalLabel } from '../../enums/TipoNotaFiscalEnum';
+import { NaturezaOperacaoEnum } from '../../enums/NaturezaOperacaoEnum';
+import { NaturezaOperacaoPipePipe } from '../../pipes/natureza-pipe';
 
 @Component({
   selector: 'app-notas-fiscais',
@@ -29,14 +31,21 @@ export class NotasFiscaisComponent implements OnInit {
   readonly tamanhoPagina = signal<number>(20);
 
   readonly colunas: ColunaTabela[] = [
-    { campo: 'numero',             header: 'Numero',        editavel: false, width: '8%' },
-    { campo: 'serie',              header: 'Serie',         editavel: false, width: '6%' },
-    { campo: 'tipoLabel',          header: 'Tipo',          editavel: false, width: '10%' },
-    { campo: 'statusLabel',        header: 'Status',        editavel: false, width: '10%' },
-    { campo: 'naturezaLabel',      header: 'Natureza',      editavel: false, width: '18%' },
-    { campo: 'destinatarioNome',   header: 'Destinatario',  editavel: false, width: '22%' },
-    { campo: 'valorTotal',         header: 'Valor Total',   editavel: false, width: '10%' },
-    { campo: 'dataEmissao',        header: 'Emissao',       editavel: false, width: '10%' },
+    { campo: 'numero', header: 'Numero', editavel: false, width: '8%' },
+    { campo: 'serie', header: 'Serie', editavel: false, width: '6%' },
+    { campo: 'tipoLabel', header: 'Tipo', editavel: false, width: '10%' },
+    { campo: 'statusLabel', header: 'Status', editavel: false, width: '10%' },
+    {
+      campo: 'naturezaOperacao',
+      header: 'Natureza',
+      pipe: new NaturezaOperacaoPipePipe(),
+      opcoes: Object.values(NaturezaOperacaoEnum),
+      editavel: false,
+      width: '18%',
+    },
+    { campo: 'destinatarioNome', header: 'Destinatario', editavel: false, width: '22%' },
+    { campo: 'valorTotal', header: 'Valor Total', editavel: false, width: '10%' },
+    { campo: 'dataEmissao', header: 'Emissao', editavel: false, width: '10%' },
   ];
 
   ngOnInit(): void {
@@ -48,9 +57,11 @@ export class NotasFiscaisComponent implements OnInit {
       next: (pagina) => {
         const itens = pagina.conteudo.map((n) => ({
           ...n,
+          naturezaOperacao: n.naturezaOperacao,
           tipoLabel: TipoNotaFiscalLabel[n.tipo] ?? n.tipo,
           statusLabel: StatusNotaFiscalLabel[n.status as StatusNotaFiscalEnum] ?? n.status,
         })) as any[];
+
         this.notas.set(itens);
         this.totalElementos.set(pagina.totalElementos);
         this.paginaAtual.set(pagina.paginaAtual);

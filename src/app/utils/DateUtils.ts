@@ -6,6 +6,10 @@ moment.locale('pt-br');
 export type DataType = number | string | Date | null | undefined;
 
 export class DateUtils {
+  static isValid(timestamp: DataType, format: string = 'DD/MM/YYYY'): boolean {
+    return moment(timestamp, format, true).isValid();
+  }
+
   static converterParaDate(timestamp: DataType): Date | null {
     if (timestamp === null || timestamp === undefined || timestamp === '') {
       return null;

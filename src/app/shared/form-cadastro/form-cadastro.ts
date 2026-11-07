@@ -1,13 +1,4 @@
-import {
-  Component,
-  computed,
-  inject,
-  input,
-  OnInit,
-  output,
-  PipeTransform,
-  signal,
-} from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, PipeTransform, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,18 +13,22 @@ import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
 import { Observable } from 'rxjs';
 import { RegexDirective } from '../../diretivas/regex.directive';
 import { SelectAutocompleteComponent } from '../auto-select/auto-select';
-import {
-  DateAdapter,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-  NativeDateAdapter,
-} from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ItensPedidoComponent } from '../../pages/pedidos/itens/item-pedido';
+import { CampoMoedaComponent } from '../../components/moeda/moeda.component';
 
 /** Tipos de campo suportados pelo formulário genérico. */
 export type TipoCampo =
-  'text' | 'number' | 'select' | 'checkbox' | 'radio' | 'autoselect' | 'data' | 'textarea' | 'produto';
+  | 'text'
+  | 'number'
+  | 'select'
+  | 'checkbox'
+  | 'radio'
+  | 'autoselect'
+  | 'data'
+  | 'textarea'
+  | 'produto'
+  | 'moeda';
 
 /** Opção para campos do tipo select ou radio. */
 export interface OpcaoCampo {
@@ -102,37 +97,6 @@ export interface FormCadastroDialogData {
   onCancelar?: () => void;
 }
 
-export class BrDateAdapter extends NativeDateAdapter {
-  override parse(value: string | null): Date | null {
-    if (!value || typeof value !== 'string') {
-      return null;
-    }
-
-    const partes = value.split('/');
-
-    if (partes.length !== 3) {
-      return null;
-    }
-
-    const dia = Number(partes[0]);
-    const mes = Number(partes[1]);
-    const ano = Number(partes[2]);
-
-    if (!dia || !mes || !ano) {
-      return null;
-    }
-
-    return new Date(ano, mes - 1, dia);
-  }
-
-  override format(date: Date): string {
-    const dia = String(date.getDate()).padStart(2, '0');
-    const mes = String(date.getMonth() + 1).padStart(2, '0');
-
-    return `${dia}/${mes}/${date.getFullYear()}`;
-  }
-}
-
 @Component({
   selector: 'app-form-cadastro',
   standalone: true,
@@ -155,6 +119,7 @@ export class BrDateAdapter extends NativeDateAdapter {
     RegexDirective,
     SelectAutocompleteComponent,
     ItensPedidoComponent,
+    CampoMoedaComponent,
   ],
   templateUrl: './form-cadastro.html',
   styleUrl: './form-cadastro.css',
@@ -226,7 +191,7 @@ export class FormCadastroComponent implements OnInit {
         if (c.tipo === 'checkbox') return !val;
         if (c.tipo === 'produto') {
           const itens = this._itensPedido();
-          return itens.length === 0 || !itens.some(i => i.produtoId && i.quantidade);
+          return itens.length === 0 || !itens.some((i) => i.produtoId && i.quantidade);
         }
         if (vazio) return true;
       }
@@ -316,8 +281,11 @@ export class FormCadastroComponent implements OnInit {
     }
   }
 
-  onItensAlterados(nome: string, itens: { produtoId: number | null; quantidade: number | null }[] | null): void {
-    const validos = (itens ?? []).filter(i => i.produtoId && i.quantidade);
+  onItensAlterados(
+    nome: string,
+    itens: { produtoId: number | null; quantidade: number | null }[] | null,
+  ): void {
+    const validos = (itens ?? []).filter((i) => i.produtoId && i.quantidade);
     this._itensPedido.set(validos);
     this.atualizar(nome, validos);
   }

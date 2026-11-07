@@ -8,4 +8,11 @@ export class ClienteDTO {
   email = '';
   tipo = TipoPessoaEnum.PF;
   situacao = SituacaoEnum.ATIVO;
+  logradouro: string = '';
+  numero: string = '';
+  bairro: string = '';
+  municipio: string = '';
+  uf: string = '';
+  cep: string = '';
+  complemento: string = '';
 }

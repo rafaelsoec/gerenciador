@@ -3,7 +3,7 @@
   produtoId: number;
   produtoNome: string;
   quantidade: number;
-  valorUnitario: number;
+  precoUnitario: number;
   desconto: number;
   aliquotaIcms: number;
   aliquotaIpi: number;

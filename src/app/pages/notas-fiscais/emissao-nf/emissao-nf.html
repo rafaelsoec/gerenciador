@@ -25,7 +25,15 @@
         <!-- ==== SECAO: EMITENTE ==== -->
         @if (empresa) {
           <div class="en-secao en-secao-emitente">
-            <h3 class="en-secao-titulo">Emitente</h3>
+            <div class="emitente-container mb-4">
+              <label>Emitente: </label>
+              <mat-select style="border-bottom: 1px solid #C3C3C3; width: 20%" name="tipo" [(ngModel)]="empresa"
+                          required>
+                @for (t of empresas; track t.id) {
+                  <mat-option [value]="t">{{ t.nomeFantasia }}</mat-option>
+                }
+              </mat-select>
+            </div>
             <div class="en-emitente-grid">
               <div class="en-emitente-item">
                 <span class="en-emitente-label">Razão Social</span>
@@ -54,7 +62,7 @@
 
             <div class="col-12 col-sm-4">
               <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Tipo de Nota *</mat-label>
+                <mat-label>Tipo de Nota</mat-label>
                 <mat-select name="tipo" [(ngModel)]="form.tipo" required>
                   @for (t of tiposNF; track t.value) {
                     <mat-option [value]="t.value">{{ t.label }}</mat-option>
@@ -65,7 +73,7 @@
 
             <div class="col-12 col-sm-5">
               <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Natureza da Operação *</mat-label>
+                <mat-label>Natureza da Operação</mat-label>
                 <mat-select name="naturezaOperacao" [(ngModel)]="form.naturezaOperacao" required>
                   @for (n of naturezas; track n.value) {
                     <mat-option [value]="n.value">{{ n.label }}</mat-option>
@@ -76,23 +84,22 @@
 
             <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Série *</mat-label>
+                <mat-label>Série</mat-label>
                 <input matInput name="serie" [(ngModel)]="form.serie" maxlength="3" required />
               </mat-form-field>
             </div>
 
-            <div class="col-12 col-sm-3">
-              <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Data de Emissão *</mat-label>
-                <input matInput name="dataEmissao" type="date" [(ngModel)]="form.dataEmissao" required />
-              </mat-form-field>
+            <div class="col-12 col-lg-6 col-md-6 col-sm-12">
+             c
             </div>
 
-            <div class="col-12 col-sm-3">
-              <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Data Entrada / Saída</mat-label>
-                <input matInput name="dataEntradaSaida" type="date" [(ngModel)]="form.dataEntradaSaida" />
-              </mat-form-field>
+            <div class="col-12 col-lg-6 col-md-6 col-sm-12">
+              <app-data
+                label="Data Entrada / Saída"
+                [(ngModel)]="form.dataEntradaSaida"
+                name="dataEntradaSaida"
+                [required]="true"
+              ></app-data>
             </div>
 
           </div>
@@ -105,33 +112,37 @@
 
             <div class="col-12 col-sm-6">
               <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Nome / Razão Social *</mat-label>
-                <input matInput name="destinatarioNome" [(ngModel)]="form.destinatarioNome" maxlength="150" required />
+                <mat-label>Nome / Razão Social</mat-label>
+                <input disabled matInput name="destinatarioNome" [(ngModel)]="form.destinatarioNome" maxlength="150"
+                       required />
               </mat-form-field>
             </div>
 
             <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>CPF / CNPJ *</mat-label>
-                <input matInput name="destinatarioIdentificador" [(ngModel)]="form.destinatarioIdentificador" maxlength="18" required />
+                <!--                <mat-label>CPF / CNPJ</mat-label>-->
+                <input disabled matInput name="destinatarioIdentificador" [(ngModel)]="form.destinatarioIdentificador"
+                       maxlength="18" mask="000.000.000-00||00.000.000/0000-00" />
               </mat-form-field>
             </div>
 
             <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>E-mail</mat-label>
-                <input matInput name="destinatarioEmail" type="email" [(ngModel)]="form.destinatarioEmail" maxlength="100" />
+                <input disabled matInput name="destinatarioEmail" type="email" [(ngModel)]="form.destinatarioEmail"
+                       maxlength="100" />
               </mat-form-field>
             </div>
 
-            <div class="col-12 col-sm-5">
+            <div class="col-12 col-sm-6">
               <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>Logradouro</mat-label>
-                <input matInput name="destinatarioLogradouro" [(ngModel)]="form.destinatarioLogradouro" maxlength="150" />
+                <input disabled matInput name="destinatarioLogradouro" [(ngModel)]="form.destinatarioLogradouro"
+                       maxlength="150" />
               </mat-form-field>
             </div>
 
-            <div class="col-12 col-sm-2">
+            <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>Número</mat-label>
                 <input matInput name="destinatarioNumero" [(ngModel)]="form.destinatarioNumero" maxlength="20" />
@@ -141,29 +152,31 @@
             <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>Bairro</mat-label>
-                <input matInput name="destinatarioBairro" [(ngModel)]="form.destinatarioBairro" maxlength="100" />
+                <input disabled matInput name="destinatarioBairro" [(ngModel)]="form.destinatarioBairro"
+                       maxlength="100" />
               </mat-form-field>
             </div>
 
-            <div class="col-12 col-sm-2">
+            <div class="col-12 col-sm-6">
+              <mat-form-field appearance="outline" class="campo-full">
+                <mat-label>Município</mat-label>
+                <input disabled matInput name="destinatarioMunicipio" [(ngModel)]="form.destinatarioMunicipio"
+                       maxlength="100" />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>CEP</mat-label>
-                <input matInput name="destinatarioCep" [(ngModel)]="form.destinatarioCep"
+                <input disabled matInput name="destinatarioCep" [(ngModel)]="form.destinatarioCep"
                        mask="00000-000" [dropSpecialCharacters]="false" />
               </mat-form-field>
             </div>
 
             <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Município</mat-label>
-                <input matInput name="destinatarioMunicipio" [(ngModel)]="form.destinatarioMunicipio" maxlength="100" />
-              </mat-form-field>
-            </div>
-
-            <div class="col-12 col-sm-2">
-              <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>UF</mat-label>
-                <input matInput name="destinatarioUf" [(ngModel)]="form.destinatarioUf" maxlength="2" />
+                <input disabled matInput name="destinatarioUf" [(ngModel)]="form.destinatarioUf" maxlength="2" />
               </mat-form-field>
             </div>
 
@@ -176,19 +189,19 @@
           <div class="en-itens-tabela-wrapper">
             <table class="en-itens-tabela">
               <thead>
-                <tr>
-                  <th>Produto</th>
-                  <th>NCM</th>
-                  <th>CFOP</th>
-                  <th class="col-num">Qtd</th>
-                  <th class="col-num">Vl. Unit.</th>
-                  <th class="col-num">Desconto</th>
-                  <th class="col-num">ICMS %</th>
-                  <th class="col-num">IPI %</th>
-                  <th class="col-num">PIS %</th>
-                  <th class="col-num">COFINS %</th>
-                  <th class="col-num">Subtotal</th>
-                </tr>
+              <tr>
+                <th>Produto</th>
+                <th>NCM</th>
+                <th>CFOP</th>
+                <th class="col-num">Qtd</th>
+                <th class="col-num">Vl. Unit.</th>
+                <th class="col-num">Desconto</th>
+                <th class="col-num">ICMS %</th>
+                <th class="col-num">IPI %</th>
+                <th class="col-num">PIS %</th>
+                <th class="col-num">COFINS %</th>
+                <th class="col-num">Subtotal</th>
+              </tr>
               </thead>
               <tbody>
                 @for (item of itens; track item.produtoId; let i = $index) {
@@ -213,7 +226,7 @@
 
                     <td class="col-num">
                       <input class="en-input-tabela en-input-num" type="number" min="0" step="0.01"
-                             [(ngModel)]="item.valorUnitario" [name]="'vunit_' + i"
+                             [(ngModel)]="item.precoUnitario" [name]="'vunit_' + i"
                              (ngModelChange)="recalcularSubtotal(item)" />
                     </td>
 
@@ -259,30 +272,33 @@
           <div class="row g-3">
 
             <div class="col-12 col-sm-3">
-              <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Frete</mat-label>
-                <input matInput name="valorFrete" type="number" min="0" step="0.01" [(ngModel)]="form.valorFrete" />
-              </mat-form-field>
+              <app-moeda
+                label="Frete"
+                name="valorFrete"
+                [(ngModel)]="form.valorFrete"
+              />
+            </div>
+
+            <div class="col-12 col-sm-3">
+              <app-moeda
+                label="Seguro"
+                name="valorSeguro"
+                [(ngModel)]="form.valorSeguro"
+              />
+            </div>
+
+            <div class="col-12 col-sm-3">
+              <app-moeda
+                label="Outras Despesas"
+                name="valorOutros"
+                [(ngModel)]="form.valorOutros"
+              />
             </div>
 
             <div class="col-12 col-sm-3">
               <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Seguro</mat-label>
-                <input matInput name="valorSeguro" type="number" min="0" step="0.01" [(ngModel)]="form.valorSeguro" />
-              </mat-form-field>
-            </div>
-
-            <div class="col-12 col-sm-3">
-              <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Outras Despesas</mat-label>
-                <input matInput name="valorOutros" type="number" min="0" step="0.01" [(ngModel)]="form.valorOutros" />
-              </mat-form-field>
-            </div>
-
-            <div class="col-12 col-sm-3">
-              <mat-form-field appearance="outline" class="campo-full">
-                <mat-label>Forma de Pagamento *</mat-label>
-                <mat-select name="formaPagamento" [(ngModel)]="form.formaPagamento">
+                <mat-label>Forma de Pagamento</mat-label>
+                <mat-select disabled name="formaPagamento" [(ngModel)]="form.formaPagamento">
                   @for (fp of formasPagamento; track fp) {
                     <mat-option [value]="fp">{{ fp | formaPagamento }}</mat-option>
                   }
