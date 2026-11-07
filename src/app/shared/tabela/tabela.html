@@ -57,13 +57,13 @@
             <!-- Modo normal: editar e/ou excluir -->
             @if (exibirVisualizacao()) {
               <button mat-icon-button matTooltip="Visualizar" (click)="iniciarVisualizacao(row)">
-                <mat-icon fontIcon="visibility"></mat-icon>
+                <mat-icon class="icone-branco" fontIcon="visibility"></mat-icon>
               </button>
             }
 
             @if (exibirEdicao()) {
               <button mat-icon-button matTooltip="Editar" (click)="iniciarEdicao(row)">
-                <mat-icon>edit</mat-icon>
+                <mat-icon class="icone-branco">edit</mat-icon>
               </button>
             }
 

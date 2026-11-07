@@ -1,4 +1,26 @@
-<div class="page">
-  <h1>Relatórios</h1>
-  <p>Visualize relatórios e métricas aqui.</p>
+<div class="container-fluid pagina">
+
+  <app-header-pagina titulo="Relatórios" subtitulo="Gerencie os relatórios da sua empresa"
+                     corBackground="#173B5E" corTexto="#ffffff" corBotao="#3b82f6" />
+
+  <div class="mt-5  row justify-content-start">
+    @for (cartao of cartoes; track cartao.label) {
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 ">
+        <div
+          class="card align-content-center"
+          style="background: #173B5E; cursor: pointer"
+          [routerLink]="['/relatorios', cartao.value]">
+
+          <div class="card-body">
+            <p class="text-center text-white mb-0">
+              <mat-icon class="icone-branco" fontIcon="save"></mat-icon>
+              {{ cartao.label }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+    }
+  </div>
+
 </div>

@@ -1,4 +1,3 @@
-import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DashboardDTO, VendaDTO } from '../../dtos/dashboard/DashboardDTO';
@@ -18,8 +17,6 @@ import { DataPipe } from '../../pipes/data-pipe';
   standalone: true,
   imports: [
     RouterLink,
-    DatePipe,
-    TitleCasePipe,
     FormsModule,
     MoedaPipe,
     GraficoComponent,
@@ -33,6 +30,7 @@ export class InicioComponent implements OnInit {
   private readonly dashboardService = inject(DashboardService);
   private readonly alertaService = inject(AlertaService);
   public dados = new DashboardDTO();
+  public dataHoje = new Date();
 
   periodo: string = 'SEMANA';
 

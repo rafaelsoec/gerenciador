@@ -12,6 +12,10 @@ export class TemaService {
     this._aplicar(this.darkMode());
   }
 
+  isDarkMode(): boolean {
+    return this.darkMode();
+  }
+
   alternar(): void {
     const novo = !this.darkMode();
     this.darkMode.set(novo);

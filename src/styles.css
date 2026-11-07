@@ -347,7 +347,13 @@ body.dark .btn-cancelar-edicao {
   color: #ffffff !important;
 }
 
+body.dark .cor-branca {
+  color: #fff !important;
+}
 
+body.dark .icone-branco {
+  color: #fff !important;
+}
 
 .itens-tabela {
   width: 100%;

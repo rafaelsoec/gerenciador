@@ -21,7 +21,7 @@
       <h2>Olá! 👋</h2>
       <p>Acompanhe o desempenho da sua empresa em um só lugar.</p>
     </div>
-    <div class="period-note">{{ dados.data | date:'MMMM \'de\' yyyy' | titlecase }}</div>
+    <div class="period-note">{{ dados.data | data }} a {{ dataHoje | data }} </div>
   </section>
 
   <!-- Métricas -->
@@ -56,7 +56,7 @@
 
   <!-- Gráfico + Meta -->
   <section class=" row justify-content-center align-items-stretch mb-4">
-    <div class=" col-sm-12 col-md-8 col-lg-8">
+    <div class=" col-sm-12 col-md-7 col-lg-7">
       <article class="card">
         <div class="panel-head">
           <div class="col-12 col-lg-12">
@@ -68,7 +68,7 @@
         </div>
       </article>
     </div>
-    <div class=" col-sm-12 col-md-4 col-lg-4">
+    <div class=" col-sm-12 col-md-5 col-lg-5">
       <article class="card">
         <div class="panel-head">
           <div>
@@ -77,12 +77,14 @@
           </div>
           <span class="status-badge paid">No ritmo</span>
         </div>
-        <div class="goal">
-          <app-progresso-circular titulo="Meta de faturamento" [percentual]="dados.meta.percentualAtingido"
-                                  cor="#16a34a">
-          </app-progresso-circular>
-          <div>
-            <div class="goal-value">{{ dados.meta.pedidosConcluidos | moeda }}</div>
+        <div class=" cor-branca row justify-content-center">
+          <div class="col-sm-12 col-md-8 col-lg-8">
+            <app-progresso-circular titulo="Meta de faturamento" [percentual]="dados.meta.percentualAtingido"
+                                    cor="#16a34a">
+            </app-progresso-circular>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4 text-center align-content-center">
+            <div class="">{{ dados.meta.pedidosConcluidos | moeda }}</div>
             <div class="goal-label">de {{ dados.meta.total | moeda }}</div>
             <div class="goal-label goal-label--green">Faltam {{ dados.meta.pedidosEmAberto | moeda }}</div>
           </div>

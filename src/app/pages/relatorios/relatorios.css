@@ -10,3 +10,7 @@ h1 {
 p {
   color: #6b7280;
 }
+
+.min-card {
+  min-height: 200px;
+}

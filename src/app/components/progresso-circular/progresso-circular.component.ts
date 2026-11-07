@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import {
   ApexNonAxisChartSeries,
   ApexChart,
@@ -7,6 +7,8 @@ import {
   NgApexchartsModule,
 } from 'ng-apexcharts';
 import { NumberUtils } from '../../utils/NumberUtils';
+import { TemaService } from '../../services/tema.service';
+import { ClienteService } from '../../services/cliente.service';
 
 @Component({
   selector: 'app-progresso-circular',
@@ -15,6 +17,8 @@ import { NumberUtils } from '../../utils/NumberUtils';
   templateUrl: './progresso-circular.component.html',
 })
 export class ProgressoCircularComponent {
+  private readonly temaService = inject(TemaService);
+
   @Input() titulo = '';
   @Input() percentual = 0;
   @Input() cor = '#0d6efd';
@@ -27,6 +31,7 @@ export class ProgressoCircularComponent {
     return {
       type: 'radialBar',
       height: 220,
+      foreColor: this.temaService.isDarkMode() ? '#ffffff' : '#173B5E',
       sparkline: { enabled: true },
     };
   }

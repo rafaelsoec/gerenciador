@@ -28,5 +28,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   { path: 'relatorios', component: RelatoriosComponent, canActivate: [authGuard] },
+  { path: 'relatorios/NFS', component: RelatoriosComponent, canActivate: [authGuard] },
+  { path: 'relatorios/NFSe', component: RelatoriosComponent, canActivate: [authGuard] },
   { path: 'configuracoes', component: ConfiguracoesComponent, canActivate: [authGuard] },
 ];
