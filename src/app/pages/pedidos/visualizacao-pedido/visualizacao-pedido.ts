@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, computed, inject, OnInit, signal } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -17,6 +17,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ItemPedidoDTO } from '../../../dtos/pedido/ItemPedidoDTO';
 import { HttpResponse } from '@angular/common/http';
 import { NgxMaskDirective } from 'ngx-mask';
+import { FormaPagamentoPipe } from '../../../pipes/forma-pagamento-pipe';
+import { FormaPagamentoEnum } from '../../../enums/FormaPagamentoEnum';
 
 @Component({
   selector: 'app-visualizacao-pedido',
@@ -34,10 +36,11 @@ import { NgxMaskDirective } from 'ngx-mask';
     MatDatepickerModule,
     MatDialogModule,
     NgxMaskDirective,
+    FormaPagamentoPipe,
   ],
 })
 export class VisualizacaoPedidoComponent implements OnInit {
-  // ── Dependências ─────────────────────────────────────────────
+  // â”€â”€ DependÃªncias â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -45,14 +48,14 @@ export class VisualizacaoPedidoComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly alerta = inject(AlertaService);
 
-  // ── Estado da página ──────────────────────────────────────────
+  // â”€â”€ Estado da pÃ¡gina â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   readonly disabled = signal(true);
   readonly loading = signal(false);
 
   readonly pedidoSignal = signal<PedidoDTO | null>(null);
 
-  // ── Dados do pedido ───────────────────────────────────────────
+  // â”€â”€ Dados do pedido â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   readonly clienteIdSignal = signal<number | null>(null);
   readonly clienteNome = signal<string>('');
 
@@ -72,7 +75,7 @@ export class VisualizacaoPedidoComponent implements OnInit {
     return pedido.valorTotal ?? 0;
   });
 
-  // ── Formulário ────────────────────────────────────────────────
+  // â”€â”€ FormulÃ¡rio â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   form = {
     desconto: '0,00',
@@ -80,29 +83,23 @@ export class VisualizacaoPedidoComponent implements OnInit {
     observacao: '',
   };
 
-  // ── Opções ────────────────────────────────────────────────────
+  // â”€â”€ OpÃ§Ãµes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-  readonly formasPagamento = [
-    { value: 'DINHEIRO', label: 'Dinheiro' },
-    { value: 'PIX', label: 'PIX' },
-    { value: 'CARTAO_CREDITO', label: 'Cartão de Crédito' },
-    { value: 'CARTAO_DEBITO', label: 'Cartão de Débito' },
-    { value: 'BOLETO', label: 'Boleto' },
-  ];
+  readonly formasPagamento = Object.values(FormaPagamentoEnum);
 
   public id: number | undefined;
-  // ── Inicialização ─────────────────────────────────────────────
+  // â”€â”€ InicializaÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id')) ?? 0;
     this.buscarPedido();
   }
 
-  // ── Consulta ──────────────────────────────────────────────────
+  // â”€â”€ Consulta â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private buscarPedido(): void {
     if (!Number.isInteger(this.id) || this.id == 0) {
-      this.alerta.erro('Identificador do pedido inválido.');
+      this.alerta.erro('Identificador do pedido invÃ¡lido.');
       this.voltar();
       return;
     }
@@ -124,7 +121,7 @@ export class VisualizacaoPedidoComponent implements OnInit {
       });
   }
 
-  // ── Preenchimento dos dados ───────────────────────────────────
+  // â”€â”€ Preenchimento dos dados â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private preencherFormulario(pedido: PedidoDTO): void {
     this.clienteIdSignal.set(pedido.clienteId ?? null);
@@ -146,6 +143,11 @@ export class VisualizacaoPedidoComponent implements OnInit {
     this.voltar();
   }
 
+  emitirNF(): void {
+    if (this.id) {
+      this.router.navigate(['/notas-fiscais/nova/pedido', this.id]);
+    }
+  }
   private voltar(): void {
     this.router.navigate(['/pedidos']);
   }

@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { TemaService } from '../../services/tema.service';
 
 @Component({
   selector: 'app-perfil',
@@ -26,6 +27,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class PerfilComponent implements OnInit {
   readonly auth = inject(AuthService);
+  readonly tema = inject(TemaService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 

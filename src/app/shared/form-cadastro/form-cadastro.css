@@ -154,3 +154,13 @@
     background-color: transparent !important;
   }
 }
+
+/* ── Dark mode ── */
+body.dark .form-cadastro-wrapper {
+  background: #1a2533;
+  border-color: #2a3a4d;
+}
+
+body.dark .form-corpo .row {
+  background-color: #1a2533;
+}

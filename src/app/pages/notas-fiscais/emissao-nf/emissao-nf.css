@@ -1,0 +1,333 @@
+/* ── Host: necessário para o flex funcionar ── */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: 100%;
+  overflow: hidden;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Layout fixo: header + corpo scrollável + footer ── */
+.emissao-nf-pagina {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: 100%;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+/* Header fixo */
+.en-header {
+  flex: 0 0 auto;
+  background-color: #173B5E;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 24px;
+  gap: 16px;
+}
+
+.en-titulo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.en-subtitulo {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  opacity: 0.75;
+  color: #ffffff;
+}
+
+/* Corpo com scroll */
+.en-corpo {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  padding-top: 24px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Footer fixo */
+.en-footer {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  background-color: #173B5E;
+  border-top: 1px solid #0f2840;
+  color: #ffffff;
+}
+
+/* ── Botões do footer ── */
+:host ::ng-deep .en-footer .mat-mdc-outlined-button {
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .en-footer .mat-mdc-outlined-button .mdc-button__label {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .en-footer .mat-mdc-outlined-button .mat-icon {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .en-footer .mdc-button--outlined {
+  --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.7);
+  --mdc-outlined-button-label-text-color: #ffffff;
+}
+
+:host ::ng-deep .en-footer .mat-mdc-unelevated-button:not(:disabled),
+:host ::ng-deep .en-footer .mat-mdc-raised-button:not(:disabled),
+:host ::ng-deep .en-footer button[matbutton="filled"]:not(:disabled) {
+  background-color: #ffffff !important;
+  color: #173B5E !important;
+}
+
+:host ::ng-deep .en-footer button[matbutton="filled"]:not(:disabled) .mdc-button__label,
+:host ::ng-deep .en-footer button[matbutton="filled"]:not(:disabled) .mat-icon {
+  color: #173B5E !important;
+}
+
+:host ::ng-deep .en-footer button[matbutton="filled"]:disabled {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* ── Campos ── */
+.campo-full {
+  width: 100%;
+}
+
+/* ── Loading ── */
+.en-loading {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #57606a;
+  font-size: 1rem;
+}
+
+/* ── Seções ── */
+.en-secao {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 0 24px 24px;
+}
+
+.en-secao-titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #173B5E;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ── Emitente ── */
+.en-secao-emitente {
+  background: #f0f4f8;
+  border-color: #c3d4e8;
+}
+
+.en-emitente-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}
+
+.en-emitente-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.en-emitente-label {
+  font-size: 0.75rem;
+  color: #57606a;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.en-emitente-valor {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2328;
+  margin-top: 2px;
+}
+
+/* ── Tabela de itens ── */
+.en-itens-tabela-wrapper {
+  overflow-x: auto;
+}
+
+.en-itens-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.en-itens-tabela th {
+  background: #173B5E;
+  color: #fff;
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.en-itens-tabela td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+}
+
+.en-itens-tabela tbody tr:hover {
+  background: #f7f8fa;
+}
+
+.col-produto  { min-width: 160px; font-weight: 500; }
+.col-num      { text-align: right; }
+.col-subtotal { font-weight: 600; color: #173B5E; white-space: nowrap; }
+
+.en-input-tabela {
+  width: 100%;
+  min-width: 60px;
+  border: 1px solid #d0d7de;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 0.83rem;
+  background: #fff;
+  color: #1f2328;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.en-input-tabela:focus {
+  border-color: #3b82d4;
+  box-shadow: 0 0 0 2px rgba(59, 130, 212, 0.15);
+}
+
+.en-input-num {
+  text-align: right;
+  max-width: 80px;
+}
+
+/* ── Totais resumo ── */
+.en-totais-resumo {
+  margin-top: 20px;
+  max-width: 380px;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.en-total-linha {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #1f2328;
+}
+
+.en-valor-negativo { color: #d73a49; }
+
+.en-total-icms {
+  color: #57606a;
+  font-size: 0.82rem;
+}
+
+.en-total-final {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #173B5E;
+  margin-top: 4px;
+}
+
+mat-divider {
+  margin: 6px 0;
+}
+
+/* ── Dark mode ── */
+:host-context(body.dark) .en-secao {
+  background: #1a2533;
+  border-color: #2a3a4d;
+}
+
+:host-context(body.dark) .en-secao-titulo {
+  color: #7ab3e8;
+  border-bottom-color: #2a3a4d;
+}
+
+:host-context(body.dark) .en-secao-emitente {
+  background: #1e2e40;
+  border-color: #2a3a4d;
+}
+
+:host-context(body.dark) .en-emitente-label {
+  color: #8a9ab0;
+}
+
+:host-context(body.dark) .en-emitente-valor {
+  color: #e2e8f0;
+}
+
+:host-context(body.dark) .en-itens-tabela td {
+  border-bottom-color: #334155;
+  color: #e2e8f0;
+}
+
+:host-context(body.dark) .en-itens-tabela tbody tr:hover {
+  background: #263245;
+}
+
+:host-context(body.dark) .en-input-tabela {
+  background: #263245;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+:host-context(body.dark) .en-input-tabela:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+:host-context(body.dark) .en-total-linha {
+  color: #e2e8f0;
+}
+
+:host-context(body.dark) .en-total-icms {
+  color: #8a9ab0;
+}
+
+:host-context(body.dark) .en-total-final {
+  color: #7ab3e8;
+}
+
+:host-context(body.dark) .col-subtotal {
+  color: #7ab3e8;
+}
+
+:host-context(body.dark) .en-loading {
+  color: #8a9ab0;
+}

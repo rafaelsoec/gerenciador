@@ -208,6 +208,7 @@
 
 /* Dark mode */
 body.dark .perfil-secao {
+  background-color: #1a2533;
   border-color: #2a3a4d;
 }
 
@@ -237,4 +238,79 @@ body.dark .perfil-msg--sucesso {
   background: rgba(34, 197, 94, 0.1);
   border-color: rgba(34, 197, 94, 0.3);
   color: #4ade80;
+}
+
+/* Toggle de tema (dark mode switch) */
+.perfil-tema-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.perfil-tema-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.perfil-tema-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1f2328;
+}
+
+.perfil-tema-desc {
+  font-size: 0.8rem;
+  color: #57606a;
+}
+
+.perfil-tema-toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: #d0d7de;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+
+.perfil-tema-toggle.ativo {
+  background: #173B5E;
+}
+
+.perfil-tema-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 0.2s ease;
+  display: block;
+}
+
+.perfil-tema-toggle.ativo .perfil-tema-toggle-knob {
+  transform: translateX(20px);
+}
+
+/* Dark mode overrides for the toggle row */
+body.dark .perfil-tema-label {
+  color: #e2e8f0;
+}
+
+body.dark .perfil-tema-desc {
+  color: #8a9ab0;
+}
+
+body.dark .perfil-tema-toggle {
+  background: #334155;
+}
+
+body.dark .perfil-tema-toggle.ativo {
+  background: #3b82f6;
 }

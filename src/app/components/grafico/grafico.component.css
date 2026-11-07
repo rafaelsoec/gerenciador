@@ -30,3 +30,17 @@
   width: 100%;
   min-width: 0;
 }
+
+/* ── Dark mode ── */
+:host-context(body.dark) .grafico-card {
+  background: #1a2533;
+  border-color: #2a3a4d;
+}
+
+:host-context(body.dark) .grafico-header h5 {
+  color: #e2e8f0;
+}
+
+:host-context(body.dark) .grafico-header small {
+  color: #8a9ab0;
+}

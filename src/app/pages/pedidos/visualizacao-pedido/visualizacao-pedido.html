@@ -21,6 +21,15 @@
           <mat-icon fontIcon="picture_as_pdf"></mat-icon>
           Imprimir
         </button>
+        <button
+          style="margin-left: 15px;"
+          matButton="filled"
+          type="button"
+          (click)="emitirNF()">
+
+          <mat-icon fontIcon="receipt_long"></mat-icon>
+          Emitir NF
+        </button>
       </div>
     </div>
 
@@ -60,9 +69,9 @@
                 disabled
                 [value]="formaPagamentoSignal()">
 
-                @for (opcao of formasPagamento; track opcao.value) {
-                  <mat-option [value]="opcao.value">
-                    {{ opcao.label }}
+                @for (opcao of formasPagamento; track opcao) {
+                  <mat-option [value]="opcao">
+                    {{ opcao | formaPagamento }}
                   </mat-option>
                 }
 
@@ -157,3 +166,4 @@
 
   </section>
 </div>
+

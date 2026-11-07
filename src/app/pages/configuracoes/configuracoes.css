@@ -94,19 +94,32 @@ h1 {
 
 /* ── Dark mode overrides ── */
 :host-context(body.dark) .secao {
-  border-color: #334155;
+  background-color: #1a2533;
+  border-color: #2a3a4d;
 }
 
 :host-context(body.dark) .secao-titulo {
-  background-color: #1e293b;
+  background-color: #212f3f;
   color: #94a3b8;
-  border-bottom-color: #334155;
+  border-bottom-color: #2a3a4d;
+}
+
+:host-context(body.dark) .opcao {
+  border-bottom: 1px solid #2a3a4d;
+}
+
+:host-context(body.dark) .opcao:last-child {
+  border-bottom: none;
 }
 
 :host-context(body.dark) .opcao-desc {
-  color: #94a3b8;
+  color: #8a9ab0;
 }
 
 :host-context(body.dark) .subtitulo {
-  color: #94a3b8;
+  color: #8a9ab0;
+}
+
+:host-context(body.dark) h1 {
+  color: #e2e8f0;
 }

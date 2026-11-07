@@ -52,6 +52,28 @@
           </div>
         </div>
 
+        <!-- Secao: Aparencia -->
+        <div class="perfil-secao">
+          <h3 class="perfil-secao-titulo">Aparência</h3>
+          <div class="perfil-secao-corpo">
+            <div class="perfil-tema-row">
+              <div class="perfil-tema-info">
+                <span class="perfil-tema-label">Modo escuro</span>
+                <span class="perfil-tema-desc">Alterna entre o tema claro e o tema escuro da interface</span>
+              </div>
+              <button
+                type="button"
+                class="perfil-tema-toggle"
+                [class.ativo]="tema.darkMode()"
+                (click)="tema.alternar()"
+                [attr.aria-label]="tema.darkMode() ? 'Desativar modo escuro' : 'Ativar modo escuro'"
+                [attr.aria-pressed]="tema.darkMode()">
+                <span class="perfil-tema-toggle-knob"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Secao: Alterar senha -->
         <div class="perfil-secao">
           <button type="button" class="perfil-senha-toggle" (click)="alterarSenha.update(v => !v)"

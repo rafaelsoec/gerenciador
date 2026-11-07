@@ -127,6 +127,7 @@
 
 /* Dark mode */
 body.dark .ce-secao {
+  background-color: #1a2533;
   border-color: #2a3a4d;
 }
 
