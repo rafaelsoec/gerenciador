@@ -1,0 +1,54 @@
+:host {
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+.scroll-container {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+
+  /* Empurra a scrollbar para a direita:
+     padding-right abre o espaço, margin-right negativo compensa o tamanho total.
+     O valor é definido pelo input scrollbarOffset via CSS custom property. */
+  padding-right: var(--scroll-offset, 0px);
+  margin-right: calc(-1 * var(--scroll-offset, 0px));
+}
+
+/* Scrollbar customizada — segue as variáveis de tema do sistema */
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--surface, #F4F7FA);
+  border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--border, #E7EDF2);
+  border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--muted, #718296);
+}
+
+/* Firefox */
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border, #E7EDF2) var(--surface, #F4F7FA);
+}
+
+.scroll-vertical {
+  overflow-y: auto;
+}
+
+.scroll-horizontal {
+  overflow-x: auto;
+}

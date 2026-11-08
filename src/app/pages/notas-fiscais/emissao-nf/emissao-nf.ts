@@ -29,8 +29,11 @@ import { ClienteDTO } from '../../../dtos/cliente/ClienteDTO';
 import { NumberUtils } from '../../../utils/NumberUtils';
 import { CampoDataComponent } from '../../../components/data/data.component';
 import { DateUtils } from '../../../utils/DateUtils';
-import { Constantes } from '../../../constantes/Constantes';
 import { CampoMoedaComponent } from '../../../components/moeda/moeda.component';
+import { ScrollComponent } from '../../../components/scroll/scroll.component';
+import { FooterComponent } from '../../../components/footer/footer.component';
+import { HeaderPaginaComponent } from '../../../shared/header-pagina/header-pagina';
+import { StatusNotaFiscalEnum } from '../../../enums/StatusNotaFiscalEnum';
 
 interface ItemNFForm extends ItemNotaFiscalDTO {}
 
@@ -80,6 +83,9 @@ interface EmissaoNFForm {
     FormaPagamentoPipe,
     CampoDataComponent,
     CampoMoedaComponent,
+    ScrollComponent,
+    FooterComponent,
+    HeaderPaginaComponent,
   ],
   templateUrl: './emissao-nf.html',
   styleUrl: './emissao-nf.css',
@@ -98,6 +104,7 @@ export class EmissaoNFComponent implements OnInit {
   empresas: EmpresaDTO[] = [];
   empresa: EmpresaDTO | null = null;
   cliente: ClienteDTO = new ClienteDTO();
+  rota: string = '/notas-fiscais';
 
   readonly salvando = signal(false);
   readonly carregando = signal(true);
@@ -192,6 +199,7 @@ export class EmissaoNFComponent implements OnInit {
 
   ngOnInit(): void {
     this.pedidoId = Number(this.route.snapshot.paramMap.get('pedidoId'));
+    this.rota = this.route.snapshot.queryParamMap.get('rota') ?? '/notas-fiscais';
 
     // Busca pedido + primeira empresa em paralelo
     forkJoin({
@@ -206,6 +214,7 @@ export class EmissaoNFComponent implements OnInit {
         this.empresas = empresaDTOS;
         this.empresa = empresaDTOS[0] ?? null;
         this._preencherForm(pedido);
+        console.log(this.form)
         this.carregando.set(false);
       },
       error: (erro) => {
@@ -272,7 +281,7 @@ export class EmissaoNFComponent implements OnInit {
       pedidoId: this.pedidoId,
       empresaId: this.empresa.id,
       tipo: this.form.tipo as TipoNotaFiscalEnum,
-      status: 'RASCUNHO' as any,
+      status: StatusNotaFiscalEnum.RASCUNHO,
       naturezaOperacao: this.form.naturezaOperacao as NaturezaOperacaoEnum,
       serie: this.form.serie,
       dataEmissao: this.form.dataEmissao,
@@ -307,7 +316,7 @@ export class EmissaoNFComponent implements OnInit {
       .pipe(
         tap((nf) => {
           this.alertaService.sucesso('Nota fiscal gerada com sucesso.');
-          this.router.navigate(['/notas-fiscais']);
+          this.router.navigate([this.rota]);
         }),
         catchError((erro) => {
           this.salvando.set(false);
@@ -319,7 +328,7 @@ export class EmissaoNFComponent implements OnInit {
   }
 
   onCancelar(): void {
-    this.router.navigate(['/notas-fiscais']);
+    this.router.navigate([this.rota]);
   }
 
   private _formVazio(): EmissaoNFForm {
@@ -358,5 +367,8 @@ export class EmissaoNFComponent implements OnInit {
       this.form.destinatarioUf = cliente.uf;
       this.form.destinatarioCep = cliente.cep;
     });
+  }
+  getSubTitulo(): string {
+    return `Pedido #${this.pedido?.id} --- ${this.pedido?.clienteNome}`;
   }
 }

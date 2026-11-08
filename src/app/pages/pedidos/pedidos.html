@@ -6,6 +6,7 @@
   <div class="col-12 col-sm-12 col-md-12 col-lg-12">
     <app-tabela [dados]="pedidos()" [colunas]="colunas" corHeader="#173B5E" corTextoHeader="#ffffff"
                 [exibirVisualizacao]="true" [exibirEdicao]="true" [exibirExclusao]="true" [paginacaoExterna]="true"
+                [icones]="icones"
                 [rotaVisualizacao]="'visualizar'" [rotaEdicao]="'editar'" [totalElementos]="totalElementos()"
                 [itensPorPagina]="tamanhoPagina()" (salvar)="onSalvar($event)" (excluir)="onExcluir($event)"
                 (paginaAlterada)="onPaginaAlterada($event)" />

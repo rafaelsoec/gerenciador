@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges } from '@angular/core';
 
 import {
   ApexAxisChartSeries,
@@ -14,6 +14,7 @@ import {
   ChartComponent,
 } from 'ng-apexcharts';
 import { GraficoConfig } from '../../dtos/GraficoModel';
+import { TemaService } from '../../services/tema.service';
 
 @Component({
   selector: 'app-grafico',
@@ -42,6 +43,8 @@ export class GraficoComponent implements OnChanges {
   yaxis!: ApexYAxis;
 
   legend!: ApexLegend;
+
+  private readonly temaService = inject(TemaService);
 
   ngOnChanges(): void {
     if (!this.config) return;
@@ -82,6 +85,24 @@ export class GraficoComponent implements OnChanges {
 
       this.xaxis = {
         categories: [...this.config.categorias],
+        labels: {
+          show: true,
+          style: {
+            colors: this.getColors()[0],
+            fontSize: '12px',
+            fontWeight: 400,
+          },
+        },
+
+        axisBorder: {
+          show: true,
+          color: this.getColors()[0],
+        },
+
+        axisTicks: {
+          show: true,
+          color: this.getColors()[0],
+        },
       };
 
       this.stroke = {
@@ -91,6 +112,7 @@ export class GraficoComponent implements OnChanges {
 
       this.fill = {
         type: tipo === 'area' ? 'gradient' : 'solid',
+        // colors: this.getColors(),
         gradient: {
           opacityFrom: 0.35,
           opacityTo: 0.02,
@@ -104,15 +126,27 @@ export class GraficoComponent implements OnChanges {
       this.yaxis = {
         labels: {
           formatter: (value: number) => this.formatarValor(value),
+          style: {
+            colors: this.getColors(),
+          },
         },
       };
     }
 
     this.tooltip = {
+      theme: this.temaService.isDarkMode() ? 'dark' : 'light',
+      style: {
+        fontSize: '12px',
+        fontFamily: 'inherit',
+      },
       y: {
         formatter: (value: number) => this.formatarValor(value),
       },
     };
+  }
+
+  private getColors() {
+    return this.temaService.isDarkMode() ? ['#ffffff'] : ['#173B5E'];
   }
 
   private formatarValor(valor: number): string {

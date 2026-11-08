@@ -1,0 +1,12 @@
+
+<div
+  class="scroll-container"
+  [class.scroll-vertical]="vertical()"
+  [class.scroll-horizontal]="horizontal()"
+  [style.width]="widthCss()"
+  [style.height]="heightCss()"
+  [style.--scroll-offset]="scrollbarOffsetCss()">
+
+  <ng-content></ng-content>
+
+</div>

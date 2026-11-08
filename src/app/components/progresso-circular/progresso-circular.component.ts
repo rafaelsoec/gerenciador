@@ -51,6 +51,7 @@ export class ProgressoCircularComponent {
           value: {
             fontSize: '28px',
             fontWeight: 600,
+            color: this.temaService.isDarkMode() ? '#ffffff' : '#173B5E',
             formatter: (value) => `${Math.round(value)}%`,
           },
         },

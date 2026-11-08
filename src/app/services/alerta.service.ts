@@ -1,31 +1,42 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlertaService {
   private readonly snackBar = inject(MatSnackBar);
   private readonly titulo = '';
 
-  constructor() { }
+  constructor() {}
 
   sucesso(mensagem: string): void {
     this.snackBar.open(mensagem, this.titulo, {
       duration: 3000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: ['alerta-sucesso']
+      panelClass: ['alerta-sucesso'],
     });
   }
 
   erro(erro: any): void {
-    this.snackBar.open(erro["mensagem"] ?? erro, this.titulo, {
+    let mensagem: string = 'Houve um erro inesperado. Tente novamente.';
+
+    if (erro) {
+      const erroElement = erro['mensagem'];
+      if (erroElement && typeof erroElement == 'string') {
+        mensagem = erroElement;
+      } else if (typeof erro == 'string') {
+        mensagem = erro;
+      }
+    }
+
+    this.snackBar.open(mensagem, this.titulo, {
       duration: 3000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: ['alerta-erro']
+      panelClass: ['alerta-erro'],
     });
   }
 
@@ -34,8 +45,7 @@ export class AlertaService {
       duration: 3000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: ['alerta-aviso']
+      panelClass: ['alerta-aviso'],
     });
   }
-
 }

@@ -33,7 +33,7 @@ body {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: clip;
 }
 
 /* Na página de login a sidebar está oculta — remove a margem */

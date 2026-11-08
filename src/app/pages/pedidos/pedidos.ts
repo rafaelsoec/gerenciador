@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { PedidoDTO } from '../../dtos/pedido/PedidoDTO';
 import { PedidoService } from '../../services/pedido.service';
-import { ColunaTabela, TabelaComponent } from '../../shared/tabela/tabela';
+import { ColunaTabela, ItemTabela, TabelaComponent } from '../../shared/tabela/tabela';
 import { HeaderPaginaComponent } from '../../shared/header-pagina/header-pagina';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertaService } from '../../services/alerta.service';
@@ -12,6 +12,7 @@ import { FormaPagamentoEnum } from '../../enums/FormaPagamentoEnum';
 import { StatusPedidoEnum } from '../../enums/StatusPedidoEnum';
 import { StatusPedidoPipe } from '../../pipes/status-pedido-pipe';
 import { CampoMoedaComponent } from '../../components/moeda/moeda.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-pedidos',
@@ -24,6 +25,9 @@ export class PedidosComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly alertaService = inject(AlertaService);
   private readonly dialog = inject(MatDialog);
+
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   readonly pedidos = signal<PedidoDTO[]>([]);
   readonly totalElementos = signal<number>(0);
@@ -77,6 +81,25 @@ export class PedidosComponent implements OnInit {
       width: '12%',
     },
     { campo: 'criadoEm', header: 'Criado Em', editavel: false, width: '12%' },
+  ];
+
+  readonly icones: ItemTabela[] = [
+    {
+      nome: 'Emitir Nota Fiscar',
+      icone: 'receipt_long',
+      function: (row) => {
+        this.router.navigate(['notas-fiscais', 'nova', 'pedido', row.id], {
+          queryParams: { rota: 'pedidos' },
+        });
+      },
+    },
+    {
+      nome: 'Imprimir Pedido',
+      icone: 'picture_as_pdf',
+      function: (row) => {
+        console.log(row);
+      },
+    },
   ];
 
   ngOnInit(): void {

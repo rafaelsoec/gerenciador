@@ -30,6 +30,12 @@ export interface ColunaTabela {
   pattern?: RegExp | null | undefined;
 }
 
+export interface ItemTabela {
+  icone: string;
+  nome: string;
+  function: (item?: any) => void;
+}
+
 @Component({
   selector: 'app-tabela',
   standalone: true,
@@ -84,6 +90,8 @@ export class TabelaComponent<T extends Record<string, any>> {
   readonly totalElementos = input<number>(0);
 
   readonly exibirVisualizacao = input<boolean>(false);
+
+  readonly icones = input<ItemTabela[]>([]);
 
   /** Exibe o botão de edição na coluna de ações. Padrão: false. */
   readonly exibirEdicao = input<boolean>(false);

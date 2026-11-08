@@ -1,12 +1,7 @@
 /* ── Host: necessário para o flex funcionar ── */
 :host {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
   height: 100%;
   overflow: hidden;
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.25);
 }
 
 .emitente-container {
@@ -17,12 +12,13 @@
 
 /* ── Layout fixo: header + corpo scrollável + footer ── */
 .emissao-nf-pagina {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  height: 100%;
-  padding: 0 !important;
-  overflow: hidden;
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  /*flex: 1 1 auto;*/
+  /*height: 100%;*/
+  /*padding: 0;*/
+  /*overflow: hidden;*/
+  /*--en-content-width: 100%;*/
 }
 
 /* Header fixo */
@@ -36,6 +32,18 @@
   width: 100%;
   padding: 16px 24px;
   gap: 16px;
+}
+
+/* Wrapper interno do header — limita a largura do conteúdo */
+.en-header-inner {
+  width: var(--en-content-width);
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
 }
 
 .en-titulo {
@@ -52,18 +60,27 @@
   color: #ffffff;
 }
 
+/* app-scroll cresce para preencher o espaço entre header e footer */
+.emissao-nf-pagina app-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 /* Corpo com scroll */
 .en-corpo {
-  flex: 1 1 auto;
   width: 100%;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
-
   padding-top: 24px;
+}
 
-  overflow-y: auto;
-  overflow-x: hidden;
+/* Wrapper interno do corpo — limita a largura do conteúdo */
+.en-corpo-inner {
+  width: var(--en-content-width);
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Footer fixo */
@@ -76,6 +93,16 @@
   background-color: #173B5E;
   border-top: 1px solid #0f2840;
   color: #ffffff;
+}
+
+/* Wrapper interno do footer — limita a largura do conteúdo */
+.en-footer-inner {
+  width: var(--en-content-width);
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 /* ── Botões do footer ── */
@@ -136,7 +163,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 20px 24px;
-  margin: 0 24px 24px;
+  margin: 0 0 15px;
 }
 
 .en-secao-titulo {

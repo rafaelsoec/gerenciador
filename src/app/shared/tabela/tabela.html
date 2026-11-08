@@ -54,6 +54,12 @@
               <mat-icon>close</mat-icon>
             </button>
           } @else {
+            @for (col of icones(); track col.nome) {
+              <button mat-icon-button [matTooltip]="col.nome" (click)="col.function(row)">
+                <mat-icon class="icone-branco" [fontIcon]="col.icone"></mat-icon>
+              </button>
+            }
+
             <!-- Modo normal: editar e/ou excluir -->
             @if (exibirVisualizacao()) {
               <button mat-icon-button matTooltip="Visualizar" (click)="iniciarVisualizacao(row)">

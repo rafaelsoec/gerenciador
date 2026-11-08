@@ -11,6 +11,7 @@ import { ProgressoCircularComponent } from '../../components/progresso-circular/
 import { DateUtils } from '../../utils/DateUtils';
 import { NumberUtils } from '../../utils/NumberUtils';
 import { DataPipe } from '../../pipes/data-pipe';
+import { ScrollComponent } from '../../components/scroll/scroll.component';
 
 @Component({
   selector: 'app-inicio',
@@ -22,6 +23,7 @@ import { DataPipe } from '../../pipes/data-pipe';
     GraficoComponent,
     ProgressoCircularComponent,
     DataPipe,
+    ScrollComponent,
   ],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',

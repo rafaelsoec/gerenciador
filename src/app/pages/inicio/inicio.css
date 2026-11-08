@@ -2,11 +2,21 @@
    PÃ¡gina de Dashboard
 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .dash-page {
-  padding: 30px clamp(20px, 3vw, 46px) 40px;
+  padding: 30px clamp(20px, 3vw, 46px) 0;
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* app-scroll cresce para preencher o espaço disponível entre o header/welcome e o footer */
+.dash-page app-scroll {
+  flex: 1;
+  min-height: 0;
 }
 
 /* â”€â”€â”€ Topbar â”€â”€â”€ */
@@ -476,7 +486,9 @@ tbody tr:last-child td {
   color: var(--muted);
   font-size: 10px;
   text-align: right;
-  margin-top: 22px;
+  margin-top: auto;
+  padding: 12px clamp(20px, 3vw, 46px);
+  border-top: 1px solid var(--border);
 }
 
 /* â”€â”€â”€ Responsividade â”€â”€â”€ */
