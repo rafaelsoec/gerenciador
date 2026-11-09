@@ -24,7 +24,10 @@ export class AlertaService {
     let mensagem: string = 'Houve um erro inesperado. Tente novamente.';
 
     if (erro) {
-      const erroElement = erro['mensagem'];
+      const erroElement = erro.error['mensagem'] ?? erro['mensagem'];
+      if (erroElement && typeof erroElement == 'string') {
+        mensagem = erroElement;
+      }
       if (erroElement && typeof erroElement == 'string') {
         mensagem = erroElement;
       } else if (typeof erro == 'string') {

@@ -12,6 +12,9 @@ import { StatusNotaFiscalEnum, StatusNotaFiscalLabel } from '../../enums/StatusN
 import { TipoNotaFiscalLabel } from '../../enums/TipoNotaFiscalEnum';
 import { NaturezaOperacaoEnum } from '../../enums/NaturezaOperacaoEnum';
 import { NaturezaOperacaoPipePipe } from '../../pipes/natureza-pipe';
+import { HttpResponse } from '@angular/common/http';
+import { VisualizadorDocumentoComponent, InputVisualizadorDocumento } from '../../components/visualizador-documento/visualizador-documento.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-notas-fiscais',
@@ -23,6 +26,7 @@ import { NaturezaOperacaoPipePipe } from '../../pipes/natureza-pipe';
 export class NotasFiscaisComponent implements OnInit {
   private readonly notaFiscalService = inject(NotaFiscalService);
   private readonly alertaService = inject(AlertaService);
+  private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
 
   readonly notas = signal<NotaFiscalDTO[]>([]);
@@ -31,6 +35,13 @@ export class NotasFiscaisComponent implements OnInit {
   readonly tamanhoPagina = signal<number>(20);
 
   readonly icones: ItemTabela[] = [
+    {
+      nome: 'Emitir Nota',
+      icone: 'receipt_long',
+      function: (row) => {
+        this.imprimir(row.id);
+      },
+    },
     {
       nome: 'Editar',
       icone: 'edit',
@@ -100,6 +111,44 @@ export class NotasFiscaisComponent implements OnInit {
         this.totalElementos.update((t) => t - 1);
       },
       error: (erro) => this.alertaService.erro(erro.error),
+    });
+  }
+
+
+
+  imprimir(idNota: number): void {
+    this.notaFiscalService.gerarPdf(idNota).subscribe({
+      next: (response: HttpResponse<Blob>) => {
+        const pdf = response.body!;
+        if (!response.body) {
+          console.error('PDF não retornado pelo servidor');
+          return;
+        }
+
+        const documento = new Blob([response.body], { type: 'application/pdf' });
+        const contentDisposition = response.headers.get('Content-Disposition');
+
+        const nomeArquivo =
+          contentDisposition?.match(/filename="?([^"]+)"?/i)?.[1] ?? `nf-${idNota}.pdf`;
+
+        this.dialog.open<VisualizadorDocumentoComponent, InputVisualizadorDocumento, void>(
+          VisualizadorDocumentoComponent,
+          {
+            autoFocus: false,
+            width: '80vw',
+            maxWidth: '80vw',
+            height: '90vh',
+            maxHeight: '90vh',
+            data: {
+              documento: documento,
+              nomeDocumento: nomeArquivo,
+            }
+          }
+        );
+      },
+      error: (erro) => {
+        this.alertaService.erro(erro);
+      },
     });
   }
 }

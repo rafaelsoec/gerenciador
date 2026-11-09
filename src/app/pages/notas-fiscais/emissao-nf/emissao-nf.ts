@@ -254,6 +254,7 @@ export class EmissaoNFComponent implements OnInit {
       produtoId: item.produtoId,
       produtoNome: item.produtoNome,
       quantidade: item.quantidade,
+      descricao: item.descricao,
       precoUnitario: NumberUtils.toNumber(item.precoUnitario),
       desconto: NumberUtils.toNumber(item.desconto),
       aliquotaIcms: NumberUtils.toNumber(item.aliquotaIcms),

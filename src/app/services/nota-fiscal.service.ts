@@ -1,6 +1,6 @@
 ﻿import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
+import { catchError, from, mergeMap, Observable, throwError } from 'rxjs';
 import { NotaFiscalDTO } from '../dtos/nota-fiscal/NotaFiscalDTO';
 import { RespostaPaginada } from '../dtos/RespostaPaginada';
 import { PaginacaoParams } from './produto.service';
@@ -19,6 +19,40 @@ export class NotaFiscalService {
 
   buscarPorId(id: number): Observable<NotaFiscalDTO> {
     return this.http.get<NotaFiscalDTO>(`${this.url}/${id}`);
+  }
+
+  gerarPdf(id: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.url}/${id}/emitir`, {
+      responseType: 'blob',
+      observe: 'response',
+    }).pipe(
+      catchError((erro: HttpErrorResponse) => {
+
+        if (erro.error instanceof Blob) {
+          return from(erro.error.text()).pipe(
+            mergeMap(texto => {
+              let detalhe: any = texto;
+
+              try {
+                detalhe = JSON.parse(texto);
+              } catch {
+                // Resposta não é JSON: mantém o texto original.
+              }
+
+              return throwError(() => new HttpErrorResponse({
+                error: detalhe,
+                status: erro.status,
+                statusText: erro.statusText,
+                headers: erro.headers,
+                url: erro.url ?? ''
+              }));
+            })
+          );
+        }
+
+        return throwError(() => erro);
+      })
+    );
   }
 
   emitir(dados: Omit<NotaFiscalDTO, 'id'>): Observable<NotaFiscalDTO> {
