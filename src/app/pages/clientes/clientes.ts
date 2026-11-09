@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { AlertaService } from '../../services/alerta.service';
 import { PageEvent } from '@angular/material/paginator';
+import { Constantes } from '../../constantes/Constantes';
 
 @Component({
   selector: 'app-clientes',
@@ -40,10 +41,20 @@ export class ClientesComponent implements OnInit {
     { nome: 'identificador', label: 'Cpf/Cnpj', tipo: 'text', obrigatorio: true, mascara: '000.000.000-00||00.000.000/0000-00', col: 8 },
     { nome: 'telefone', label: 'Telefone', obrigatorio: false, tipo: 'text', mascara: '(00) 00000-0000', col: 4 },
     { nome: 'email', label: 'E-mail', obrigatorio: false, tipo: 'text', mascara: 'A*@A*.A*', col: 12 },
-    // {
-    //   nome: 'status', label: 'Status', tipo: 'select',
-    //   opcoes: [{ label: 'Ativo', value: 'A' }, { label: 'Inativo', value: 'I' }], col: 4
-    // },
+    { nome: 'logradouro', label: 'Logradouro', obrigatorio: false, tipo: 'text', col: 10 },
+    { nome: 'numero', label: 'Número', obrigatorio: false, tipo: 'text', col: 2 },
+    { nome: 'cep', label: 'Cep', obrigatorio: false, tipo: 'text', mascara: '00000-000', col: 2 },
+    {
+      nome: 'uf', label: 'UF', tipo: 'select',
+      opcoes: Constantes.UFS.map((uf: { sigla: string, nome: string }) => ({
+        label: uf.sigla,
+        value: uf.sigla
+      })),
+      col: 2
+    },
+    { nome: 'municipio', label: 'Município', obrigatorio: false, tipo: 'text', col: 4 },
+    { nome: 'bairro', label: 'Bairro', obrigatorio: false, tipo: 'text', col: 4 },
+    { nome: 'complemento', label: 'Complemento', obrigatorio: false, tipo: 'textarea', col: 12 },
   ];
 
   ngOnInit(): void {

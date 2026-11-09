@@ -16,11 +16,14 @@ import { EmpresaService } from '../../../services/empresa.service';
 import { AlertaService } from '../../../services/alerta.service';
 import { RegimeTributarioEnum, RegimeTributarioLabel } from '../../../enums/RegimeTributarioEnum';
 import { AmbienteFiscalEnum, AmbienteFiscalLabel } from '../../../enums/AmbienteFiscalEnum';
+import { ScrollComponent } from '../../../components/scroll/scroll.component';
+import { FooterComponent } from '../../../components/footer/footer.component';
 
 interface CadastroEmpresaForm {
   razaoSocial: string;
   nomeFantasia: string;
   cnpj: string;
+  chaveAcesso: string;
   inscricaoEstadual: string;
   inscricaoMunicipal: string;
   email: string;
@@ -51,7 +54,9 @@ interface CadastroEmpresaForm {
     MatIconModule,
     MatDividerModule,
     NgxMaskDirective,
-  ],
+    ScrollComponent,
+    FooterComponent
+],
   templateUrl: './cadastro-empresa.html',
   styleUrl: './cadastro-empresa.css',
 })
@@ -97,6 +102,7 @@ export class CadastroEmpresaComponent implements OnInit {
           this.form = {
             razaoSocial: empresa.razaoSocial ?? '',
             nomeFantasia: empresa.nomeFantasia ?? '',
+            chaveAcesso: empresa.chaveAcesso ?? '',
             cnpj: empresa.cnpj ?? '',
             inscricaoEstadual: empresa.inscricaoEstadual ?? '',
             inscricaoMunicipal: empresa.inscricaoMunicipal ?? '',
@@ -130,6 +136,7 @@ export class CadastroEmpresaComponent implements OnInit {
 
     const payload: Partial<EmpresaDTO> = {
       razaoSocial: this.form.razaoSocial,
+      chaveAcesso: this.form.chaveAcesso,
       nomeFantasia: this.form.nomeFantasia || undefined,
       cnpj: this.form.cnpj.replace(/\D/g, ''),
       inscricaoEstadual: this.form.inscricaoEstadual || undefined,
@@ -189,6 +196,7 @@ export class CadastroEmpresaComponent implements OnInit {
     return {
       razaoSocial: '',
       nomeFantasia: '',
+      chaveAcesso: '',
       cnpj: '',
       inscricaoEstadual: '',
       inscricaoMunicipal: '',

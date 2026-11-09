@@ -5,6 +5,7 @@ export class EmpresaDTO {
   id = 0;
   razaoSocial = '';
   nomeFantasia = '';
+  chaveAcesso = '';
   cnpj = '';
   inscricaoEstadual = '';
   inscricaoMunicipal = '';
