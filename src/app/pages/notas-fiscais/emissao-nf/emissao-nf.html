@@ -1,196 +1,183 @@
 <div class="container-fluid">
   <!-- Header fixo -->
-  <app-header-pagina titulo="Emissão de Nota Fiscal"
-                     [subtitulo]="getSubTitulo()" corBackground="#173B5E" corTexto="#ffffff" />
+  <app-header-pagina titulo="Emissão de Nota Fiscal" [subtitulo]="getSubTitulo()" corBackground="#173B5E"
+    corTexto="#ffffff" />
 
-  <app-scroll
-    [vertical]="true"
-    [horizontal]="false"
-    [scrollbarOffset]="10"
-    [height]="'calc(100vh - 180px)'">
+  <app-scroll [vertical]="true" [horizontal]="false" [scrollbarOffset]="10" [height]="'calc(100vh - 180px)'">
     @if (carregando()) {
-      <div class="en-loading">Carregando dados...</div>
+    <div class="en-loading">Carregando dados...</div>
     } @else {
 
-      <!-- Corpo com scroll -->
-      <div class="">
-        <div>
-          <form id="form-nf" (ngSubmit)="onSalvar()" novalidate>
+    <!-- Corpo com scroll -->
+    <div class="">
+      <div>
+        <form id="form-nf" (ngSubmit)="onSalvar()" novalidate>
 
-            <!-- ==== SECAO: EMITENTE ==== -->
-            @if (empresa) {
-              <div class="en-secao en-secao-emitente">
-                <div class="emitente-container mb-4">
-                  <label>Emitente: </label>
-                  <mat-select style="border-bottom: 1px solid #C3C3C3; width: 20%" name="tipo" [(ngModel)]="empresa"
-                              required>
-                    @for (t of empresas; track t.id) {
-                      <mat-option [value]="t">{{ t.nomeFantasia }}</mat-option>
+          <!-- ==== SECAO: EMITENTE ==== -->
+          @if (empresa) {
+          <div class="en-secao en-secao-emitente">
+            <div class="emitente-container mb-4">
+              <label>Emitente: </label>
+              <mat-select style="border-bottom: 1px solid #C3C3C3; width: 20%" name="tipo" [(ngModel)]="empresa"
+                required>
+                @for (t of empresas; track t.id) {
+                <mat-option [value]="t">{{ t.nomeFantasia }}</mat-option>
+                }
+              </mat-select>
+            </div>
+            <div class="en-emitente-grid">
+              <div class="en-emitente-item">
+                <span class="en-emitente-label">Razão Social</span>
+                <span class="en-emitente-valor">{{ empresa.razaoSocial }}</span>
+              </div>
+              <div class="en-emitente-item">
+                <span class="en-emitente-label">CNPJ</span>
+                <span class="en-emitente-valor">{{ empresa.cnpj }}</span>
+              </div>
+              <div class="en-emitente-item">
+                <span class="en-emitente-label">Inscrição Estadual</span>
+                <span class="en-emitente-valor">{{ empresa.inscricaoEstadual || '---' }}</span>
+              </div>
+              <div class="en-emitente-item">
+                <span class="en-emitente-label">Município / UF</span>
+                <span class="en-emitente-valor">{{ empresa.municipio }} / {{ empresa.uf }}</span>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- ==== SECAO: IDENTIFICACAO ==== -->
+          <div class="en-secao">
+            <h3 class="en-secao-titulo">Identificação da Nota</h3>
+            <div class="row g-3">
+
+              <div class="col-12 col-sm-4">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Tipo de Nota</mat-label>
+                  <mat-select name="tipo" [(ngModel)]="form.tipo" [ngModelOptions]="{ standalone: true }" required>
+                    @for (t of tiposNF; track t.value) {
+                    <mat-option [value]="t.value">{{ t.label }}</mat-option>
                     }
                   </mat-select>
-                </div>
-                <div class="en-emitente-grid">
-                  <div class="en-emitente-item">
-                    <span class="en-emitente-label">Razão Social</span>
-                    <span class="en-emitente-valor">{{ empresa.razaoSocial }}</span>
-                  </div>
-                  <div class="en-emitente-item">
-                    <span class="en-emitente-label">CNPJ</span>
-                    <span class="en-emitente-valor">{{ empresa.cnpj }}</span>
-                  </div>
-                  <div class="en-emitente-item">
-                    <span class="en-emitente-label">Inscrição Estadual</span>
-                    <span class="en-emitente-valor">{{ empresa.inscricaoEstadual || '---' }}</span>
-                  </div>
-                  <div class="en-emitente-item">
-                    <span class="en-emitente-label">Município / UF</span>
-                    <span class="en-emitente-valor">{{ empresa.municipio }} / {{ empresa.uf }}</span>
-                  </div>
-                </div>
+                </mat-form-field>
               </div>
-            }
 
-            <!-- ==== SECAO: IDENTIFICACAO ==== -->
-            <div class="en-secao">
-              <h3 class="en-secao-titulo">Identificação da Nota</h3>
-              <div class="row g-3">
-
-                <div class="col-12 col-sm-4">
-                  <pre>{{ tiposNF | json }}</pre>
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Tipo de Nota</mat-label>
-                    <mat-select name="tipo" [(ngModel)]="form.tipo" required>
-                      @for (t of tiposNF; track t.value) {
-                        <mat-option [value]="t.value">{{ t.label }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-5">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Natureza da Operação</mat-label>
-                    <mat-select name="naturezaOperacao" [(ngModel)]="form.naturezaOperacao" required>
-                      @for (n of naturezas; track n.value) {
-                        <mat-option [value]="n.value">{{ n.label }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Série</mat-label>
-                    <input matInput name="serie" [(ngModel)]="form.serie" maxlength="3" required />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-lg-6 col-md-6 col-sm-12">
-                  <app-data
-                    label="Data de emissão"
-                    [(ngModel)]="form.dataEmissao"
-                    name="dataEmissao"
-                    [required]="true"
-                  ></app-data>
-                </div>
-
-                <div class="col-12 col-lg-6 col-md-6 col-sm-12">
-                  <app-data
-                    label="Data Entrada / Saída"
-                    [(ngModel)]="form.dataEntradaSaida"
-                    name="dataEntradaSaida"
-                    [required]="true"
-                  ></app-data>
-                </div>
-
+              <div class="col-12 col-sm-5">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Natureza da Operação</mat-label>
+                  <mat-select name="naturezaOperacao" [(ngModel)]="form.naturezaOperacao"
+                    [ngModelOptions]="{ standalone: true }" required>
+                    @for (n of naturezas; track n.value) {
+                    <mat-option [value]="n.value">{{ n.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
               </div>
+
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Série</mat-label>
+                  <input matInput name="serie" [(ngModel)]="form.serie" maxlength="3" required />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-lg-6 col-md-6 col-sm-12">
+                <app-data label="Data de emissão" [(ngModel)]="form.dataEmissao" name="dataEmissao"
+                  [required]="true"></app-data>
+              </div>
+
+              <div class="col-12 col-lg-6 col-md-6 col-sm-12">
+                <app-data label="Data Entrada / Saída" [(ngModel)]="form.dataEntradaSaida" name="dataEntradaSaida"
+                  [required]="true"></app-data>
+              </div>
+
             </div>
+          </div>
 
-            <!-- ==== SECAO: DESTINATARIO ==== -->
-            <div class="en-secao">
-              <h3 class="en-secao-titulo">Destinatário</h3>
-              <div class="row g-3">
+          <!-- ==== SECAO: DESTINATARIO ==== -->
+          <div class="en-secao">
+            <h3 class="en-secao-titulo">Destinatário</h3>
+            <div class="row g-3">
 
-                <div class="col-12 col-sm-6">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Nome / Razão Social</mat-label>
-                    <input disabled matInput name="destinatarioNome" [(ngModel)]="form.destinatarioNome" maxlength="150"
-                           required />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <!--                <mat-label>CPF / CNPJ</mat-label>-->
-                    <input disabled matInput name="destinatarioIdentificador"
-                           [(ngModel)]="form.destinatarioIdentificador"
-                           maxlength="18" mask="000.000.000-00||00.000.000/0000-00" />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>E-mail</mat-label>
-                    <input disabled matInput name="destinatarioEmail" type="email" [(ngModel)]="form.destinatarioEmail"
-                           maxlength="100" />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-6">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Logradouro</mat-label>
-                    <input disabled matInput name="destinatarioLogradouro" [(ngModel)]="form.destinatarioLogradouro"
-                           maxlength="150" />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Número</mat-label>
-                    <input matInput name="destinatarioNumero" [(ngModel)]="form.destinatarioNumero" maxlength="20" />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Bairro</mat-label>
-                    <input disabled matInput name="destinatarioBairro" [(ngModel)]="form.destinatarioBairro"
-                           maxlength="100" />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-6">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Município</mat-label>
-                    <input disabled matInput name="destinatarioMunicipio" [(ngModel)]="form.destinatarioMunicipio"
-                           maxlength="100" />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>CEP</mat-label>
-                    <input disabled matInput name="destinatarioCep" [(ngModel)]="form.destinatarioCep"
-                           mask="00000-000" [dropSpecialCharacters]="false" />
-                  </mat-form-field>
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>UF</mat-label>
-                    <input disabled matInput name="destinatarioUf" [(ngModel)]="form.destinatarioUf" maxlength="2" />
-                  </mat-form-field>
-                </div>
-
+              <div class="col-12 col-sm-6">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Nome / Razão Social</mat-label>
+                  <input disabled matInput name="destinatarioNome" [(ngModel)]="form.destinatarioNome" maxlength="150"
+                    required />
+                </mat-form-field>
               </div>
-            </div>
 
-            <!-- ==== SECAO: ITENS ==== -->
-            <div class="en-secao">
-              <h3 class="en-secao-titulo">Itens da Nota</h3>
-              <div class="en-itens-tabela-wrapper">
-                <table class="en-itens-tabela">
-                  <thead>
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <!--                <mat-label>CPF / CNPJ</mat-label>-->
+                  <input disabled matInput name="destinatarioIdentificador" [(ngModel)]="form.destinatarioIdentificador"
+                    maxlength="18" mask="000.000.000-00||00.000.000/0000-00" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>E-mail</mat-label>
+                  <input disabled matInput name="destinatarioEmail" type="email" [(ngModel)]="form.destinatarioEmail"
+                    maxlength="100" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Logradouro</mat-label>
+                  <input disabled matInput name="destinatarioLogradouro" [(ngModel)]="form.destinatarioLogradouro"
+                    maxlength="150" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Número</mat-label>
+                  <input matInput name="destinatarioNumero" [(ngModel)]="form.destinatarioNumero" maxlength="20" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Bairro</mat-label>
+                  <input disabled matInput name="destinatarioBairro" [(ngModel)]="form.destinatarioBairro"
+                    maxlength="100" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Município</mat-label>
+                  <input disabled matInput name="destinatarioMunicipio" [(ngModel)]="form.destinatarioMunicipio"
+                    maxlength="100" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>CEP</mat-label>
+                  <input disabled matInput name="destinatarioCep" [(ngModel)]="form.destinatarioCep" mask="00000-000"
+                    [dropSpecialCharacters]="false" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>UF</mat-label>
+                  <input disabled matInput name="destinatarioUf" [(ngModel)]="form.destinatarioUf" maxlength="2" />
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ==== SECAO: ITENS ==== -->
+          <div class="en-secao">
+            <h3 class="en-secao-titulo">Itens da Nota</h3>
+            <div class="en-itens-tabela-wrapper">
+              <table class="en-itens-tabela">
+                <thead>
                   <tr>
                     <th>Produto</th>
                     <th>NCM</th>
@@ -204,176 +191,162 @@
                     <th class="col-num">COFINS %</th>
                     <th class="col-num">Subtotal</th>
                   </tr>
-                  </thead>
-                  <tbody>
-                    @for (item of itens; track item.produtoId; let i = $index) {
-                      <tr>
-                        <td class="col-produto">{{ item.produtoNome }}</td>
+                </thead>
+                <tbody>
+                  @for (item of itens; track item.produtoId; let i = $index) {
+                  <tr>
+                    <td class="col-produto">{{ item.produtoNome }}</td>
 
-                        <td>
-                          <input class="en-input-tabela" [(ngModel)]="item.ncm"
-                                 [name]="'ncm_' + i" maxlength="8" placeholder="00000000" />
-                        </td>
+                    <td>
+                      <input class="en-input-tabela" [(ngModel)]="item.ncm" [name]="'ncm_' + i" maxlength="8"
+                        placeholder="00000000" />
+                    </td>
 
-                        <td>
-                          <input class="en-input-tabela" [(ngModel)]="item.cfop"
-                                 [name]="'cfop_' + i" maxlength="4" placeholder="5102" />
-                        </td>
+                    <td>
+                      <input class="en-input-tabela" [(ngModel)]="item.cfop" [name]="'cfop_' + i" maxlength="4"
+                        placeholder="5102" />
+                    </td>
 
-                        <td class="col-num">
-                          <input class="en-input-tabela en-input-num" type="number" min="1"
-                                 [(ngModel)]="item.quantidade" [name]="'qty_' + i"
-                                 (ngModelChange)="recalcularSubtotal(item)" />
-                        </td>
+                    <td class="col-num">
+                      <input class="en-input-tabela en-input-num" type="number" min="1" [(ngModel)]="item.quantidade"
+                        [name]="'qty_' + i" (ngModelChange)="recalcularSubtotal(item)" />
+                    </td>
 
-                        <td class="col-num">
-                          <input class="en-input-tabela en-input-num" type="number" min="0" step="0.01"
-                                 [(ngModel)]="item.precoUnitario" [name]="'vunit_' + i"
-                                 (ngModelChange)="recalcularSubtotal(item)" />
-                        </td>
+                    <td class="col-num">
+                      <input class="en-input-tabela en-input-num" type="number" min="0" step="0.01"
+                        [(ngModel)]="item.precoUnitario" [name]="'vunit_' + i"
+                        (ngModelChange)="recalcularSubtotal(item)" />
+                    </td>
 
-                        <td class="col-num">
-                          <input class="en-input-tabela en-input-num" type="number" min="0" step="0.01"
-                                 [(ngModel)]="item.desconto" [name]="'desc_' + i"
-                                 (ngModelChange)="recalcularSubtotal(item)" />
-                        </td>
+                    <td class="col-num">
+                      <input class="en-input-tabela en-input-num" type="number" min="0" step="0.01"
+                        [(ngModel)]="item.desconto" [name]="'desc_' + i" (ngModelChange)="recalcularSubtotal(item)" />
+                    </td>
 
-                        <td class="col-num">
-                          <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
-                                 [(ngModel)]="item.aliquotaIcms" [name]="'icms_' + i" />
-                        </td>
+                    <td class="col-num">
+                      <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
+                        [(ngModel)]="item.aliquotaIcms" [name]="'icms_' + i" />
+                    </td>
 
-                        <td class="col-num">
-                          <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
-                                 [(ngModel)]="item.aliquotaIpi" [name]="'ipi_' + i" />
-                        </td>
+                    <td class="col-num">
+                      <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
+                        [(ngModel)]="item.aliquotaIpi" [name]="'ipi_' + i" />
+                    </td>
 
-                        <td class="col-num">
-                          <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
-                                 [(ngModel)]="item.aliquotaPis" [name]="'pis_' + i" />
-                        </td>
+                    <td class="col-num">
+                      <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
+                        [(ngModel)]="item.aliquotaPis" [name]="'pis_' + i" />
+                    </td>
 
-                        <td class="col-num">
-                          <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
-                                 [(ngModel)]="item.aliquotaCofins" [name]="'cofins_' + i" />
-                        </td>
+                    <td class="col-num">
+                      <input class="en-input-tabela en-input-num" type="number" min="0" max="100" step="0.01"
+                        [(ngModel)]="item.aliquotaCofins" [name]="'cofins_' + i" />
+                    </td>
 
-                        <td class="col-num col-subtotal">
-                          {{ item.subtotal | moeda }}
-                        </td>
-                      </tr>
+                    <td class="col-num col-subtotal">
+                      {{ item.subtotal | moeda }}
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ==== SECAO: TOTAIS ==== -->
+          <div class="en-secao">
+            <h3 class="en-secao-titulo">Valores e Pagamento</h3>
+            <div class="row g-3">
+
+              <div class="col-12 col-sm-3">
+                <app-moeda label="Frete" name="valorFrete" [(ngModel)]="form.valorFrete" />
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <app-moeda label="Seguro" name="valorSeguro" [(ngModel)]="form.valorSeguro" />
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <app-moeda label="Outras Despesas" name="valorOutros" [(ngModel)]="form.valorOutros" />
+              </div>
+
+              <div class="col-12 col-sm-3">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Forma de Pagamento</mat-label>
+                  <mat-select disabled name="formaPagamento" [(ngModel)]="form.formaPagamento">
+                    @for (fp of formasPagamento; track fp) {
+                    <mat-option [value]="fp">{{ fp | formaPagamento }}</mat-option>
                     }
-                  </tbody>
-                </table>
+                  </mat-select>
+                </mat-form-field>
               </div>
+
             </div>
 
-            <!-- ==== SECAO: TOTAIS ==== -->
-            <div class="en-secao">
-              <h3 class="en-secao-titulo">Valores e Pagamento</h3>
-              <div class="row g-3">
-
-                <div class="col-12 col-sm-3">
-                  <app-moeda
-                    label="Frete"
-                    name="valorFrete"
-                    [(ngModel)]="form.valorFrete"
-                  />
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <app-moeda
-                    label="Seguro"
-                    name="valorSeguro"
-                    [(ngModel)]="form.valorSeguro"
-                  />
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <app-moeda
-                    label="Outras Despesas"
-                    name="valorOutros"
-                    [(ngModel)]="form.valorOutros"
-                  />
-                </div>
-
-                <div class="col-12 col-sm-3">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Forma de Pagamento</mat-label>
-                    <mat-select disabled name="formaPagamento" [(ngModel)]="form.formaPagamento">
-                      @for (fp of formasPagamento; track fp) {
-                        <mat-option [value]="fp">{{ fp | formaPagamento }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-
+            <!-- Resumo de totais -->
+            <div class="en-totais-resumo">
+              <div class="en-total-linha">
+                <span>Produtos</span>
+                <span>{{ valorProdutos | moeda }}</span>
               </div>
-
-              <!-- Resumo de totais -->
-              <div class="en-totais-resumo">
-                <div class="en-total-linha">
-                  <span>Produtos</span>
-                  <span>{{ valorProdutos | moeda }}</span>
-                </div>
-                <div class="en-total-linha">
-                  <span>Descontos</span>
-                  <span class="en-valor-negativo">- {{ valorDesconto | moeda }}</span>
-                </div>
-                <div class="en-total-linha">
-                  <span>Frete</span>
-                  <span>{{ form.valorFrete | moeda }}</span>
-                </div>
-                <div class="en-total-linha">
-                  <span>Seguro</span>
-                  <span>{{ form.valorSeguro | moeda }}</span>
-                </div>
-                <div class="en-total-linha">
-                  <span>Outras Despesas</span>
-                  <span>{{ form.valorOutros | moeda }}</span>
-                </div>
-                <mat-divider></mat-divider>
-                <div class="en-total-linha en-total-icms">
-                  <span>ICMS</span>
-                  <span>{{ valorIcms | moeda }}</span>
-                </div>
-                <div class="en-total-linha en-total-icms">
-                  <span>IPI</span>
-                  <span>{{ valorIpi | moeda }}</span>
-                </div>
-                <div class="en-total-linha en-total-icms">
-                  <span>PIS</span>
-                  <span>{{ valorPis | moeda }}</span>
-                </div>
-                <div class="en-total-linha en-total-icms">
-                  <span>COFINS</span>
-                  <span>{{ valorCofins | moeda }}</span>
-                </div>
-                <mat-divider></mat-divider>
-                <div class="en-total-linha en-total-final">
-                  <span>Total da Nota</span>
-                  <span>{{ valorTotal | moeda }}</span>
-                </div>
+              <div class="en-total-linha">
+                <span>Descontos</span>
+                <span class="en-valor-negativo">- {{ valorDesconto | moeda }}</span>
+              </div>
+              <div class="en-total-linha">
+                <span>Frete</span>
+                <span>{{ form.valorFrete | moeda }}</span>
+              </div>
+              <div class="en-total-linha">
+                <span>Seguro</span>
+                <span>{{ form.valorSeguro | moeda }}</span>
+              </div>
+              <div class="en-total-linha">
+                <span>Outras Despesas</span>
+                <span>{{ form.valorOutros | moeda }}</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="en-total-linha en-total-icms">
+                <span>ICMS</span>
+                <span>{{ valorIcms | moeda }}</span>
+              </div>
+              <div class="en-total-linha en-total-icms">
+                <span>IPI</span>
+                <span>{{ valorIpi | moeda }}</span>
+              </div>
+              <div class="en-total-linha en-total-icms">
+                <span>PIS</span>
+                <span>{{ valorPis | moeda }}</span>
+              </div>
+              <div class="en-total-linha en-total-icms">
+                <span>COFINS</span>
+                <span>{{ valorCofins | moeda }}</span>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="en-total-linha en-total-final">
+                <span>Total da Nota</span>
+                <span>{{ valorTotal | moeda }}</span>
               </div>
             </div>
+          </div>
 
-            <!-- ==== SECAO: INFORMACOES ADICIONAIS ==== -->
-            <div class="en-secao">
-              <h3 class="en-secao-titulo">Informações Adicionais</h3>
-              <div class="row g-3">
-                <div class="col-12">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Informações Adicionais / Observações</mat-label>
-                    <textarea matInput name="informacoesAdicionais" [(ngModel)]="form.informacoesAdicionais"
-                              rows="3" maxlength="2000"></textarea>
-                  </mat-form-field>
-                </div>
+          <!-- ==== SECAO: INFORMACOES ADICIONAIS ==== -->
+          <div class="en-secao">
+            <h3 class="en-secao-titulo">Informações Adicionais</h3>
+            <div class="row g-3">
+              <div class="col-12">
+                <mat-form-field appearance="outline" class="campo-full">
+                  <mat-label>Informações Adicionais / Observações</mat-label>
+                  <textarea matInput name="informacoesAdicionais" [(ngModel)]="form.informacoesAdicionais" rows="3"
+                    maxlength="2000"></textarea>
+                </mat-form-field>
               </div>
             </div>
+          </div>
 
-          </form>
-        </div>
+        </form>
       </div>
+    </div>
     } <!-- end @else carregando -->
   </app-scroll>
 
@@ -386,15 +359,9 @@
         Cancelar
       </button>
 
-      <button
-        matButton="filled"
-        type="submit"
-        form="form-nf"
-        [disabled]="invalido || salvando()">
-
+      <button matButton="filled" type="submit" form="form-nf" [disabled]="invalido || salvando()">
         <mat-icon fontIcon="receipt_long"></mat-icon>
         {{ salvando() ? 'Emitindo...' : 'Emitir Nota Fiscal' }}
-
       </button>
 
     </div>

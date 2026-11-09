@@ -1,0 +1,60 @@
+<div class="visualizador">
+
+  @if (urlSegura) {
+
+  <div class="toolbar">
+    <div></div>
+
+    <!-- <div class="toolbar-zoom">
+
+      <button mat-icon-button matTooltip="Diminuir zoom" [disabled]="zoom <= 50" (click)="diminuirZoom()">
+        <mat-icon class="icone-branco" fontIcon="remove"></mat-icon>
+      </button>
+
+      <span class="zoom-percentual">
+        {{ zoom }}%
+      </span>
+
+      <button mat-icon-button matTooltip="Aumentar zoom" [disabled]="zoom >= 200" (click)="aumentarZoom()">
+        <mat-icon class="icone-branco" fontIcon="add"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Ajustar à largura" (click)="ajustarLargura()">
+        <mat-icon class="icone-branco" fontIcon="fit_screen"></mat-icon>
+      </button>
+
+    </div> -->
+
+    <div class="toolbar-acoes">
+
+      <button mat-icon-button matTooltip="Imprimir PDF" (click)="imprimir()">
+        <mat-icon class="icone-branco" fontIcon="print"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Baixar PDF" (click)="baixar()">
+        <mat-icon class="icone-branco" fontIcon="download"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Fechar" (click)="fechar()">
+        <mat-icon class="icone-branco" fontIcon="close"></mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="documento-container">
+    <iframe #iframePdf class="documento" [src]="urlSegura" title="Visualizador de PDF">
+    </iframe>
+  </div>
+
+  } @else {
+
+  <div class="documento-vazio">
+    <mat-icon fontIcon="picture_as_pdf"></mat-icon>
+    <span>Nenhum documento disponível</span>
+  </div>
+
+  }
+
+</div>

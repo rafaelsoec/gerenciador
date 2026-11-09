@@ -368,6 +368,7 @@ export class EmissaoNFComponent implements OnInit {
       this.form.destinatarioCep = cliente.cep;
     });
   }
+  
   getSubTitulo(): string {
     return `Pedido #${this.pedido?.id} --- ${this.pedido?.clienteNome}`;
   }

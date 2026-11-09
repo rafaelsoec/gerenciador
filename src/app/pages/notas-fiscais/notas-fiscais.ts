@@ -6,7 +6,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { NotaFiscalDTO } from '../../dtos/nota-fiscal/NotaFiscalDTO';
 import { NotaFiscalService } from '../../services/nota-fiscal.service';
 import { AlertaService } from '../../services/alerta.service';
-import { ColunaTabela, TabelaComponent } from '../../shared/tabela/tabela';
+import { ColunaTabela, ItemTabela, TabelaComponent } from '../../shared/tabela/tabela';
 import { HeaderPaginaComponent } from '../../shared/header-pagina/header-pagina';
 import { StatusNotaFiscalEnum, StatusNotaFiscalLabel } from '../../enums/StatusNotaFiscalEnum';
 import { TipoNotaFiscalLabel } from '../../enums/TipoNotaFiscalEnum';
@@ -29,6 +29,18 @@ export class NotasFiscaisComponent implements OnInit {
   readonly totalElementos = signal<number>(0);
   readonly paginaAtual = signal<number>(0);
   readonly tamanhoPagina = signal<number>(20);
+
+  readonly icones: ItemTabela[] = [
+    {
+      nome: 'Editar',
+      icone: 'edit',
+      function: (row) => {
+        this.router.navigate(['notas-fiscais', 'nova', 'pedido', row.pedidoId], {
+          queryParams: { rota: 'notas-fiscais' },
+        });
+      },
+    },
+  ];
 
   readonly colunas: ColunaTabela[] = [
     { campo: 'numero', header: 'Numero', editavel: false, width: '8%' },

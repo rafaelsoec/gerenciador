@@ -13,6 +13,8 @@ import { StatusPedidoEnum } from '../../enums/StatusPedidoEnum';
 import { StatusPedidoPipe } from '../../pipes/status-pedido-pipe';
 import { CampoMoedaComponent } from '../../components/moeda/moeda.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
+import { InputVisualizadorDocumento, VisualizadorDocumentoComponent } from '../../components/visualizador-documento/visualizador-documento.component';
 
 @Component({
   selector: 'app-pedidos',
@@ -26,13 +28,14 @@ export class PedidosComponent implements OnInit {
   private readonly alertaService = inject(AlertaService);
   private readonly dialog = inject(MatDialog);
 
-  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   readonly pedidos = signal<PedidoDTO[]>([]);
   readonly totalElementos = signal<number>(0);
   readonly paginaAtual = signal<number>(0);
   readonly tamanhoPagina = signal<number>(20);
+
+  documento: any;
 
   readonly colunas: ColunaTabela[] = [
     { campo: 'clienteNome', header: 'Cliente', editavel: false, width: '25%' },
@@ -85,19 +88,19 @@ export class PedidosComponent implements OnInit {
 
   readonly icones: ItemTabela[] = [
     {
-      nome: 'Emitir Nota Fiscar',
+      nome: 'Imprimir Pedido',
+      icone: 'picture_as_pdf',
+      function: (row) => {
+        this.imprimir(row.id);
+      },
+    },
+    {
+      nome: 'Emitir Nota Fiscal',
       icone: 'receipt_long',
       function: (row) => {
         this.router.navigate(['notas-fiscais', 'nova', 'pedido', row.id], {
           queryParams: { rota: 'pedidos' },
         });
-      },
-    },
-    {
-      nome: 'Imprimir Pedido',
-      icone: 'picture_as_pdf',
-      function: (row) => {
-        console.log(row);
       },
     },
   ];
@@ -158,5 +161,50 @@ export class PedidosComponent implements OnInit {
         this.alertaService.erro(erro.error);
       },
     );
+  }
+
+  imprimir(idPedido: number): void {
+    this.pedidoService.gerarPdf(idPedido).subscribe({
+      next: (response: HttpResponse<Blob>) => {
+        const pdf = response.body!;
+        if (!response.body) {
+          console.error('PDF não retornado pelo servidor');
+          return;
+        }
+
+        const documento = new Blob([response.body], { type: 'application/pdf' });
+        const contentDisposition = response.headers.get('Content-Disposition');
+
+        const nomeArquivo =
+          contentDisposition?.match(/filename="?([^"]+)"?/i)?.[1] ?? `pedido-${idPedido}.pdf`;
+
+        this.dialog.open<VisualizadorDocumentoComponent, InputVisualizadorDocumento, void>(
+          VisualizadorDocumentoComponent,
+          {
+            autoFocus: false,
+            width: '80vw',
+            maxWidth: '80vw',
+            height: '90vh',
+            maxHeight: '90vh',
+            data: {
+              documento: documento,
+              nomeDocumento: nomeArquivo,
+            }
+          }
+        );
+
+        // const url = window.URL.createObjectURL(pdf);
+        // const link = document.createElement('a');
+        // link.href = url;
+        // link.download = nomeArquivo;
+
+        // link.click();
+
+        // window.URL.revokeObjectURL(url);
+      },
+      error: (erro) => {
+        this.alertaService.erro(erro);
+      },
+    });
   }
 }
