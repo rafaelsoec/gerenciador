@@ -95,7 +95,7 @@ export class PedidosComponent implements OnInit {
       },
     },
     {
-      nome: 'Emitir Nota Fiscal',
+      nome: 'Gerar Nota Fiscal',
       icone: 'receipt_long',
       function: (row) => {
         this.router.navigate(['notas-fiscais', 'nova', 'pedido', row.id], {
