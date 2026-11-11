@@ -21,8 +21,8 @@ export class NotaFiscalService {
     return this.http.get<NotaFiscalDTO>(`${this.url}/${id}`);
   }
 
-  gerarPdf(id: number): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.url}/${id}/emitir`, {
+  gerarPdf(id: number, tipo: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.url}/${id}/emitir/${tipo}`, {
       responseType: 'blob',
       observe: 'response',
     }).pipe(

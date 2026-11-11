@@ -32,6 +32,7 @@ export interface ColunaTabela {
 
 export interface ItemTabela {
   icone: string;
+  isSvg?: boolean;
   nome: string;
   function: (item?: any) => void;
 }

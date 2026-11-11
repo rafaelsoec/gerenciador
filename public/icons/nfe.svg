@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 8h25l10 10v38H15z"/>
+    <path d="M40 8v11h10"/>
+    <path d="M22 27h20M22 34h15"/>
+    <rect x="25" y="40" width="27" height="16" rx="3"/>
+    <path d="M31 46h15M31 51h10"/>
+  </g>
+  <text x="22" y="19" fill="currentColor" font-family="Arial,sans-serif" font-size="7" font-weight="700">NF-e</text>
+</svg>

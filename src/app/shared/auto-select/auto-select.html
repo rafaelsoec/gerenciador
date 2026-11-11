@@ -1,57 +1,39 @@
-<mat-form-field appearance="outline" class="select-autocomplete">
-  <mat-label>{{ label }}</mat-label>
+<mat-form-field appearance="outline" class="select-autocomplete" [class.somente-borda-inferior]="somenteBordaInferior">
+  <mat-label [style.text-color]="cor">{{ label }}</mat-label>
 
-  <!-- Chips das opções já selecionadas (modo multiple) -->
   @if (isMultiple) {
-    <mat-chip-grid #chipGrid aria-label="Opções selecionadas">
-      @for (opt of selectedOptions; track opt.value) {
-        <mat-chip-row (removed)="removeChip(opt)">
-          {{ exibirPipe(opt.label, pipe) }}
-          <button matChipRemove [attr.aria-label]="'Remover ' + opt.label">
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip-row>
-      }
+  <mat-chip-grid #chipGrid aria-label="Opções selecionadas">
+    @for (opt of selectedOptions; track opt.value) {
+    <mat-chip-row (removed)="removeChip(opt)" [style.text-color]="cor">
+      {{ exibirPipe(opt.label, pipe) }}
+      <button matChipRemove [attr.aria-label]="'Remover ' + opt.label">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+    }
 
-      <input
-        #searchInput
-        matInput
-        [placeholder]="placeholder || label"
-        [formControl]="searchControl"
-        [matAutocomplete]="auto"
-        [matChipInputFor]="chipGrid"
-        [disabled]="disabled"
-        (blur)="onBlur()" />
-    </mat-chip-grid>
+    <input #searchInput matInput [placeholder]="placeholder || label" [formControl]="searchControl"
+      [matAutocomplete]="auto" [matChipInputFor]="chipGrid" [disabled]="disabled" (blur)="onBlur()" />
+  </mat-chip-grid>
   }
 
-  <!-- Campo de texto simples (modo single) -->
   @if (!isMultiple) {
-    <input
-      #searchInput
-      matInput
-      [placeholder]="placeholder || label"
-      [formControl]="searchControl"
-      [matAutocomplete]="auto"
-      [disabled]="disabled"
-      [required]="obrigatorio ?? false"
-      (focus)="onFocus()"
-      (blur)="onBlur()" />
+  <input #searchInput matInput [placeholder]="placeholder || label" [formControl]="searchControl"
+    [matAutocomplete]="auto" [disabled]="disabled" [required]="obrigatorio ?? false" (focus)="onFocus()"
+    (blur)="onBlur()" />
   }
 
-  <!-- Painel de sugestões -->
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    (optionSelected)="onOptionSelected($event)">
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
 
     @for (option of filteredOptions; track option.value) {
-      <mat-option [value]="option">
-        {{ exibirPipe(option.label, pipe) }}
-      </mat-option>
+    <mat-option [value]="option" [style.text-color]="cor">
+      {{ exibirPipe(option.label, pipe) }}
+    </mat-option>
     }
 
     @empty {
-      <mat-option disabled>Nenhuma opção encontrada</mat-option>
+    <mat-option disabled>Nenhuma opção encontrada</mat-option>
     }
   </mat-autocomplete>
+
 </mat-form-field>

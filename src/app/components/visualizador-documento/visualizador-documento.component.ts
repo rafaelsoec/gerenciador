@@ -6,13 +6,18 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
+  signal
 } from '@angular/core';
-
+import { OpcaoCampo } from '../../shared/form-cadastro/form-cadastro';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ClienteService } from '../../services/cliente.service';
+import { SelectAutocompleteComponent } from '../../shared/auto-select/auto-select';
 
 export interface InputVisualizadorDocumento {
   documento: Blob;
@@ -24,7 +29,10 @@ export interface InputVisualizadorDocumento {
   standalone: true,
   imports: [
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    CommonModule,
+    FormsModule,
+    SelectAutocompleteComponent,
   ],
   templateUrl: './visualizador-documento.component.html',
   styleUrl: './visualizador-documento.component.css'
@@ -40,18 +48,28 @@ export class VisualizadorDocumentoComponent
   @Input() nomeArquivo = 'documento.pdf';
 
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly clienteService = inject(ClienteService);
+  
 
   url: string | null = null;
   urlSegura: SafeResourceUrl | null = null;
 
   @ViewChild('iframePdf')
   iframePdf!: ElementRef<HTMLIFrameElement>;
+  
+  readonly clientes = signal<OpcaoCampo[]>([]);
+  readonly clienteIdSignal = signal<any>(null);
 
   zoom = 100;
 
   ngOnInit(): void {
     this.arquivo = this.data.documento;
     this.nomeArquivo = this.data.nomeDocumento ?? 'documento.pdf';
+    this.clienteService.listar({ size: 200 }).subscribe((pagina) => {
+      this.clientes.set(
+        pagina.conteudo.map((c) => ({ value: c.id, label: c.nome, selected: false })),
+      );
+    });
 
     this.atualizarDocumento();
   }
@@ -67,6 +85,9 @@ export class VisualizadorDocumentoComponent
   ajustarLargura(): void {
     this.zoom = 100;
     this.atualizarVisualizacao('page-width');
+  }
+
+  enviarEmail(): void {
   }
 
   ajustarPagina(): void {

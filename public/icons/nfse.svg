@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 8h25l10 10v11"/>
+    <path d="M39 8v11h10"/>
+    <path d="M14 8v48h16"/>
+    <path d="M21 26h20M21 32h14M21 38h8"/>
+    <rect x="27" y="34" width="29" height="22" rx="3"/>
+    <path d="M33 34v-5h17v5M33 43h17M33 48h11"/>
+    <path d="M33 52h10"/>
+    <path d="M21 17h10"/>
+  </g>
+  <text x="25" y="19" fill="currentColor" font-family="Arial,sans-serif" font-size="7" font-weight="700">NFS</text>
+</svg>

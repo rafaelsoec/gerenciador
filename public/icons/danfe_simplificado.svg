@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13h38l7 7v32H10z"/>
+    <circle cx="17" cy="21" r="2"/>
+    <path d="M25 21h19M25 27h19"/>
+    <path d="M17 35v10m4-10v10m4-10v10m5-10v10m3-10v10m5-10v10m4-10v10"/>
+  </g>
+  <text x="29" y="18" fill="currentColor" font-family="Arial,sans-serif" font-size="7" font-weight="700">DANFE</text>
+</svg>

@@ -4,6 +4,9 @@
 /* ═══════════════════════════════════════════════════════════════
    Dark mode — aplicado via classe .dark no <body>
    ═══════════════════════════════════════════════════════════════ */
+:root {
+  --icone-filter: none;
+}
 
 /* Transição global suave ao trocar de tema */
 body {
@@ -13,6 +16,7 @@ body {
 body.dark {
   background-color: #0f1923;
   color: #e8edf3;
+  --icone-filter: brightness(0) invert(1);
 
   /* ── CSS custom properties usadas pela página de início ── */
   --site-background: #0f1923;

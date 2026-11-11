@@ -36,15 +36,33 @@ export class NotasFiscaisComponent implements OnInit {
 
   readonly icones: ItemTabela[] = [
     {
-      nome: 'Emitir Nota',
-      icone: 'receipt_long',
+      nome: 'Imprimir Danfe simplificada',
+      icone: new URL('icons/danfe_simplificado.svg', document.baseURI).href,
+      isSvg: true,
       function: (row) => {
-        this.imprimir(row.id);
+        this.imprimir(row.id, "DANFE_SIMPLIFICADO");
+      },
+    },
+    {
+      nome: 'Imprimir NFE',
+      icone: new URL('icons/nfe.svg', document.baseURI).href,
+      isSvg: true,
+      function: (row) => {
+        this.imprimir(row.id, "NFE");
+      },
+    },
+    {
+      nome: 'Imprimir NFSE',
+      icone: new URL('icons/nfse.svg', document.baseURI).href,
+      isSvg: true,
+      function: (row) => {
+        this.imprimir(row.id, "NFSE");
       },
     },
     {
       nome: 'Editar',
       icone: 'edit',
+      isSvg: false,
       function: (row) => {
         this.router.navigate(['notas-fiscais', 'nova', 'pedido', row.pedidoId], {
           queryParams: { rota: 'notas-fiscais' },
@@ -116,8 +134,8 @@ export class NotasFiscaisComponent implements OnInit {
 
 
 
-  imprimir(idNota: number): void {
-    this.notaFiscalService.gerarPdf(idNota).subscribe({
+  imprimir(idNota: number, tipo: string): void {
+    this.notaFiscalService.gerarPdf(idNota, tipo).subscribe({
       next: (response: HttpResponse<Blob>) => {
         const pdf = response.body!;
         if (!response.body) {

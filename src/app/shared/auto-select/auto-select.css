@@ -2,7 +2,41 @@
   width: 100%;
 }
 
-/* garante que os chips não transbordem o field */
+/* Chips */
 .select-autocomplete mat-chip-grid {
   width: 100%;
+}
+
+/* Modo somente borda inferior */
+.select-autocomplete.somente-borda-inferior {
+
+  .mat-mdc-text-field-wrapper {
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  .mdc-notched-outline {
+    display: none !important;
+  }
+
+  .mat-mdc-form-field-flex {
+    border-bottom: 1px solid var(--mat-form-field-outlined-outline-color);
+  }
+
+  &.mat-focused .mat-mdc-form-field-flex {
+    border-bottom: 2px solid var(--mat-form-field-outlined-focus-outline-color);
+  }
+
+  .mat-mdc-form-field-infix {
+    padding-top: 12px;
+    padding-bottom: 8px;
+  }
+}
+
+/* Modo outline padrão */
+.select-autocomplete:not(.somente-borda-inferior) {
+
+  .mat-mdc-text-field-wrapper {
+    background: transparent !important;
+  }
 }

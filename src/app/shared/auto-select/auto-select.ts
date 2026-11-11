@@ -69,6 +69,9 @@ export class SelectAutocompleteComponent
   @Input() disabled = false;
   @Input() obrigatorio: boolean | undefined = false;
   @Input() pipe: PipeTransform | null | undefined;
+  @Input() somenteBordaInferior = false;
+  @Input() cor = "white";
+  
 
   @Output() selectionChange = new EventEmitter<OpcaoCampo | OpcaoCampo[] | null>();
 
