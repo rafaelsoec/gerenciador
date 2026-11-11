@@ -189,6 +189,7 @@ export class PedidosComponent implements OnInit {
             data: {
               documento: documento,
               nomeDocumento: nomeArquivo,
+              email: ""
             }
           }
         );

@@ -3,27 +3,27 @@ import { StatusNotaFiscalEnum } from '../../enums/StatusNotaFiscalEnum';
 import { NaturezaOperacaoEnum } from '../../enums/NaturezaOperacaoEnum';
 import { ItemNotaFiscalDTO } from './ItemNotaFiscalDTO';
 
-export interface NotaFiscalDTO {
+export class NotaFiscalDTO {
   id?: number;
 
   // Vinculo
-  pedidoId: number;
-  empresaId: number;
+  pedidoId!: number;
+  empresaId!: number;
 
   // Identificacao
-  tipo: TipoNotaFiscalEnum;
-  status: StatusNotaFiscalEnum;
-  naturezaOperacao: NaturezaOperacaoEnum;
+  tipo!: TipoNotaFiscalEnum;
+  status!: StatusNotaFiscalEnum;
+  naturezaOperacao!: NaturezaOperacaoEnum;
   numero?: string;
-  serie: string;
+  serie!: string;
   chaveAcesso?: string;
   protocolo?: string;
-  dataEmissao: string;
+  dataEmissao!: string;
   dataEntradaSaida?: string;
 
   // Destinatario (snapshoted do cliente)
-  destinatarioNome: string;
-  destinatarioIdentificador: string;
+  destinatarioNome!: string;
+  destinatarioIdentificador!: string;
   destinatarioEmail?: string;
   destinatarioLogradouro?: string;
   destinatarioNumero?: string;
@@ -33,23 +33,23 @@ export interface NotaFiscalDTO {
   destinatarioCep?: string;
 
   // Totais
-  valorProdutos: number;
-  valorDesconto: number;
-  valorFrete: number;
-  valorSeguro: number;
-  valorOutros: number;
-  valorIcms: number;
-  valorIpi: number;
-  valorPis: number;
-  valorCofins: number;
-  valorTotal: number;
+  valorProdutos!: number;
+  valorDesconto!: number;
+  valorFrete!: number;
+  valorSeguro!: number;
+  valorOutros!: number;
+  valorIcms!: number;
+  valorIpi!: number;
+  valorPis!: number;
+  valorCofins!: number;
+  valorTotal!: number;
 
   // Pagamento
-  formaPagamento: string;
-  valorPago: number;
+  formaPagamento!: string;
+  valorPago!: number;
 
   // Complemento
   informacoesAdicionais?: string;
 
-  itens: ItemNotaFiscalDTO[];
+  itens!: ItemNotaFiscalDTO[];
 }

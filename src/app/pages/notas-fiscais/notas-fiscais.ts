@@ -40,7 +40,7 @@ export class NotasFiscaisComponent implements OnInit {
       icone: new URL('icons/danfe_simplificado.svg', document.baseURI).href,
       isSvg: true,
       function: (row) => {
-        this.imprimir(row.id, "DANFE_SIMPLIFICADO");
+        this.imprimir(row, "DANFE_SIMPLIFICADO");
       },
     },
     {
@@ -48,7 +48,7 @@ export class NotasFiscaisComponent implements OnInit {
       icone: new URL('icons/nfe.svg', document.baseURI).href,
       isSvg: true,
       function: (row) => {
-        this.imprimir(row.id, "NFE");
+        this.imprimir(row, "NFE");
       },
     },
     {
@@ -56,7 +56,7 @@ export class NotasFiscaisComponent implements OnInit {
       icone: new URL('icons/nfse.svg', document.baseURI).href,
       isSvg: true,
       function: (row) => {
-        this.imprimir(row.id, "NFSE");
+        this.imprimir(row, "NFSE");
       },
     },
     {
@@ -134,7 +134,10 @@ export class NotasFiscaisComponent implements OnInit {
 
 
 
-  imprimir(idNota: number, tipo: string): void {
+  imprimir(nota: NotaFiscalDTO, tipo: string): void {
+    const destinatarioEmail = nota.destinatarioEmail ?? "";
+    const idNota = nota.id;
+
     this.notaFiscalService.gerarPdf(idNota, tipo).subscribe({
       next: (response: HttpResponse<Blob>) => {
         const pdf = response.body!;
@@ -160,6 +163,7 @@ export class NotasFiscaisComponent implements OnInit {
             data: {
               documento: documento,
               nomeDocumento: nomeArquivo,
+              email: destinatarioEmail
             }
           }
         );
