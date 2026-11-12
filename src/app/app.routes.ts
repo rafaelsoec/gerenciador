@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { InicioComponent } from './pages/inicio/inicio';
 import { ClientesComponent } from './pages/clientes/clientes';
 import { ProdutosComponent } from './pages/produtos/produtos';
@@ -46,4 +46,5 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   { path: 'perfil', component: PerfilComponent, canActivate: [authGuard] },
+  { path: '**', redirectTo: 'inicio' },
 ];
