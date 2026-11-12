@@ -1,4 +1,9 @@
-import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent } from '@angular/common/http';
+import {
+  HttpInterceptorFn,
+  HttpRequest,
+  HttpHandlerFn,
+  HttpEvent
+} from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 function parseBrNumber(value: string): number | string {
@@ -12,7 +17,6 @@ function parseBrNumber(value: string): number | string {
   return Number.isFinite(parsed) ? parsed : value;
 }
 
-/** Percorre o objeto e converte apenas campos marcados ou valores em string com vírgula decimal */
 function transformBody(body: unknown): unknown {
   if (body === null || body === undefined) {
     return body;
@@ -43,18 +47,30 @@ export const converterInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn,
 ): Observable<HttpEvent<unknown>> => {
-  const isJson =
-    req.body !== null && req.headers.get('Content-Type')?.includes('application/json') !== false;
 
-  if (!isJson || ['GET', 'DELETE', 'HEAD'].includes(req.method)) {
+  // Não modificar requisições multipart/form-data
+  if (req.body instanceof FormData) {
+    const modifiedRequest = req.clone({
+      headers: req.headers.delete('Content-Type')
+    });
+
+    return next(modifiedRequest);
+  }
+
+  if (['GET', 'DELETE', 'HEAD'].includes(req.method)) {
+    return next(req);
+  }
+
+  const isJson = req.body !== null &&
+    (req.headers.get('Content-Type')?.includes('application/json') ?? true);
+
+  if (!isJson) {
     return next(req);
   }
 
   const transformedBody = transformBody(req.body);
 
-  const modifiedRequest = req.clone({
-    body: transformedBody,
-  });
-
-  return next(modifiedRequest);
+  return next(req.clone({
+    body: transformedBody
+  }));
 };

@@ -1,6 +1,7 @@
 export interface RequisicaoEmailDTO {
   destinatarios: string[];
-  copiasOcultas: string[];
+  copiasOcultas?: string[];
+  parametros?: Map<string, any>;
   copias: string[];
   assunto: string;
   titulo: string;
@@ -12,5 +13,5 @@ export interface RequisicaoEmailDTO {
 export interface RequisicaoEmailAnexoDTO {
   nome: string;
   contentType: string;
-  conteudo: any[];
+  conteudo: Blob | null;
 }

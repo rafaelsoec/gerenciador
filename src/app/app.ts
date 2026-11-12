@@ -8,7 +8,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SidebarComponent, LoadingComponent],
+  imports: [RouterOutlet, SidebarComponent, ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

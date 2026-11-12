@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoadingService } from '../../services/loading.service';
 
@@ -7,10 +7,24 @@ import { LoadingService } from '../../services/loading.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.css']
+  styleUrls: ['./loading.component.css'],
 })
 export class LoadingComponent {
+  constructor(
+    public loadingService: LoadingService,
+    private renderer: Renderer2,
+  ) {}
 
-  constructor(public loadingService: LoadingService) { }
+  private element!: HTMLElement;
 
+  ngAfterViewInit(): void {
+    this.element = document.querySelector('app-loading')!;
+    this.renderer.appendChild(document.body, this.element);
+  }
+
+  ngOnDestroy(): void {
+    if (this.element?.parentNode) {
+      this.renderer.removeChild(document.body, this.element);
+    }
+  }
 }

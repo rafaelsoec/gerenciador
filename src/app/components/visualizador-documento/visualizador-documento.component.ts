@@ -85,13 +85,13 @@ export class VisualizadorDocumentoComponent implements OnChanges, OnDestroy, OnI
             copiasOcultas: [],
             assunto: 'Envio de Nota Fiscal',
             titulo: 'Nota Fiscal - ' + DateUtils.formatar(new Date()),
-            mensagem: '<h2>Olá!</h2>',
+            mensagem: 'EMAIL_NOTA_FISCAL',
             html: true,
             anexos: [
               {
                 nome: this.nomeArquivo,
                 contentType: 'application/pdf',
-                conteudo: [this.arquivo],
+                conteudo: this.arquivo,
               },
             ],
           };

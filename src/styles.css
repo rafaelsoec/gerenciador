@@ -12,6 +12,22 @@
 body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
+.cdk-overlay-container .loading-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+}
+
+.loading-gif {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+}
 
 body.dark {
   background-color: #0f1923;
