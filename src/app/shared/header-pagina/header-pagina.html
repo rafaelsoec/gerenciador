@@ -12,4 +12,8 @@
     {{ nomeBotao() }}
   </button>
   }
+
+  @if (enableContent()) {
+    <ng-content></ng-content>
+  }
 </header>

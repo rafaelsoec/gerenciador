@@ -24,11 +24,7 @@
     <div class="period-note">{{ dados.data | data }} a {{ dataHoje | data }}</div>
   </section>
 
-  <app-scroll
-    [vertical]="true"
-    [horizontal]="false"
-    [scrollbarOffset]="10"
-    [height]="'calc(100vh - 180px)'">
+  <app-scroll [vertical]="true" [horizontal]="false" [scrollbarOffset]="10" [height]="'calc(100vh - 180px)'">
 
     <!-- Métricas -->
     <section class=" row justify-content-center align-items-stretch mb-4">
@@ -37,10 +33,10 @@
           <div class="metric-top">
             <span class="metric-label">Faturamento</span>
             <span class="metric-icon ic-green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-          </span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+            </span>
           </div>
           <div class="metric-value">{{ dados.faturamento | moeda }}</div>
         </article>
@@ -50,10 +46,10 @@
           <div class="metric-top">
             <span class="metric-label">Vendas realizadas</span>
             <span class="metric-icon ic-blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7" />
-            </svg>
-          </span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7" />
+              </svg>
+            </span>
           </div>
           <div class="metric-value">{{ dados.vendas.length }}</div>
         </article>
@@ -62,19 +58,19 @@
 
     <!-- Gráfico + Meta -->
     <section class=" row justify-content-center align-items-stretch mb-4">
+      @if (graficoFaturamento) {
       <div class=" col-sm-12 col-md-7 col-lg-7">
         <article class="card">
           <div class="panel-head">
             <div class="col-12 col-lg-12">
-              @if (graficoFaturamento) {
-                <app-grafico [config]="graficoFaturamento">
-                </app-grafico>
-              }
+              <app-grafico [config]="graficoFaturamento">
+              </app-grafico>
             </div>
           </div>
         </article>
       </div>
-      <div class=" col-sm-12 col-md-5 col-lg-5">
+      }
+      <div [class]="graficoFaturamento ? 'col-sm-12 col-md-5 col-lg-5' : 'col-sm-12 col-md-12 col-lg-12'">
         <article class="card">
           <div class="panel-head">
             <div>
@@ -86,7 +82,7 @@
           <div class=" cor-branca row justify-content-center">
             <div class="col-sm-12 col-md-8 col-lg-8">
               <app-progresso-circular titulo="Meta de faturamento" [percentual]="dados.meta.percentualAtingido"
-                                      cor="#16a34a">
+                cor="#16a34a">
               </app-progresso-circular>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4 text-center align-content-center">
@@ -128,28 +124,28 @@
             <table>
               <thead>
                 @if (dados.pedidosRecentes.length > 0) {
-                  <tr>
-                    <th>PEDIDO</th>
-                    <th>CLIENTE</th>
-                    <th>DATA</th>
-                    <th>VALOR</th>
-                    <th>STATUS</th>
-                  </tr>
+                <tr>
+                  <th>PEDIDO</th>
+                  <th>CLIENTE</th>
+                  <th>DATA</th>
+                  <th>VALOR</th>
+                  <th>STATUS</th>
+                </tr>
                 } @else {
-                  <div class="text-center" [style.font-size]="'12px'"> Nenhum pedido feito!</div>
+                <div class="text-center" [style.font-size]="'12px'"> Nenhum pedido feito!</div>
                 }
               </thead>
               <tbody>
                 @for (pedido of dados.pedidosRecentes; track pedido.id) {
-                  <tr>
-                    <td>{{ pedido.id }}</td>
-                    <td>
-                      <div class="customer"><span class="mini-avatar">MC</span>{{ pedido.cliente }}</div>
-                    </td>
-                    <td>{{ pedido.data | data: 'dd/MM/yyyy' }}</td>
-                    <td>{{ pedido.valor | moeda }}</td>
-                    <td><span class="status-badge paid">{{ pedido.status }}</span></td>
-                  </tr>
+                <tr>
+                  <td>{{ pedido.id }}</td>
+                  <td>
+                    <div class="customer"><span class="mini-avatar">MC</span>{{ pedido.cliente }}</div>
+                  </td>
+                  <td>{{ pedido.data | data: 'dd/MM/yyyy' }}</td>
+                  <td>{{ pedido.valor | moeda }}</td>
+                  <td><span class="status-badge paid">{{ pedido.status }}</span></td>
+                </tr>
                 }
               </tbody>
             </table>
@@ -168,18 +164,18 @@
           </div>
           <div class="products">
             @if (dados.produtosMaisVendidos.length > 0) {
-              @for (produto of dados.produtosMaisVendidos; track produto.id) {
-                <div class="product">
-                  <div class="product-art">{{ produto.id }}</div>
-                  <div class="product-info">
-                    <div class="product-name">{{ produto.nome }}</div>
-                    <div class="product-meta">{{ produto.quantidadeVendida }} unidades vendidas</div>
-                  </div>
-                  <div class="product-total">{{ produto.valorTotal | moeda }}</div>
-                </div>
-              }
+            @for (produto of dados.produtosMaisVendidos; track produto.id) {
+            <div class="product">
+              <div class="product-art">{{ produto.id }}</div>
+              <div class="product-info">
+                <div class="product-name">{{ produto.nome }}</div>
+                <div class="product-meta">{{ produto.quantidadeVendida }} unidades vendidas</div>
+              </div>
+              <div class="product-total">{{ produto.valorTotal | moeda }}</div>
+            </div>
+            }
             } @else {
-              <div class="text-center" [style.font-size]="'12px'"> Nenhum produto vendido!</div>
+            <div class="text-center" [style.font-size]="'12px'"> Nenhum produto vendido!</div>
             }
           </div>
         </article>

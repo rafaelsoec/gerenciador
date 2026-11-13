@@ -1,54 +1,50 @@
-.itens-tabela {
+/* ── Wrapper da tabela ── */
+.en-itens-tabela-wrapper {
+  overflow-x: auto;
+  margin-top: 4px;
+}
+
+/* ── Tabela de itens (padrão en-*) ── */
+.en-itens-tabela {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
+  font-size: 0.85rem;
+}
 
-  th,
-  td {
-    padding: 10px 12px;
-    text-align: left;
-    vertical-align: middle;
-    overflow-wrap: break-word;
-  }
+.en-itens-tabela th {
+  background: #173B5E;
+  color: #fff;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
 
-  thead tr {
-    background-color: #173B5E;
-    color: #ffffff;
-  }
+.en-itens-tabela td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+  overflow-wrap: break-word;
+}
 
-  thead th {
-    font-weight: 600;
-    border: none;
-    padding: 14px 12px;
-  }
+.en-itens-tabela tbody tr:hover {
+  background: #f7f8fa;
+}
 
-  tbody tr {
-    border-bottom: 1px solid #dee2e6;
-  }
+.col-produto { font-weight: 500; }
+.col-num     { text-align: right; }
 
-  tbody tr:hover {
-    background-color: #f8fafc;
-  }
+.col-acoes {
+  text-align: center;
+  white-space: nowrap;
+  padding: 4px 0;
+}
 
-  .col-qtd {
-    text-align: center;
-  }
-
-  .col-acoes {
-    text-align: center;
-    white-space: nowrap;
-    padding: 4px 0;
-
-    button {
-      display: inline-flex;
-      vertical-align: middle;
-    }
-  }
-
-  .campo-qtd-edicao {
-    width: 100%;
-    max-width: 120px;
-  }
+.col-acoes button {
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 /* ── Input de edição: apenas borda inferior ── */
@@ -58,7 +54,6 @@
     display: none;
   }
 
-  /* Remove fundo e padding do fill */
   .mat-mdc-text-field-wrapper,
   .mdc-text-field--filled {
     background: transparent !important;
@@ -66,17 +61,14 @@
     padding: 0 !important;
   }
 
-  /* Remove a faixa colorida de fundo do fill */
   .mat-mdc-form-field-focus-overlay {
     display: none !important;
   }
 
-  /* Remove o outline */
   .mdc-notched-outline {
     display: none !important;
   }
 
-  /* Borda inferior via line-ripple */
   .mdc-line-ripple::before {
     border-bottom-color: #9ca3af !important;
   }
@@ -94,4 +86,14 @@
     padding: 4px 0 !important;
     min-height: auto;
   }
+}
+
+/* ── Dark mode ── */
+:host-context(body.dark) .en-itens-tabela td {
+  border-bottom-color: #334155;
+  color: #e2e8f0;
+}
+
+:host-context(body.dark) .en-itens-tabela tbody tr:hover {
+  background: #263245;
 }

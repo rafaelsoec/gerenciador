@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,9 @@ import { AlertaService } from '../../../services/alerta.service';
 import { DateUtils } from '../../../utils/DateUtils';
 import { CampoMoedaComponent } from '../../../components/moeda/moeda.component';
 import { CampoDataComponent } from '../../../components/data/data.component';
+import { ScrollComponent } from '../../../components/scroll/scroll.component';
+import { FooterComponent } from '../../../components/footer/footer.component';
+import { HeaderPaginaComponent } from '../../../shared/header-pagina/header-pagina';
 
 interface CadastroPedidoForm {
   clienteId: any;
@@ -49,6 +52,9 @@ interface CadastroPedidoForm {
     ItensPedidoComponent,
     CampoMoedaComponent,
     CampoDataComponent,
+    ScrollComponent,
+    FooterComponent,
+    HeaderPaginaComponent,
   ],
   templateUrl: './cadastro-pedido.html',
   styleUrl: './cadastro-pedido.css',
@@ -60,6 +66,8 @@ export class CadastroPedidoComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialogRef = inject(MatDialogRef<CadastroPedidoComponent>, { optional: true });
+  private readonly cdr = inject(ChangeDetectorRef);
+
   public id: number | undefined;
   public disabled = input<boolean>(false);
   readonly clientes = signal<OpcaoCampo[]>([]);
@@ -74,7 +82,7 @@ export class CadastroPedidoComponent implements OnInit {
 
   form!: CadastroPedidoForm;
 
-  readonly valorCalculado = signal<string>('');
+  readonly valorCalculado = signal<string>('0,00');
   readonly itensSelecionados = signal<ItemPedido[]>([]);
 
   // Signals reativos para os campos obrigatórios do form
@@ -96,6 +104,7 @@ export class CadastroPedidoComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id')) ?? 0;
+    this.cdr.detectChanges();
 
     this.buscarPedido();
     this.clienteService.listar({ size: 200 }).subscribe((pagina) => {
@@ -140,6 +149,7 @@ export class CadastroPedidoComponent implements OnInit {
           dataEntrega: dataConvertida,
           observacao: pedido.observacao,
         };
+        this.cdr.detectChanges();
       },
       error: (erro) => {
         this.alertaService.erro(erro);

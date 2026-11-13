@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -20,7 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -33,6 +33,12 @@ export class LoginComponent {
     login: ['', [Validators.required]],
     senha: ['', [Validators.required, Validators.minLength(4)]],
   });
+
+  ngOnInit(): void {
+    if (this.auth.estaAutenticado()) {
+      this.router.navigate(['/inicio']);
+    }
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {

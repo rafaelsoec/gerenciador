@@ -1,166 +1,196 @@
-﻿<div class="container-fluid">
-  <section class="perfil-pagina">
+﻿<div class="container-fluid p-4" style="overflow-y: auto;">
 
-    <!-- Header -->
-    <div class="perfil-header">
-      <div class="perfil-header-info">
-        <div class="perfil-avatar">{{ inicial() }}</div>
-        <div>
-          <h2 class="perfil-titulo">Meu Perfil</h2>
-          <p class="perfil-subtitulo">{{ auth.usuarioAtual()?.login }}</p>
-        </div>
-      </div>
-      <div class="perfil-header-acoes">
-        <button matButton="outlined" type="button" (click)="onCancelar()">
-          <mat-icon fontIcon="arrow_back"></mat-icon>
-          Voltar
-        </button>
-        <button matButton="filled" type="button" (click)="onSalvar()" [disabled]="carregando()">
-          @if (carregando()) {
-            <mat-spinner diameter="16"></mat-spinner>
-          } @else {
-            <mat-icon fontIcon="save"></mat-icon>
-          }
-          Salvar
-        </button>
-      </div>
-    </div>
+  <h1>Meu Perfil</h1>
+  <p class="subtitulo">Ajuste as preferências do seu perfil aqui.</p>
+  <app-scroll [vertical]="true" [horizontal]="false" [scrollbarOffset]="10" [height]="'calc(100vh - 100px)'">
 
-    <!-- Corpo -->
-    <div class="perfil-corpo">
-      <form [formGroup]="form" (ngSubmit)="onSalvar()" novalidate>
+    <div class="col-12 row justify-content-center">
 
-        <!-- Secao: Dados pessoais -->
-        <div class="perfil-secao">
-          <h3 class="perfil-secao-titulo">Dados pessoais</h3>
-          <div class="perfil-secao-corpo">
-            <mat-form-field appearance="outline" class="campo-full">
-              <mat-label>Nome de exibicao</mat-label>
-              <input matInput formControlName="nome" autocomplete="name" />
-              @if (form.get('nome')?.hasError('required') && form.get('nome')?.touched) {
-                <mat-error>Nome e obrigatorio</mat-error>
-              } @else if (form.get('nome')?.hasError('minlength') && form.get('nome')?.touched) {
-                <mat-error>Minimo de 2 caracteres</mat-error>
-              }
-            </mat-form-field>
+      <!-- DADOS PESSOAIS -->
+      <div class="col-12  col-lg-5 col-md-5 col-sm-12 shadow-lg p-3 mb-5 rounded" style="border: 1px solid gray;">
 
-            <mat-form-field appearance="outline" class="campo-full">
-              <mat-label>Login (usuario)</mat-label>
+        <h3>Dados pessoais</h3>
+
+        <div class="col-12 row justify-content-between mt-5">
+
+          <section class="col-12">
+            <mat-form-field appearance="outline" class="col-12">
+              <mat-label>Login (usuário)</mat-label>
+
               <input matInput [value]="auth.usuarioAtual()?.login ?? ''" disabled />
-              <mat-hint>O login nao pode ser alterado</mat-hint>
-            </mat-form-field>
-          </div>
-        </div>
 
-        <!-- Secao: Aparencia -->
-        <div class="perfil-secao">
-          <h3 class="perfil-secao-titulo">Aparência</h3>
-          <div class="perfil-secao-corpo">
-            <div class="perfil-tema-row">
-              <div class="perfil-tema-info">
-                <span class="perfil-tema-label">Modo escuro</span>
-                <span class="perfil-tema-desc">Alterna entre o tema claro e o tema escuro da interface</span>
+              <mat-hint class="cor-branca">
+                O login não pode ser alterado
+              </mat-hint>
+            </mat-form-field>
+          </section>
+
+          <!-- APARÊNCIA -->
+          <section class="col-12 mt-3">
+
+            <h2 class="secao-titulo" style="color: #ffffff; background: #173B5E">
+              Aparência
+            </h2>
+
+            <div class="opcao" style="border:1px solid #173B5E">
+
+              <div class="opcao-info">
+                <span class="opcao-label">Modo escuro</span>
+
+                <span class="opcao-desc">
+                  Alterna entre o tema claro e o tema escuro da interface.
+                </span>
               </div>
-              <button
-                type="button"
-                class="perfil-tema-toggle"
-                [class.ativo]="tema.darkMode()"
-                (click)="tema.alternar()"
-                [attr.aria-label]="tema.darkMode() ? 'Desativar modo escuro' : 'Ativar modo escuro'"
-                [attr.aria-pressed]="tema.darkMode()">
-                <span class="perfil-tema-toggle-knob"></span>
+
+              <button class="toggle" [class.ativo]="tema.darkMode()" (click)="tema.alternar()"
+                [attr.aria-pressed]="tema.darkMode()" aria-label="Alternar modo escuro">
+
+                <span class="toggle-thumb"></span>
+
               </button>
             </div>
-          </div>
+
+          </section>
+
         </div>
+      </div>
 
-        <!-- Secao: Alterar senha -->
-        <div class="perfil-secao">
-          <button type="button" class="perfil-senha-toggle" (click)="alterarSenha.update(v => !v)"
-            [attr.aria-expanded]="alterarSenha()">
-            <h3 class="perfil-secao-titulo">Alterar senha</h3>
-            <svg class="perfil-chevron" [class.aberto]="alterarSenha()"
-              viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
-            </svg>
-          </button>
+      <!-- ALTERAÇÃO DE SENHA -->
+      <div class="col-12 col-lg-6 col-md-6 col-sm-12 shadow-lg p-3 mb-5 rounded"
+        style="border: 1px solid gray; margin-left: 30px;">
 
-          @if (alterarSenha()) {
-            <div class="perfil-secao-corpo perfil-senha-campos">
-              <div class="row g-3">
-                <div class="col-12">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Senha atual</mat-label>
-                    <input matInput [type]="mostrarSenhaAtual() ? 'text' : 'password'"
-                      formControlName="senhaAtual" autocomplete="current-password" />
-                    <button mat-icon-button matSuffix type="button"
-                      (click)="mostrarSenhaAtual.update(v => !v)">
-                      <mat-icon>{{ mostrarSenhaAtual() ? 'visibility_off' : 'visibility' }}</mat-icon>
-                    </button>
-                  </mat-form-field>
-                </div>
-                <div class="col-12 col-sm-6">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Nova senha</mat-label>
-                    <input matInput [type]="mostrarNovaSenha() ? 'text' : 'password'"
-                      formControlName="novaSenha" autocomplete="new-password" />
-                    <button mat-icon-button matSuffix type="button"
-                      (click)="mostrarNovaSenha.update(v => !v)">
-                      <mat-icon>{{ mostrarNovaSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
-                    </button>
-                    @if (form.get('novaSenha')?.hasError('minlength') && form.get('novaSenha')?.touched) {
-                      <mat-error>Minimo de 4 caracteres</mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-                <div class="col-12 col-sm-6">
-                  <mat-form-field appearance="outline" class="campo-full">
-                    <mat-label>Confirmar nova senha</mat-label>
-                    <input matInput [type]="mostrarConfirmacaoSenha() ? 'text' : 'password'"
-                      formControlName="confirmacaoSenha" autocomplete="new-password" />
-                    <button mat-icon-button matSuffix type="button"
-                      (click)="mostrarConfirmacaoSenha.update(v => !v)">
-                      <mat-icon>{{ mostrarConfirmacaoSenha() ? 'visibility_off' : 'visibility' }}</mat-icon>
-                    </button>
-                  </mat-form-field>
-                </div>
-              </div>
+        <h3 class="text-start">Alterar Senha</h3>
+
+        <form [formGroup]="form" (ngSubmit)="onSalvar()">
+
+          <div class="col-12 row justify-content-center mt-5">
+
+            <!-- SENHA ATUAL -->
+            <div class="col-12">
+
+              <mat-form-field appearance="outline" class="col-12">
+
+                <mat-label>Senha Atual</mat-label>
+
+                <input matInput formControlName="senhaAtual" [type]="exibirSenha ? 'text' : 'password'" required />
+
+                <button mat-icon-button matSuffix type="button" (click)="exibirSenha = !exibirSenha"
+                  [attr.aria-label]="exibirSenha ? 'Ocultar senha' : 'Mostrar senha'">
+
+                  <mat-icon>
+                    {{ exibirSenha ? 'visibility_off' : 'visibility' }}
+                  </mat-icon>
+
+                </button>
+
+                @if (form.get('senhaAtual')?.touched &&
+                form.hasError('senhaAtualObrigatoria')) {
+                <mat-error>Informe sua senha atual.</mat-error>
+                }
+
+              </mat-form-field>
+
             </div>
-          }
-        </div>
 
-        <!-- Mensagens -->
-        @if (erro()) {
-          <div class="perfil-msg perfil-msg--erro" role="alert">
-            <mat-icon>error_outline</mat-icon>
-            {{ erro() }}
+            <!-- NOVA SENHA -->
+            <div class="col-12">
+
+              <mat-form-field appearance="outline" class="col-12">
+
+                <mat-label>Nova Senha</mat-label>
+
+                <input matInput formControlName="novaSenha" [type]="exibirNovaSenha ? 'text' : 'password'" required />
+
+                <button mat-icon-button matSuffix type="button" (click)="exibirNovaSenha = !exibirNovaSenha"
+                  [attr.aria-label]="exibirNovaSenha ? 'Ocultar senha' : 'Mostrar senha'">
+
+                  <mat-icon>
+                    {{ exibirNovaSenha ? 'visibility_off' : 'visibility' }}
+                  </mat-icon>
+
+                </button>
+
+                @if (form.get('novaSenha')?.touched &&
+                form.hasError('novaSenhaObrigatoria')) {
+                <mat-error>Informe a nova senha.</mat-error>
+                }
+
+                @if (form.get('novaSenha')?.touched &&
+                form.hasError('novaSenhaMinlength')) {
+                <mat-error>A senha deve ter pelo menos 4 caracteres.</mat-error>
+                }
+
+              </mat-form-field>
+
+            </div>
+
+            <!-- CONFIRMAÇÃO DA SENHA -->
+            <div class="col-12">
+
+              <mat-form-field appearance="outline" class="col-12">
+
+                <mat-label>Confirme nova senha </mat-label>
+
+                <input matInput formControlName="confirmacaoSenha" [type]="exibirConfirmacaoSenha ? 'text' : 'password'"
+                  required />
+
+                <button mat-icon-button matSuffix type="button"
+                  (click)="exibirConfirmacaoSenha = !exibirConfirmacaoSenha"
+                  [attr.aria-label]="exibirConfirmacaoSenha ? 'Ocultar senha' : 'Mostrar senha'">
+
+                  <mat-icon>
+                    {{ exibirConfirmacaoSenha ? 'visibility_off' : 'visibility' }}
+                  </mat-icon>
+
+                </button>
+
+                @if (form.get('confirmacaoSenha')?.touched &&
+                form.hasError('confirmacaoObrigatoria')) {
+                <mat-error>Confirme sua nova senha.</mat-error>
+                }
+
+                @if (form.get('confirmacaoSenha')?.touched &&
+                form.hasError('senhasDiferentes')) {
+                <mat-error>As senhas não coincidem.</mat-error>
+                }
+
+              </mat-form-field>
+
+            </div>
+
+            <!-- MENSAGENS -->
+            <div class="col-12 text-center">
+
+              @if (erro()) {
+              <small class="text-danger">{{ erro() }}</small>
+              }
+
+              @if (sucesso()) {
+              <small class="text-success">{{ sucesso() }}</small>
+              }
+
+              <!-- BOTÃO -->
+              <div class="col-12 row justify-content-center mt-3">
+
+                <button matButton="filled" type="submit" class="col-5" style="border: 1px solid gray;"
+                  [disabled]="habilitaSalvar()">
+
+                  <mat-icon fontIcon="lock_reset"></mat-icon>
+                  Alterar
+
+                </button>
+
+              </div>
+
+            </div>
+
           </div>
-        }
-        @if (sucesso()) {
-          <div class="perfil-msg perfil-msg--sucesso" role="status">
-            <mat-icon>check_circle_outline</mat-icon>
-            {{ sucesso() }}
-          </div>
-        }
 
-      </form>
+        </form>
+
+      </div>
+
     </div>
+  </app-scroll>
 
-    <!-- Footer -->
-    <div class="perfil-footer">
-      <button matButton="outlined" type="button" (click)="onCancelar()">
-        <mat-icon fontIcon="close"></mat-icon>
-        Cancelar
-      </button>
-      <button matButton="filled" type="button" (click)="onSalvar()" [disabled]="carregando()">
-        @if (carregando()) {
-          <mat-spinner diameter="16"></mat-spinner>
-        } @else {
-          <mat-icon fontIcon="save"></mat-icon>
-        }
-        Salvar
-      </button>
-    </div>
-
-  </section>
 </div>

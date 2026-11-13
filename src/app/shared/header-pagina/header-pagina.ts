@@ -16,6 +16,7 @@ export class HeaderPaginaComponent {
 
   /** Subtítulo exibido abaixo do título. Opcional. */
   readonly subtitulo = input<string>('');
+  readonly enableContent = input<boolean>(false);
 
   /**
    * Rótulo do botão de ação. Quando não informado (ou vazio), o botão é ocultado.

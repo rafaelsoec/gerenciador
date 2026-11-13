@@ -36,91 +36,66 @@
 
 <!-- Tabela de itens adicionados -->
 @if (itensDaTabela().length > 0) {
-  <table class="itens-tabela">
-    <colgroup>
-      <col style="width: 60%">
-      <col style="width: 30%">
-      <col style="width: 10%">
-    </colgroup>
+  <div class="en-itens-tabela-wrapper">
+    <table class="en-itens-tabela">
+      <colgroup>
+        <col style="width: 60%">
+        <col style="width: 30%">
+        <col style="width: 10%">
+      </colgroup>
 
-    <thead>
-    <tr>
-      <th>Produto</th>
-      <th>Quantidade</th>
-      <th></th>
-    </tr>
-    </thead>
-
-    <tbody>
-      @for (item of itensDaTabela(); track item.produtoId) {
+      <thead>
         <tr>
-          <td class="col-produto">
-            {{ item.produtoNome }}
-          </td>
-
-          @if (item.editando) {
-            <td class="col-qtd">
-              <mat-form-field
-                class="campo-qtd-edicao"
-                appearance="fill"
-                subscriptSizing="dynamic">
-
-                <input
-                  matInput
-                  type="number"
-                  min="1"
-                  [(ngModel)]="item.quantidadeEdicao"
-                  [ngModelOptions]="{
-                    name: 'qtd_' + item.produtoId
-                  }" />
-              </mat-form-field>
-            </td>
-
-            <td class="col-acoes">
-              <button
-                mat-icon-button
-                type="button"
-                class="btn-confirmar"
-                (click)="confirmarEdicao(item)">
-                <mat-icon>check</mat-icon>
-              </button>
-
-              <button
-                mat-icon-button
-                type="button"
-                class="btn-cancelar-edicao"
-                (click)="cancelarEdicao(item)">
-                <mat-icon>close</mat-icon>
-              </button>
-            </td>
-
-          } @else {
-            <td class="col-qtd">
-              {{ item.quantidade }}
-            </td>
-
-            <td class="col-acoes">
-              <button
-                mat-icon-button
-                type="button"
-                class="btn-editar"
-                (click)="iniciarEdicao(item)">
-                <mat-icon>edit</mat-icon>
-              </button>
-
-              <button
-                mat-icon-button
-                type="button"
-                class="btn-remover"
-                *ngIf="!disabled()"
-                (click)="removerItem(item)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          }
+          <th>Produto</th>
+          <th class="col-num">Quantidade</th>
+          <th></th>
         </tr>
-      }
-    </tbody>
-  </table>
-}
+      </thead>
 
+      <tbody>
+        @for (item of itensDaTabela(); track item.produtoId) {
+          <tr>
+            <td class="col-produto">{{ item.produtoNome }}</td>
+
+            @if (item.editando) {
+              <td class="col-num">
+                <mat-form-field
+                  class="campo-qtd-edicao"
+                  appearance="fill"
+                  subscriptSizing="dynamic">
+                  <input
+                    matInput
+                    type="number"
+                    min="1"
+                    [(ngModel)]="item.quantidadeEdicao"
+                    [ngModelOptions]="{ name: 'qtd_' + item.produtoId }" />
+                </mat-form-field>
+              </td>
+
+              <td class="col-acoes">
+                <button mat-icon-button type="button" class="btn-confirmar" (click)="confirmarEdicao(item)">
+                  <mat-icon>check</mat-icon>
+                </button>
+                <button mat-icon-button type="button" class="btn-cancelar-edicao" (click)="cancelarEdicao(item)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </td>
+
+            } @else {
+              <td class="col-num">{{ item.quantidade }}</td>
+
+              <td class="col-acoes">
+                <button mat-icon-button type="button" class="btn-editar" (click)="iniciarEdicao(item)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button type="button" class="btn-remover" *ngIf="!disabled()" (click)="removerItem(item)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

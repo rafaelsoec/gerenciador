@@ -1,12 +1,12 @@
-﻿/* ── Host: necessário para o flex funcionar dentro do dialog ── */
+/* ── Host: necessário para o flex funcionar ── */
 :host {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-/* ── Layout fixo: header + corpo scrollável + footer ── */
-.cadastro-pedido-pagina {
+/* ── Layout fixo: header + corpo scrollável ── */
+.cp-pagina {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -27,7 +27,6 @@
   padding: 16px 24px;
   gap: 16px;
 }
-
 
 .cp-titulo {
   margin: 0;
@@ -50,59 +49,30 @@
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
-
-  padding-top: 24px;
-
+  padding: 16px 24px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* Footer fixo */
-.cp-footer {
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 16px 24px;
-  background-color: #173B5E;
-  border-top: 1px solid #0f2840;
-  color: #ffffff;
-}
-
-/* ── Botões do footer — mesmo padrão do form-cadastro ── */
-:host ::ng-deep .cp-footer .mat-mdc-outlined-button {
+/* ── Botões do header ── */
+:host ::ng-deep .cp-header .mat-mdc-outlined-button {
   border-color: rgba(255, 255, 255, 0.7) !important;
   color: #ffffff !important;
 }
 
-:host ::ng-deep .cp-footer .mat-mdc-outlined-button .mdc-button__label {
+:host ::ng-deep .cp-header .mat-mdc-outlined-button .mdc-button__label,
+:host ::ng-deep .cp-header .mat-mdc-outlined-button .mat-icon {
   color: #ffffff !important;
 }
 
-:host ::ng-deep .cp-footer .mat-mdc-outlined-button .mat-icon {
-  color: #ffffff !important;
-}
-
-:host ::ng-deep .cp-footer .mdc-button--outlined {
-  --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.7);
-  --mdc-outlined-button-label-text-color: #ffffff;
-}
-
-:host ::ng-deep .cp-footer .mat-mdc-unelevated-button:not(:disabled),
-:host ::ng-deep .cp-footer .mat-mdc-raised-button:not(:disabled),
-:host ::ng-deep .cp-footer button[matbutton="filled"]:not(:disabled) {
+:host ::ng-deep .cp-header button[matbutton="filled"]:not(:disabled) {
   background-color: #ffffff !important;
   color: #173B5E !important;
 }
 
-:host ::ng-deep .cp-footer button[matbutton="filled"]:not(:disabled) .mdc-button__label,
-:host ::ng-deep .cp-footer button[matbutton="filled"]:not(:disabled) .mat-icon {
+:host ::ng-deep .cp-header button[matbutton="filled"]:not(:disabled) .mdc-button__label,
+:host ::ng-deep .cp-header button[matbutton="filled"]:not(:disabled) .mat-icon {
   color: #173B5E !important;
-}
-
-:host ::ng-deep .cp-footer button[matbutton="filled"]:disabled {
-  background-color: rgba(255, 255, 255, 0.25) !important;
-  color: rgba(255, 255, 255, 0.45) !important;
 }
 
 /* ── Campos ── */
@@ -110,36 +80,74 @@
   width: 100%;
 }
 
-.secao-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
-  margin-bottom: 8px;
+/* ── Seções ── */
+.en-secao {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 0 0 15px;
 }
 
-/* ── Campo de data — outline, sem fundo colorido ── */
-.campo-data-sem-cor {
-  ::ng-deep .mdc-text-field--filled {
-    background-color: transparent !important;
-  }
+.en-secao-titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #173B5E;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
 
-  ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-    background-color: transparent !important;
-  }
+/* ── Tabela de itens ── */
+.en-itens-tabela-wrapper {
+  overflow-x: auto;
+}
 
-  ::ng-deep .mdc-text-field--filled.mdc-text-field--focused {
-    background-color: transparent !important;
-  }
+.en-itens-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
 
-  ::ng-deep .mdc-text-field--filled:hover {
-    background-color: transparent !important;
-  }
+.en-itens-tabela th {
+  background: #173B5E;
+  color: #fff;
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
 
-  ::ng-deep .mdc-line-ripple {
-    background-color: #ccc !important;
-  }
+.en-itens-tabela td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+}
 
-  ::ng-deep .mat-mdc-form-field-focus-overlay {
-    background-color: transparent !important;
-  }
+.en-itens-tabela tbody tr:hover {
+  background: #f7f8fa;
+}
+
+.col-produto { font-weight: 500; }
+.col-num     { text-align: right; }
+
+/* ── Dark mode ── */
+:host-context(body.dark) .en-secao {
+  background: #1a2533;
+  border-color: #2a3a4d;
+}
+
+:host-context(body.dark) .en-secao-titulo {
+  color: #7ab3e8;
+  border-bottom-color: #2a3a4d;
+}
+
+:host-context(body.dark) .en-itens-tabela td {
+  border-bottom-color: #334155;
+  color: #e2e8f0;
+}
+
+:host-context(body.dark) .en-itens-tabela tbody tr:hover {
+  background: #263245;
 }

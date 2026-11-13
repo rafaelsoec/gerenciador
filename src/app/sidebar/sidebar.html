@@ -18,9 +18,10 @@
   <div class="brand">
     <div class="brand-mark" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none">
-        <path d="M16 25V12M16 16C10 16 7 12 8 7C13 7 17 10 16 16Z" stroke="#A9E0D2" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M16 19C16 13 20 10 25 11C25 16 21 20 16 19Z" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M9 26H23" stroke="#A9E0D2" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M16 25V12M16 16C10 16 7 12 8 7C13 7 17 10 16 16Z" stroke="#A9E0D2" stroke-width="2.2"
+          stroke-linecap="round" />
+        <path d="M16 19C16 13 20 10 25 11C25 16 21 20 16 19Z" stroke="#fff" stroke-width="2.2" stroke-linecap="round" />
+        <path d="M9 26H23" stroke="#A9E0D2" stroke-width="2.2" stroke-linecap="round" />
       </svg>
     </div>
     <div class="brand-text">
@@ -29,27 +30,26 @@
     </div>
   </div>
 
-  <!-- Grupos de navegação -->
-  @for (group of menuGroups; track group.label) {
-  <div class="nav-section">
-    <span class="nav-section-label">{{ group.label }}</span>
-    <ul class="menu-list" role="list">
-      @for (item of group.items; track item.id) {
-      <li class="menu-item" role="listitem">
-        <a class="menu-btn" style="text-decoration: none;" [routerLink]="item.route" routerLinkActive="active"
-          (click)="toggleMobile()" #rla="routerLinkActive" [attr.aria-label]="item.ariaLabel"
-          [attr.aria-current]="rla.isActive ? 'page' : null">
-          <span class="icon" aria-hidden="true" [innerHTML]="item.svg"></span>
-          <span class="label" aria-hidden="true">{{ item.label }}</span>
-        </a>
-      </li>
-      }
-    </ul>
+  <!-- Grupos de navegação com scroll -->
+  <div class="nav-scroll">
+    @for (group of menuGroups; track group.label) {
+    <div class="nav-section">
+      <span class="nav-section-label">{{ group.label }}</span>
+      <ul class="menu-list" role="list">
+        @for (item of group.items; track item.id) {
+        <li class="menu-item" role="listitem">
+          <a class="menu-btn" style="text-decoration: none;" [routerLink]="item.route" routerLinkActive="active"
+            (click)="toggleMobile()" #rla="routerLinkActive" [attr.aria-label]="item.ariaLabel"
+            [attr.aria-current]="rla.isActive ? 'page' : null">
+            <span class="icon" aria-hidden="true" [innerHTML]="item.svg"></span>
+            <span class="label" aria-hidden="true">{{ item.label }}</span>
+          </a>
+        </li>
+        }
+      </ul>
+    </div>
+    }
   </div>
-  }
-
-  <!-- Spacer -->
-  <div class="spacer"></div>
 
   <!-- Área do usuário -->
   @if (auth.usuarioAtual()) {
@@ -67,30 +67,40 @@
         </svg>
         <span>Minhas Empresas</span>
       </button> -->
-<!--      <div class="usuario-popup-divider"></div>-->
-<!--      <button class="usuario-popup-btn" role="menuitem" type="button" (click)="abrirPerfil(); fecharMenuUsuario()">-->
-<!--        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">-->
-<!--          <path-->
-<!--            d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />-->
-<!--        </svg>-->
-<!--        <span>Meu Perfil</span>-->
-<!--      </button>-->
+      <div class="usuario-popup-divider"></div>
+      <button class="usuario-popup-btn" role="menuitem" type="button" (click)="abrirPerfil(); fecharMenuUsuario()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path
+            d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+        </svg>
+        <span>Meu Perfil</span>
+      </button>
       <div class="usuario-popup-divider"></div>
       <button class="usuario-popup-btn" role="menuitem" type="button" (click)="tema.alternar()">
         @if (tema.darkMode()) {
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-          </svg>
-          <span>Modo claro</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <span>Modo claro</span>
         } @else {
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
-          </svg>
-          <span>Modo escuro</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
+        </svg>
+        <span>Modo escuro</span>
         }
       </button>
       <div class="usuario-popup-divider"></div>
-      <button class="usuario-popup-btn usuario-popup-btn--danger" role="menuitem" type="button" (click)="logout(); fecharMenuUsuario()">
+      <button class="usuario-popup-btn usuario-popup-btn--danger" role="menuitem" type="button"
+        (click)="logout(); fecharMenuUsuario()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
           <path
             d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
