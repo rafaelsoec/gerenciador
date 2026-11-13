@@ -50,6 +50,7 @@ export class NotaFiscalDTO {
 
   // Complemento
   informacoesAdicionais?: string;
+  transportadoraId!: number | null;
 
   itens!: ItemNotaFiscalDTO[];
 }

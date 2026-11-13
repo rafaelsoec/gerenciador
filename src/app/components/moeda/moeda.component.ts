@@ -1,4 +1,4 @@
-import { Component, forwardRef, input, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, inject, input, signal } from '@angular/core';
 
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -22,6 +22,7 @@ import { NumberUtils } from '../../utils/NumberUtils';
   ],
 })
 export class CampoMoedaComponent implements ControlValueAccessor {
+  private readonly cdr = inject(ChangeDetectorRef);
   label = input('Valor');
   placeholder = input('0, 00');
   required = input(false);
@@ -49,6 +50,7 @@ export class CampoMoedaComponent implements ControlValueAccessor {
     }
 
     this.valorExibido.set(NumberUtils.format(value));
+    this.cdr.detectChanges();
   }
 
   registerOnChange(fn: (value: number) => void): void {

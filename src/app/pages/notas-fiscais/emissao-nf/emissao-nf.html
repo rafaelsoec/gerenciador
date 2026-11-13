@@ -172,6 +172,26 @@
             </div>
           </div>
 
+          <!-- ==== SECAO: TRANSPORTADORA ==== -->
+          <div class="en-secao"  *ngIf="transportadorasDisponiveis().length > 0">
+            <h3 class="en-secao-titulo">Transportadora</h3>
+            <div class="row g-3">
+
+              <div class="col-12 col-sm-12">
+                <app-select-autocomplete
+                  label="Transportadora"
+                  [obrigatorio]="false"
+                  placeholder="Digite para buscar..."
+                  mode="single"
+                  [options]="transportadorasDisponiveis()"
+                  [(ngModel)]="form.transportadoraId"
+                  [ngModelOptions]="{ name: 'transportadoraId' }">
+                </app-select-autocomplete>
+              </div>
+
+            </div>
+          </div>
+
           <!-- ==== SECAO: ITENS ==== -->
           <div class="en-secao">
             <h3 class="en-secao-titulo">Itens da Nota</h3>

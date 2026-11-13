@@ -1,4 +1,4 @@
-﻿import { Component, inject, OnInit, signal } from '@angular/core';
+﻿import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +18,7 @@ import { RegimeTributarioEnum, RegimeTributarioLabel } from '../../../enums/Regi
 import { AmbienteFiscalEnum, AmbienteFiscalLabel } from '../../../enums/AmbienteFiscalEnum';
 import { ScrollComponent } from '../../../components/scroll/scroll.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
+import { Constantes } from '../../../constantes/Constantes';
 
 interface CadastroEmpresaForm {
   razaoSocial: string;
@@ -42,7 +43,7 @@ interface CadastroEmpresaForm {
 }
 
 @Component({
-  selector: 'app-cadastro-empresa',
+  selector: 'app-cadastro-transportadora',
   standalone: true,
   imports: [
     CommonModule,
@@ -55,8 +56,8 @@ interface CadastroEmpresaForm {
     MatDividerModule,
     NgxMaskDirective,
     ScrollComponent,
-    FooterComponent
-],
+    FooterComponent,
+  ],
   templateUrl: './cadastro-empresa.html',
   styleUrl: './cadastro-empresa.css',
 })
@@ -64,6 +65,7 @@ export class CadastroEmpresaComponent implements OnInit {
   private readonly empresaService = inject(EmpresaService);
   private readonly alertaService = inject(AlertaService);
   private readonly route = inject(ActivatedRoute);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
 
   id: number | undefined;
@@ -78,11 +80,7 @@ export class CadastroEmpresaComponent implements OnInit {
     label: AmbienteFiscalLabel[v],
   }));
 
-  readonly ufs = [
-    'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS',
-    'MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC',
-    'SP','SE','TO',
-  ];
+  readonly ufs = Constantes.UFS;
 
   form: CadastroEmpresaForm = this._formVazio();
 
@@ -120,6 +118,7 @@ export class CadastroEmpresaComponent implements OnInit {
             ambienteFiscal: (empresa.ambienteFiscal as AmbienteFiscalEnum) ?? '',
             codigoCnae: empresa.codigoCnae ?? '',
           };
+          this.cdr.detectChanges();
         },
         error: (erro) => {
           this.alertaService.erro(erro.error);

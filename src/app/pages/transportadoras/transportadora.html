@@ -1,0 +1,28 @@
+﻿<section class="container-fluid pagina">
+
+  <app-header-pagina
+    titulo="Minhas Transportadoras"
+    subtitulo="Gerencie as transportadoras vinculadas ao seu usuario"
+    nomeBotao="Cadastrar Nova Transportadora"
+    corBackground="#173B5E"
+    corTexto="#ffffff"
+    corBotao="#3b82f6"
+    (botaoClicado)="onNovo()" />
+
+  <div class="col-12">
+    <app-tabela
+      [dados]="transportadoras()"
+      [colunas]="colunas"
+      corHeader="#173B5E"
+      corTextoHeader="#ffffff"
+      [exibirEdicao]="true"
+      [exibirExclusao]="true"
+      [rotaEdicao]="'editar'"
+      [paginacaoExterna]="true"
+      [totalElementos]="totalElementos()"
+      [itensPorPagina]="tamanhoPagina()"
+      (excluir)="onExcluir($event)"
+      (paginaAlterada)="onPaginaAlterada($event)" />
+  </div>
+
+</section>

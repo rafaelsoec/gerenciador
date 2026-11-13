@@ -21,38 +21,46 @@ export class NotaFiscalService {
     return this.http.get<NotaFiscalDTO>(`${this.url}/${id}`);
   }
 
+  buscarPorPedidoId(id: number): Observable<NotaFiscalDTO> {
+    return this.http.get<NotaFiscalDTO>(`${this.url}/pedido/${id}`);
+  }
+
   gerarPdf(id: number | undefined, tipo: string): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.url}/${id}/emitir/${tipo}`, {
-      responseType: 'blob',
-      observe: 'response',
-    }).pipe(
-      catchError((erro: HttpErrorResponse) => {
-
-        if (erro.error instanceof Blob) {
-          return from(erro.error.text()).pipe(
-            mergeMap(texto => {
-              let detalhe: any = texto;
-
-              try {
-                detalhe = JSON.parse(texto);
-              } catch {
-                // Resposta não é JSON: mantém o texto original.
-              }
-
-              return throwError(() => new HttpErrorResponse({
-                error: detalhe,
-                status: erro.status,
-                statusText: erro.statusText,
-                headers: erro.headers,
-                url: erro.url ?? ''
-              }));
-            })
-          );
-        }
-
-        return throwError(() => erro);
+    return this.http
+      .get(`${this.url}/${id}/emitir/${tipo}`, {
+        responseType: 'blob',
+        observe: 'response',
       })
-    );
+      .pipe(
+        catchError((erro: HttpErrorResponse) => {
+          if (erro.error instanceof Blob) {
+            return from(erro.error.text()).pipe(
+              mergeMap((texto) => {
+                let detalhe: any = texto;
+
+                try {
+                  detalhe = JSON.parse(texto);
+                } catch {
+                  // Resposta não é JSON: mantém o texto original.
+                }
+
+                return throwError(
+                  () =>
+                    new HttpErrorResponse({
+                      error: detalhe,
+                      status: erro.status,
+                      statusText: erro.statusText,
+                      headers: erro.headers,
+                      url: erro.url ?? '',
+                    }),
+                );
+              }),
+            );
+          }
+
+          return throwError(() => erro);
+        }),
+      );
   }
 
   emitir(dados: Omit<NotaFiscalDTO, 'id'>): Observable<NotaFiscalDTO> {

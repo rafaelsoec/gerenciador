@@ -150,7 +150,7 @@
                   <mat-label>UF</mat-label>
                   <mat-select name="uf" [(ngModel)]="form.uf">
                     @for (uf of ufs; track uf) {
-                    <mat-option [value]="uf">{{ uf }}</mat-option>
+                    <mat-option [value]="uf.sigla">{{ uf.sigla }}</mat-option>
                     }
                   </mat-select>
                 </mat-form-field>

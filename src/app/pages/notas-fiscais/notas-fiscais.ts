@@ -37,24 +37,27 @@ export class NotasFiscaisComponent implements OnInit {
   readonly icones: ItemTabela[] = [
     {
       nome: 'Imprimir Danfe simplificada',
-      icone: new URL('icons/danfe_simplificado.svg', document.baseURI).href,
-      isSvg: true,
+      icone: 'receipt_long',
+      // icone: new URL('icons/danfe_simplificado.svg', document.baseURI).href,
+      // isSvg: true,
       function: (row) => {
         this.imprimir(row, "DANFE_SIMPLIFICADO");
       },
     },
     {
       nome: 'Imprimir NFE',
-      icone: new URL('icons/nfe.svg', document.baseURI).href,
-      isSvg: true,
+      icone: 'assignment',
+      // icone: new URL('icons/nfe.svg', document.baseURI).href,
+      // isSvg: true,
       function: (row) => {
         this.imprimir(row, "NFE");
       },
     },
     {
       nome: 'Imprimir NFSE',
-      icone: new URL('icons/nfse.svg', document.baseURI).href,
-      isSvg: true,
+      icone: 'article',
+      // icone: new URL('icons/nfse.svg', document.baseURI).href,
+      // isSvg: true,
       function: (row) => {
         this.imprimir(row, "NFSE");
       },
@@ -64,7 +67,7 @@ export class NotasFiscaisComponent implements OnInit {
       icone: 'edit',
       isSvg: false,
       function: (row) => {
-        this.router.navigate(['notas-fiscais', 'nova', 'pedido', row.pedidoId], {
+        this.router.navigate(['notas-fiscais', row.id, 'editar'], {
           queryParams: { rota: 'notas-fiscais' },
         });
       },

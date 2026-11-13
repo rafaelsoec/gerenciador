@@ -1,4 +1,11 @@
-﻿import { Component, inject, OnInit, signal } from '@angular/core';
+﻿import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { NgxMaskDirective } from 'ngx-mask';
-import { catchError, forkJoin, tap, throwError } from 'rxjs';
+import { catchError, forkJoin, Observable, Subject, tap, throwError } from 'rxjs';
 
 import { PedidoService } from '../../../services/pedido.service';
 import { NotaFiscalService } from '../../../services/nota-fiscal.service';
@@ -34,6 +41,9 @@ import { ScrollComponent } from '../../../components/scroll/scroll.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
 import { HeaderPaginaComponent } from '../../../shared/header-pagina/header-pagina';
 import { StatusNotaFiscalEnum } from '../../../enums/StatusNotaFiscalEnum';
+import { SelectAutocompleteComponent } from '../../../shared/auto-select/auto-select';
+import { TransportadoraService } from '../../../services/transportadora.service';
+import { OpcaoCampo } from '../../../shared/form-cadastro/form-cadastro';
 
 interface ItemNFForm extends ItemNotaFiscalDTO {}
 
@@ -64,6 +74,7 @@ interface EmissaoNFForm {
 
   // Complemento
   informacoesAdicionais: string;
+  transportadoraId: number | null;
 }
 
 @Component({
@@ -86,6 +97,7 @@ interface EmissaoNFForm {
     ScrollComponent,
     FooterComponent,
     HeaderPaginaComponent,
+    SelectAutocompleteComponent,
   ],
   templateUrl: './emissao-nf.html',
   styleUrl: './emissao-nf.css',
@@ -96,9 +108,11 @@ export class EmissaoNFComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly nfService = inject(NotaFiscalService);
   private readonly empresaService = inject(EmpresaService);
+  private readonly transportadoraService = inject(TransportadoraService);
   private readonly clienteService = inject(ClienteService);
   private readonly alertaService = inject(AlertaService);
-
+  private readonly cdr = inject(ChangeDetectorRef);
+  notaFiscalId!: number;
   pedidoId!: number;
   pedido: PedidoDTO | null = null;
   empresas: EmpresaDTO[] = [];
@@ -108,6 +122,7 @@ export class EmissaoNFComponent implements OnInit {
 
   readonly salvando = signal(false);
   readonly carregando = signal(true);
+  readonly transportadorasDisponiveis: WritableSignal<OpcaoCampo[]> = signal([]);
 
   readonly tiposNF = Object.values(TipoNotaFiscalEnum).map((v) => ({
     value: v,
@@ -198,24 +213,50 @@ export class EmissaoNFComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pedidoId = Number(this.route.snapshot.paramMap.get('pedidoId'));
     this.rota = this.route.snapshot.queryParamMap.get('rota') ?? '/notas-fiscais';
+    this.carregarNotaPorPedido();
+  }
 
+  private definirBuscaNota(): Observable<NotaFiscalDTO> {
+    this.pedidoId = Number(this.route.snapshot.paramMap.get('pedidoId'));
+    this.notaFiscalId = Number(this.route.snapshot.paramMap.get('notaFiscalId'));
+
+    if (this.notaFiscalId && this.notaFiscalId != 0) {
+      return this.nfService.buscarPorId(this.notaFiscalId);
+    }
+
+    if (this.pedidoId && this.pedidoId != 0) {
+      return this.nfService.buscarPorPedidoId(this.pedidoId);
+    }
+
+    return new Subject();
+  }
+
+  private carregarNotaPorPedido() {
     // Busca pedido + primeira empresa em paralelo
     forkJoin({
-      pedido: this.pedidoService.buscarPorId(this.pedidoId),
+      notaFiscal: this.definirBuscaNota(),
       empresas: this.empresaService.listar({ page: 0, size: 1000 }),
+      transportadoras: this.transportadoraService.listar({ page: 0, size: 1000 }),
     }).subscribe({
-      next: ({ pedido, empresas }) => {
-        var empresaDTOS = empresas.conteudo;
-        this.recuperarDadosCliente(pedido.clienteId);
+      next: ({ notaFiscal, empresas, transportadoras }) => {
+        this.pedidoService.buscarPorId(notaFiscal.pedidoId).subscribe((pedido) => {
+          var empresaDTOS = empresas.conteudo;
+          this.recuperarDadosCliente(pedido.clienteId);
+          this.transportadorasDisponiveis.set(
+            transportadoras.conteudo.map((t) => ({
+              label: t.nome,
+              value: t.id,
+            })),
+          );
 
-        this.pedido = pedido;
-        this.empresas = empresaDTOS;
-        this.empresa = empresaDTOS[0] ?? null;
-        this._preencherForm(pedido);
-        console.log(this.form)
-        this.carregando.set(false);
+          this.pedido = pedido;
+          this.empresas = empresaDTOS;
+          this.empresa = empresaDTOS[0] ?? null;
+          this._preencherForm(pedido, notaFiscal);
+          this.carregando.set(false);
+          this.cdr.detectChanges();
+        });
       },
       error: (erro) => {
         this.alertaService.erro(erro.error ?? 'Erro ao carregar dados do pedido.');
@@ -225,7 +266,7 @@ export class EmissaoNFComponent implements OnInit {
     });
   }
 
-  private _preencherForm(pedido: PedidoDTO): void {
+  private _preencherForm(pedido: PedidoDTO, notaFiscal: NotaFiscalDTO): void {
     const hoje = DateUtils.formatar(new Date(), 'DD/MM/YYYY');
 
     this.form = {
@@ -243,6 +284,7 @@ export class EmissaoNFComponent implements OnInit {
       destinatarioMunicipio: '',
       destinatarioUf: '',
       destinatarioCep: '',
+      transportadoraId: notaFiscal.transportadoraId,
       valorFrete: pedido.frete ?? 0,
       valorSeguro: 0,
       valorOutros: 0,
@@ -307,6 +349,7 @@ export class EmissaoNFComponent implements OnInit {
       valorCofins: this.valorCofins,
       valorTotal: this.valorTotal,
       formaPagamento: this.form.formaPagamento,
+      transportadoraId: this.form.transportadoraId,
       valorPago: this.valorTotal,
       informacoesAdicionais: this.form.informacoesAdicionais || undefined,
       itens: this.itens,
@@ -346,6 +389,7 @@ export class EmissaoNFComponent implements OnInit {
       destinatarioNumero: '',
       destinatarioBairro: '',
       destinatarioMunicipio: '',
+      transportadoraId: null,
       destinatarioUf: '',
       destinatarioCep: '',
       valorFrete: 0,
@@ -367,9 +411,10 @@ export class EmissaoNFComponent implements OnInit {
       this.form.destinatarioMunicipio = cliente.municipio;
       this.form.destinatarioUf = cliente.uf;
       this.form.destinatarioCep = cliente.cep;
+      this.cdr.detectChanges();
     });
   }
-  
+
   getSubTitulo(): string {
     return `Pedido #${this.pedido?.id} --- ${this.pedido?.clienteNome}`;
   }
