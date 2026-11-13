@@ -4,7 +4,9 @@
   <app-header-pagina [titulo]="id ? 'Editar Pedido' : 'Novo Pedido'"
     [subtitulo]="id ? 'Atualize os dados do pedido' : 'Preencha os dados do pedido'" [enableContent]="true"
     corBackground="#173B5E" corTexto="#ffffff">
-    <h3 class="p-2">Total: R$ {{valorCalculado()}}</h3>
+    <div class="p-2">
+      <h3 class="p-2">Total: R$ {{valorCalculado()}}</h3>
+    </div>
   </app-header-pagina>
 
   <!-- Corpo com scroll -->
@@ -90,14 +92,15 @@
 
   <!-- Footer fixo -->
   <app-footer background="#173B5E">
-    <div class="d-flex justify-content-end align-items-center gap-2 w-100 p-2" [style]="id ? 'margin-left: 15px; margin-right: 15px;' : ''">
+    <div class="d-flex justify-content-end align-items-center gap-2 w-100 p-2">
 
-      <button matButton="outlined" type="button" (click)="onCancelar()">
+      <button class="p-2" matButton="outlined" type="button" (click)="onCancelar()">
         <mat-icon fontIcon="close"></mat-icon>
         Cancelar
       </button>
 
-      <button matButton="filled" type="submit" form="form-cadastro-pedido" [disabled]="disabled() || invalido()">
+      <button class="p-2" style="border: 1px solid gray;" matButton="filled" type="submit" form="form-cadastro-pedido"
+        [disabled]="disabled() || invalido()">
         <mat-icon fontIcon="save"></mat-icon>
         {{ id ? 'Salvar Alterações' : 'Salvar Pedido' }}
       </button>
